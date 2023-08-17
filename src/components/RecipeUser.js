@@ -77,8 +77,6 @@ const RecipeUser = ({ authorId }) => {
   };
 
   const shareOnInstagram = (recipe) => {
-    // You can't directly share on Instagram programmatically due to platform limitations.
-    // Instead, provide instructions to users on how to share manually.
     alert('To share on Instagram, open the app and upload the recipe image along with the title and description.');
   };
 
