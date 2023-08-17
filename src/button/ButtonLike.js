@@ -9,10 +9,8 @@ const ButtonLike = ({ commentId, initialLikes }) => {
   useEffect(() => {
     const likesRef = db.collection('comments').doc(commentId).collection('likes');
 
-    // Get the current user ID (Replace 'CURRENT_USER_ID' with the actual code to get the user ID)
-    const currentAuthorId = 'AuthorId'; // Ganti 'AuthorId' dengan kode yang benar untuk mendapatkan ID pengguna saat ini.
+    const currentAuthorId = 'AuthorId';
 
-    // Check if the current user has liked the comment
     likesRef
       .doc(currentAuthorId)
       .get()
@@ -23,12 +21,10 @@ const ButtonLike = ({ commentId, initialLikes }) => {
         console.error('Error checking like status:', error);
       });
 
-    // Set up the real-time listener for the likes collection
     const unsubscribe = likesRef.onSnapshot((snapshot) => {
       setLikeCount(snapshot.size);
     });
 
-    // Clean up the listener when the component unmounts
     return () => unsubscribe();
   }, [commentId]);
 
@@ -36,14 +32,12 @@ const ButtonLike = ({ commentId, initialLikes }) => {
     try {
       const likesRef = db.collection('comments').doc(commentId).collection('likes');
 
-      // Get the current user ID (Replace 'CURRENT_USER_ID' with the actual code to get the user ID)
       const currentAuthorId = 'currentAuthorId';
 
       if (isLiked) {
-        // If the comment is already liked by the current user, remove the like
         await likesRef.doc(currentAuthorId).delete();
       } else {
-        // If the comment is not liked by the current user, add the like
+        
         await likesRef.doc(currentAuthorId).set({ likedAt: new Date() });
       }
     } catch (error) {
