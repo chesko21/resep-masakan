@@ -1,0 +1,85 @@
+module.exports = {
+  content: ["./src/**/*.{html,js}"],
+  darkMode: 'media',
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: "#f8e8e5",
+          100: "#f1cfc9",
+          200: "#e8b2a6",
+          300: "#df9480",
+          400: "#d8755c",
+          500: "#cf533d",
+          600: "#c24433",
+          700: "#aa3b2e",
+          800: "#902f29",
+          900: "#761f20",
+        },
+        secondary: {
+          50: "#ffeadc",
+          100: "#ffcdb7",
+          200: "#ffb08e",
+          300: "#ff9264",
+          400: "#ff753a",
+          500: "#ff5722",
+          600: "#f4491e",
+          700: "#db401b",
+          800: "#c23518",
+          900: "#a72b15",
+        },
+        accent: {
+          50: "#e0f7fa",
+          100: "#b2ebf2",
+          200: "#80deea",
+          300: "#4dd0e1",
+          400: "#26c6da",
+          500: "#00bcd4",
+          600: "#00acc1",
+          700: "#0097a7",
+          800: "#00838f",
+          900: "#006064",
+        },
+        background: "#fafafa",
+        "wavy-purple": "#9f7aea",
+        dark: {
+          background: "#1a202c",
+          primary: "#4a90e2",
+      },
+      },
+      fontFamily: {
+        heading: ["Montserrat", "sans-serif"],
+        body: ["Open Sans", "sans-serif"],
+        subheading: ["Roboto", "sans-serif"],
+        logo: ["Pacifico", "cursive"],
+        fair: ["Playfair Display", "serif"],
+      },
+      fontSize: {
+        "2xl": "1.5rem",
+        "3xl": "2rem",
+        "4xl": "2.5rem",
+      },
+      boxShadow: {
+        "md-dark": "0 4px 6px -1px rgba(0, 0, 0, 0.25)",
+        "lg-dark": "0 10px 15px -3px rgba(0, 0, 0, 0.3)",
+        "xl-dark": "0 20px 25px -5px rgba(0, 0, 0, 0.5)",
+      },
+      container: {
+        center: true,
+        padding: "1rem",
+      },
+      borderRadius: {
+        xl: "1rem",
+      },
+    },
+    screens: {
+      sm: "640px",
+      md: "768px", 
+      lg: "1024px", 
+      xl: "1280px", 
+    },
+  },
+  variants: {},
+  plugins: [],
+  
+};
