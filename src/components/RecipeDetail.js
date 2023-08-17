@@ -31,7 +31,6 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
             createdAt: recipeDoc.data().createdAt.toDate(),
           };
 
-          // Fetch the creator's photo for the recipe if it's not already passed as a prop
           const recipeAuthorId = recipeData.authorId;
           if (recipeAuthorId !== authorId) {
             const userDoc = await db.collection('users').doc(recipeAuthorId).get();
@@ -161,8 +160,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   };
 
   const shareOnInstagram = (recipe) => {
-    // You can't directly share on Instagram programmatically due to platform limitations.
-    // Instead, provide instructions to users on how to share manually.
+
     alert('To share on Instagram, open the app and upload the recipe image along with the title and description.');
   };
 
