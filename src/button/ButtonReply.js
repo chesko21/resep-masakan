@@ -7,7 +7,7 @@ const ButtonReply = ({ onClick, commentId }) => {
   const [replies, setReplies] = useState([]);
 
   useEffect(() => {
-    // Fetch the replies for the given commentId from Firebase
+   
     const fetchReplies = async () => {
       try {
         const repliesSnapshot = await db
@@ -41,7 +41,7 @@ const ButtonReply = ({ onClick, commentId }) => {
 
   const handleReplySubmit = async () => {
     if (replyContent.trim() !== '') {
-      onClick(replyContent, commentId); // Pass the 'commentId' to the 'onClick' function
+      onClick(replyContent, commentId); 
       setIsReplying(false);
       setReplyContent('');
     }
