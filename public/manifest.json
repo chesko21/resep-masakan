@@ -1,0 +1,25 @@
+{
+  "short_name": "web-resep-masakan",
+  "name": "Temukan kelezatan kuliner dari resep-resep istimewa! Dari hidangan klasik hingga inovasi, nikmati petualangan rasa yang menggugah selera. Bergabunglah dalam seni memasak dengan instruksi praktis dan bahan-bahan lezat. Mari masak bersama! 🍳🍽️🌮",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
