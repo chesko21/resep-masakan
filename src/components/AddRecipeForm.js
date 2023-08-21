@@ -66,13 +66,17 @@ const AddRecipeForm = ({ userAuth }) => {
       }));
     }
   }, [userAuth]);
+
+  // Add a function to show the notification
   const showNotificationMessage = () => {
     setShowNotification(true);
   };
 
+  // Add a function to hide the notification
   const hideNotificationMessage = () => {
     setShowNotification(false);
   };
+
 
   const handleAddRecipe = async (recipe) => {
     try {

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../services/firebase';
 import { Link } from 'react-router-dom';
 import { FiTrash2, FiEdit } from 'react-icons/fi';
-import { FaFacebook, FaInstagram, FaWhatsapp } from 'react-icons/fa';
-
 import DefaultImage from '../assets/profile.svg';
 
 const RecipeUser = ({ authorId }) => {
@@ -70,22 +68,6 @@ const RecipeUser = ({ authorId }) => {
       [recipeId]: !prevStatus[recipeId],
     }));
   };
-
-  const shareOnFacebook = (recipe) => {
-    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
-    window.open(shareUrl, '_blank');
-  };
-
-  const shareOnInstagram = (recipe) => {
-    alert('To share on Instagram, open the app and upload the recipe image along with the title and description.');
-  };
-
-  const shareOnWhatsApp = (recipe) => {
-    const shareText = `Check out this delicious recipe: ${recipe.title}\n\n${recipe.description}\n\n${window.location.href}`;
-    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-    window.open(shareUrl, '_blank');
-  };
-
 
   const isNewRecipe = (createdAt) => {
     const NEW_RECIPE_DAYS = 7;
@@ -159,32 +141,6 @@ const RecipeUser = ({ authorId }) => {
                   )}
                 <p className="mt-2 text-sm text-secondary-500">Kategori: {recipe.category}</p>
                 <p className="text-white text-sm mt-2">Created: {recipe.dateCreated?.toLocaleDateString()}</p>
-                <p className="text-center mt-2">Share ke Sosial Media Anda</p>
-                <div className="flex mx-auto m-4 justify-center space-x-1">
-                  <button
-                    className="px-2 py-1 text-sm bg-blue-500 text-white rounded-lg flex items-center hover:bg-blue-600 transition-colors duration-300"
-                    onClick={() => shareOnFacebook(recipe)}
-                  >
-                    <FaFacebook className="mr-1 text-sm" />
-                    Facebook
-                  </button>
-                  <button
-                    className="px-2 py-1 text-sm bg-purple-700 text-white rounded-lg flex items-center hover:bg-purple-800 transition-colors duration-300"
-                    onClick={() => shareOnInstagram(recipe)}
-                  >
-                    <FaInstagram className="mr-1 text-sm" />
-                    Instagram
-                  </button>
-                  <button
-                    className="px-2 py-1 text-sm bg-green-500 text-white rounded-lg flex items-center hover:bg-green-600 transition-colors duration-300"
-                    onClick={() => shareOnWhatsApp(recipe)}
-                  >
-                    <FaWhatsapp className="mr-1 text-sm" />
-                    WhatsApp
-                  </button>
-                </div>
-
-
                 <div className="flex mt-4 justify-center space-x-4">
                   <button
                     className="px-3 py-1 text-sm bg-red-500 text-white rounded-lg flex items-center hover:bg-red-600 transition-colors duration-300"

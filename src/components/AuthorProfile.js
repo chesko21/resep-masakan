@@ -7,7 +7,7 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <Link to={`/recipes/${id}`} className="block w-full">
-      <div className="border rounded-lg overflow-hidden shadow-md bg-white font-logo hover:shadow-lg transition-shadow">
+      <div className="border rounded-lg overflow-hidden shadow-md bg-primary-500 font-logo hover:shadow-lg transition-shadow">
         <img src={recipeImage} alt="Recipe" className="w-full h-48 object-cover" />
         <div className="p-2">
           <h3 className="text-lg font-semibold">{title}</h3>
@@ -21,12 +21,13 @@ const AuthorProfile = () => {
   const { authorId } = useParams();
   const [authorData, setAuthorData] = useState(null);
   const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const DEFAULT_PROFILE_IMAGE = 'defaultProfileImage';
 
   useEffect(() => {
     const fetchAuthorProfile = async () => {
       try {
+        setLoading(true);
         const userRef = db.collection('users').doc(authorId);
         const userSnapshot = await userRef.get();
 
@@ -56,9 +57,13 @@ const AuthorProfile = () => {
   }, [authorId]);
 
   if (loading) {
-    return <div className="text-center animate-spin">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="border-t-4 border-blue-500 rounded-full h-12 w-12 animate-spin"></div>
+      </div>
+    );
   }
-
+  
   if (!authorData) {
     return <div>User profile not found.</div>;
   }
@@ -66,27 +71,31 @@ const AuthorProfile = () => {
   const { displayName, photoURL } = authorData;
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex items-center mb-4">
-        <img
-          src={photoURL || DEFAULT_PROFILE_IMAGE}
-          alt="Author Profile"
-          className="w-16 h-16 rounded-full mr-4 object-cover"
-        />
-        <div>
-          <h2 className="text-3xl font-bold mb-2">{displayName}</h2>
-          <p className="text-lg font-medium text-gray-600">Recipes Created by {displayName}</p>
+    <div className="container mx-auto p-4 bg-gray-300 min-h-screen">
+      <div className="bg-white p-4 rounded-md shadow-md mb-4">
+        <div className="flex flex-col md:flex-row items-center mb-4">
+          <img
+            src={photoURL || DEFAULT_PROFILE_IMAGE}
+            alt="Author Profile"
+            className="w-16 h-16 rounded-full mb-2 md:mb-0 md:mr-4 object-cover"
+          />
+          <div>
+            <h2 className="text-xl md:text-3xl font-bold mb-1 text-center md:text-left">{displayName}</h2>
+            <p className="text-base md:text-lg font-medium text-gray-600">
+              Recipes Created by {displayName}
+            </p>
+          </div>
         </div>
+        {recipes.length === 0 ? (
+          <p>No recipes created by this author.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {recipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </div>
+        )}
       </div>
-      {recipes.length === 0 ? (
-        <p>No recipes created by this author.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recipes.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
-        </div>
-      )}
     </div>
   );
 };

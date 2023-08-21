@@ -31,6 +31,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
             createdAt: recipeDoc.data().createdAt.toDate(),
           };
 
+          // Fetch the creator's photo for the recipe if it's not already passed as a prop
           const recipeAuthorId = recipeData.authorId;
           if (recipeAuthorId !== authorId) {
             const userDoc = await db.collection('users').doc(recipeAuthorId).get();
@@ -155,22 +156,23 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   };
 
   const shareOnFacebook = (recipe) => {
-    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+      `${window.location.origin}/recipes/${recipe.id}`
+    )}`;
     window.open(shareUrl, '_blank');
   };
-
+  
   const shareOnInstagram = (recipe) => {
-
-    alert('To share on Instagram, open the app and upload the recipe image along with the title and description.');
+    alert(
+      'To share on Instagram, open the app and upload the recipe image along with the title and description.'
+    );
   };
-
+  
   const shareOnWhatsApp = (recipe) => {
     const shareText = `Check out this delicious recipe: ${recipe.title}\n\n${recipe.description}\n\n${window.location.href}`;
     const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
     window.open(shareUrl, '_blank');
   };
-
-
   if (isLoading || !recipe) {
     return (
       <div className="flex items-center justify-center h-48 bg-purple-200">
@@ -275,7 +277,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
         </button>
       </div>
       <div className="mt-8">
-        <CommentList comments={comments} id={id} comment={comment} setComments={setComments} user={user} />
+      <CommentList comments={comments} id={id} comment={comment} setComments={setComments} user={user} />
       </div>
     </div>
   );

@@ -15,7 +15,6 @@ const RecipeList = () => {
   const [selectedCreator, setSelectedCreator] = useState('');
   const [selectedTitle, setSelectedTitle] = useState('');
   const [slideIndex, setSlideIndex] = useState(0);
-  const [user, setUser] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
@@ -45,41 +44,41 @@ const RecipeList = () => {
       try {
         setIsRecipesLoading(true);
         setFetchError(null);
-  
+
         let query = db.collection('recipes');
-  
+
         if (selectedCategory !== '') {
           query = query.where('category', '==', selectedCategory);
         }
-  
+
         if (selectedCreator !== '') {
           query = query.where('author', '==', selectedCreator);
         }
-  
+
         if (selectedTitle !== '') {
           query = query.where('title', '==', selectedTitle);
         }
-  
-        const snapshot = await query.limit(3).get();
-  
+
+        const snapshot = await query.limit(20).get();
+
         if (snapshot.docs.length === 0) {
-         
+
           setIsRecipesLoading(false);
           return;
         }
-  
+
         const recipesData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
           createdAt: doc.data().createdAt.toDate(),
         }));
-  
+
         const usersSnapshot = await db.collection('users').get();
         const usersData = usersSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-  
+
         const recipesWithCreator = recipesData.map((recipe) => {
           const creator = usersData.find((user) => user.id === recipe.authorId);
           return {
@@ -87,7 +86,7 @@ const RecipeList = () => {
             creatorPhoto: creator?.photoURL || DefaultImage,
           };
         });
-  
+
         setRecipes(recipesWithCreator);
         setFilteredRecipes(recipesWithCreator);
       } catch (error) {
@@ -97,45 +96,45 @@ const RecipeList = () => {
         setIsRecipesLoading(false);
       }
     };
-  
+
     const fetchRecommendations = async () => {
       try {
         setIsLoading(true);
-  
+
         let query = db.collection('recipes');
-  
+
         if (sortBy) {
           query = query.orderBy(sortBy);
         }
-  
+
         const lastRecommendation = recommendations[recommendations.length - 1];
         if (lastRecommendation) {
-          // Assuming 'createdAt' is the field you are using for ordering
+
           query = query.orderBy('createdAt').startAfter(lastRecommendation.createdAt);
         }
-  
-        const snapshot = await query.limit(3).get();
-  
+
+        const snapshot = await query.limit(20).get();
+
         if (snapshot.docs.length === 0) {
-   
+
           setIsLoading(false);
           return;
         }
-  
+
         const recommendationsData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
           createdAt: doc.data().createdAt.toDate(),
         }));
-  
-        setRecommendations(recommendations.concat(recommendationsData)); 
+
+        setRecommendations(recommendations.concat(recommendationsData));
       } catch (error) {
         console.error('Error fetching recommendation recipes:', error);
       } finally {
         setIsLoading(false);
       }
     };
-  
+
     fetchRecipes();
     fetchRecommendations();
   }, [
@@ -146,7 +145,7 @@ const RecipeList = () => {
     selectedTitle,
     recommendations,
   ]);
-  
+
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
     const filtered = recipes.filter((recipe) =>
@@ -206,7 +205,6 @@ const RecipeList = () => {
   const uniqueCreators = [...new Set(recipes.map((recipe) => recipe.author))];
   const allCreatorsOption = selectedCreator ? '' : 'All Creators';
 
-
   return (
     <div className="bg-purple-700">
       {isRecipesLoading ? (
@@ -217,8 +215,8 @@ const RecipeList = () => {
         <div>Error: {fetchError}</div>
       ) : (
         <>
-<div className="container mx-auto px-4 md:px-8 lg:px-12 xl:px-16"> 
-  <h2 className="text-2xl font-bold text-purple text-center mb-4">
+          <div className="container mx-auto px-4 md:px-4 lg:px-12 xl:px-16">
+            <h2 className="text-2xl font-bold text-purple text-center mb-4">
               Resep Masakan
             </h2>
             <p className="text-center text-orange-300 mb-2">
@@ -268,9 +266,10 @@ const RecipeList = () => {
                 ))}
               </select>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-          {currentRecipes.map((recipe) => (
-            <div key={recipe.id} className="rounded-lg shadow-md bg-secondary-500 p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 text-center item-center">
+              {currentRecipes.map((recipe) => (
+                <div key={recipe.id} className="rounded-lg shadow-md bg-secondary-500 p-4">
+                  {/* Recipe details... */}
                   <div className="mb-2">
                     <Link
                       className="block text-xl font-bold text-blue-700 hover:text-orange-600 transition-colors p-2"
@@ -285,7 +284,7 @@ const RecipeList = () => {
                         <img
                           src={recipe.recipeImage}
                           alt="Recipe"
-                          className="h-52 w-full object-cover rounded-t"
+                          className="h-32 w-full object-cover rounded-t"
                         />
                       </Link>
                       <p className="text-sm absolute bottom-0 right-0 mb-2 mr-2 italic">
@@ -300,7 +299,6 @@ const RecipeList = () => {
                       alt="Creator"
                       className="rounded-full h-8 w-8 object-cover mr-2"
                     />
-
                     <p className="text-blue-700"> {recipe.author}</p>
                   </div>
                   {/* Rating */}
@@ -313,13 +311,20 @@ const RecipeList = () => {
                         />
                       ))}
                     </div>
-                    <span className="text-sm p-2 text-gray-600 ml-1 bg-white rounded-full font-bold">{recipe.rating}</span>
+                    <span className="text-sm p-2 text-gray-600 ml-1 bg-white rounded-full font-bold">
+                      {recipe.rating}
+                    </span>
                   </div>
-                  <p className="text-gray-800 mb-2" onClick={handleDescriptionToggle}>
-                    {showFullDescription ? recipe.description : `${recipe.description.slice(0, 50)}...`}
+                  <p
+                    className="text-gray-800 mb-2 cursor-pointer"
+                    onClick={() => handleDescriptionToggle()}
+                  >
+                    {showFullDescription
+                      ? recipe.description
+                      : `${recipe.description.slice(0, 50)}...`}
                   </p>
                   <p className="mt-2 text-sm text-white">Kategori: {recipe.category}</p>
-                  <p className="text-gray-600 text-sm mb-2">Created: {recipe.createdAt.toLocaleDateString()}</p>
+                  <p className="text-gray-600 text-sm">Created: {recipe.createdAt.toLocaleDateString()}</p>
                 </div>
               ))}
             </div>

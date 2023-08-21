@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { recipesCollection, db, isNewRecipe } from '../services/firebase';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { FaFacebook, FaInstagram, FaWhatsapp } from 'react-icons/fa';
+
 const RecommendationRecipes = ({ setUserRecipes }) => {
   const [recommendations, setRecommendations] = useState([]);
   const currentYear = new Date().getFullYear();
@@ -95,25 +95,6 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
     fetchRecommendations();
   }, []);
 
-  const shareOnFacebook = (recipe) => {
-    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
-    window.open(shareUrl, '_blank');
-  };
-
-  const shareOnInstagram = (recipe) => {
-    // You can't directly share on Instagram programmatically due to platform limitations.
-    // Instead, provide instructions to users on how to share manually.
-    alert('To share on Instagram, open the app and upload the recipe image along with the title and description.');
-  };
-
-  const shareOnWhatsApp = (recipe) => {
-    const shareText = `Check out this delicious recipe: ${recipe.title}\n\n${recipe.description}\n\n${window.location.href}`;
-    const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-    window.open(shareUrl, '_blank');
-  };
-
-
-
   const settings = {
     dots: true,
     infinite: true,
@@ -160,7 +141,7 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
                 <div className="rounded shadow-lg bg-purple-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
                   {recipe.recipeImage && (
                     <div className="relative">
-                      <img src={recipe.recipeImage} alt="Recipe" className="h-52 w-full object-cover rounded-t" />
+                      <img src={recipe.recipeImage} alt="Recipe" className="h-32 w-full p-2 object-cover rounded-t" />
                       <p className="text-sm italic text-white bg-opacity-50">
                         © {currentYear} Resep Masakan
                       </p>
@@ -185,31 +166,6 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
                       </div>
                     </Link>
                     <p className="mt-2 text-sm text-white">Kategori: {recipe.category}</p>
-
-                    <div className="mt-4 text-center font-semibold">
-                      <h2 className="text-sm text-gray-800">Share ke Sosial Media Anda</h2>
-                    </div>
-                    <div className="flex mx-auto m-3 justify-center space-x-1">
-                      <button
-                        className="px-2 py-1 text-sm bg-blue-500 text-white rounded-lg flex items-center hover:bg-blue-600 transition-colors duration-300"
-                        onClick={() => shareOnFacebook(recipe)}
-                      >
-                        <FaFacebook className=" text-sm" />
-                      </button>
-                      <button
-                        className="px-2 py-1 text-sm bg-primary-700 text-white rounded-lg flex items-center hover:bg-purple-800 transition-colors duration-300"
-                        onClick={() => shareOnInstagram(recipe)}
-                      >
-                        <FaInstagram className=" text-sm" />
-                      </button>
-                      <button
-                        className="px-2 py-1 text-sm bg-green-500 text-white rounded-lg flex items-center hover:bg-green-600 transition-colors duration-300"
-                        onClick={() => shareOnWhatsApp(recipe)}
-                      >
-                        <FaWhatsapp className=" text-sm" />
-                      </button>
-                    </div>
-
                     {/* Add the "New!!" label */}
                     {isNewRecipe(recipe.createdAt) && (
                       <div className="absolute top-4 left-0 font-bold px-2 py-1 rounded-t-lg transform -rotate-45 text-white">
