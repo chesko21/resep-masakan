@@ -7,7 +7,7 @@ const ButtonReply = ({ onClick, commentId }) => {
   const [replies, setReplies] = useState([]);
 
   useEffect(() => {
-   
+    // Fetch the replies for the given commentId from Firebase
     const fetchReplies = async () => {
       try {
         const repliesSnapshot = await db
@@ -16,7 +16,7 @@ const ButtonReply = ({ onClick, commentId }) => {
           .collection('replies')
           .orderBy('createdAt', 'asc')
           .get();
-
+  
         const fetchedReplies = repliesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -26,9 +26,37 @@ const ButtonReply = ({ onClick, commentId }) => {
         console.error('Error fetching replies:', error);
       }
     };
-
+  
     fetchReplies();
   }, [commentId]);
+  
+  const handleReplySubmit = async () => {
+    if (replyContent.trim() !== '') {
+      onClick(replyContent, commentId); // Pass the 'commentId' to the 'onClick' function
+      setIsReplying(false);
+      setReplyContent('');
+  
+      // Fetch the latest replies after adding a new reply
+      try {
+        const repliesSnapshot = await db
+          .collection('comments')
+          .doc(commentId)
+          .collection('replies')
+          .orderBy('createdAt', 'asc')
+          .get();
+  
+        const fetchedReplies = repliesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setReplies(fetchedReplies);
+      } catch (error) {
+        console.error('Error fetching replies:', error);
+      }
+    }
+  };
+  
+  
 
   const handleReplyClick = () => {
     setIsReplying(true);
@@ -39,13 +67,6 @@ const ButtonReply = ({ onClick, commentId }) => {
     setReplyContent('');
   };
 
-  const handleReplySubmit = async () => {
-    if (replyContent.trim() !== '') {
-      onClick(replyContent, commentId); 
-      setIsReplying(false);
-      setReplyContent('');
-    }
-  };
   return (
     <div>
       {isReplying ? (
