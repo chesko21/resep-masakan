@@ -28,7 +28,7 @@ const ActivityHistory = ({ authorId }) => {
           const userData = userSnapshot.data();
           const userActivities = userData.activity || [];
 
-          userActivities.reverse(); // Reverse the order of activities
+          userActivities.reverse();
 
           // Limit the activities to 5
           const limitedActivities = limitActivities(userActivities);
@@ -37,7 +37,7 @@ const ActivityHistory = ({ authorId }) => {
           await userRef.update({ activity: limitedActivities });
 
           setActivities(limitedActivities);
-          setUser(userData); // Set the user state with user data
+          setUser(userData);
         }
 
         setIsLoading(false);
