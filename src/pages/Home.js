@@ -89,7 +89,7 @@ const Home = ({ profilePhoto, authorId, isChatOpen,userAuth }) => {
     };
 
     fetchRecipes();
-  }, []);
+  }, [setRecipes]);
 
   useEffect(() => {
     if (isChatOpen && chatBoxRef.current) {
@@ -106,7 +106,7 @@ const Home = ({ profilePhoto, authorId, isChatOpen,userAuth }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-between text-center bg-gradient-to-br from-primary-700 via-wavy-purple to-secondary-600 font-logo">
+    <div className="min-h-screen flex flex-col justify-between text-center bg-gradient-to-br from-primary-600 via-wavy-purple to-secondary-500 font-logo">
       <div>
         <h2 className="font-fair text-2xl font-bold text-white mb-4 ">
           Selamat datang di Resep Masakan Indonesia!

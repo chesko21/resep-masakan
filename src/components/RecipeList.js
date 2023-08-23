@@ -1,42 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../services/firebase';
-import SearchBar from './SearchBar';
-import { Link } from 'react-router-dom';
-import { FaChevronLeft, FaChevronRight, FaStar } from 'react-icons/fa';
-import DefaultImage from '../assets/profile.svg';
-import BeatLoader from 'react-spinners/BeatLoader';
-import '../styles/tailwind.css';
+import React, { useEffect, useState } from "react";
+import { db } from "../services/firebase";
+import SearchBar from "./SearchBar";
+import { Link } from "react-router-dom";
+import { FaChevronLeft, FaChevronRight, FaStar } from "react-icons/fa";
+import DefaultImage from "../assets/profile.svg";
+import BeatLoader from "react-spinners/BeatLoader";
+import "../styles/tailwind.css";
 
 const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
   const currentYear = new Date().getFullYear();
   const [filteredRecipes, setFilteredRecipes] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedCreator, setSelectedCreator] = useState('');
-  const [selectedTitle, setSelectedTitle] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCreator, setSelectedCreator] = useState("");
+  const [selectedTitle, setSelectedTitle] = useState("");
   const [slideIndex, setSlideIndex] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("");
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [isRecipesLoading, setIsRecipesLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const categories = [
-    'Sarapan',
-    'Makan Siang',
-    'Makan Malam',
-    'Camilan',
-    'Seafood',
-    'Hidangan Pembuka',
-    'Hidangan Utama',
-    'Hidangan Penutup',
-    'Kue/Roti',
-    'Minuman',
-    'Hidangan Tradisional',
-    'Hidangan Sehat',
-    'Hidangan Vegetarian',
+    "Sarapan",
+    "Makan Siang",
+    "Makan Malam",
+    "Camilan",
+    "Seafood",
+    "Hidangan Pembuka",
+    "Hidangan Utama",
+    "Hidangan Penutup",
+    "Kue/Roti",
+    "Minuman",
+    "Hidangan Tradisional",
+    "Hidangan Sehat",
+    "Hidangan Vegetarian",
   ];
 
   useEffect(() => {
@@ -45,24 +45,23 @@ const RecipeList = () => {
         setIsRecipesLoading(true);
         setFetchError(null);
 
-        let query = db.collection('recipes');
+        let query = db.collection("recipes");
 
-        if (selectedCategory !== '') {
-          query = query.where('category', '==', selectedCategory);
+        if (selectedCategory !== "") {
+          query = query.where("category", "==", selectedCategory);
         }
 
-        if (selectedCreator !== '') {
-          query = query.where('author', '==', selectedCreator);
+        if (selectedCreator !== "") {
+          query = query.where("author", "==", selectedCreator);
         }
 
-        if (selectedTitle !== '') {
-          query = query.where('title', '==', selectedTitle);
+        if (selectedTitle !== "") {
+          query = query.where("title", "==", selectedTitle);
         }
 
         const snapshot = await query.limit(20).get();
 
         if (snapshot.docs.length === 0) {
-
           setIsRecipesLoading(false);
           return;
         }
@@ -73,7 +72,7 @@ const RecipeList = () => {
           createdAt: doc.data().createdAt.toDate(),
         }));
 
-        const usersSnapshot = await db.collection('users').get();
+        const usersSnapshot = await db.collection("users").get();
         const usersData = usersSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -90,8 +89,8 @@ const RecipeList = () => {
         setRecipes(recipesWithCreator);
         setFilteredRecipes(recipesWithCreator);
       } catch (error) {
-        console.error('Error fetching recipes:', error);
-        setFetchError('An error occurred while fetching recipes.');
+        console.error("Error fetching recipes:", error);
+        setFetchError("An error occurred while fetching recipes.");
       } finally {
         setIsRecipesLoading(false);
       }
@@ -101,7 +100,7 @@ const RecipeList = () => {
       try {
         setIsLoading(true);
 
-        let query = db.collection('recipes');
+        let query = db.collection("recipes");
 
         if (sortBy) {
           query = query.orderBy(sortBy);
@@ -109,14 +108,14 @@ const RecipeList = () => {
 
         const lastRecommendation = recommendations[recommendations.length - 1];
         if (lastRecommendation) {
-
-          query = query.orderBy('createdAt').startAfter(lastRecommendation.createdAt);
+          query = query
+            .orderBy("createdAt")
+            .startAfter(lastRecommendation.createdAt);
         }
 
         const snapshot = await query.limit(20).get();
 
         if (snapshot.docs.length === 0) {
-
           setIsLoading(false);
           return;
         }
@@ -129,7 +128,7 @@ const RecipeList = () => {
 
         setRecommendations(recommendations.concat(recommendationsData));
       } catch (error) {
-        console.error('Error fetching recommendation recipes:', error);
+        console.error("Error fetching recommendation recipes:", error);
       } finally {
         setIsLoading(false);
       }
@@ -156,30 +155,35 @@ const RecipeList = () => {
 
   const handleSortByChange = (event) => {
     const selectedValue = event.target.value;
-    console.log('Selected Sorting Option:', selectedValue);
+    console.log("Selected Sorting Option:", selectedValue);
     setSortBy(selectedValue);
   };
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
     const filtered = category
-      ? recipes.filter((recipe) => recipe.category.toLowerCase() === category.toLowerCase())
+      ? recipes.filter(
+          (recipe) => recipe.category.toLowerCase() === category.toLowerCase()
+        )
       : recipes;
 
     setFilteredRecipes(filtered);
   };
 
   const handleCreatorChange = (author) => {
-
-    setSelectedCreator(author === allCreatorsOption ? '' : author);
-    const filtered = author === allCreatorsOption ? recipes : recipes.filter((recipe) => author === recipe.author);
+    setSelectedCreator(author === allCreatorsOption ? "" : author);
+    const filtered =
+      author === allCreatorsOption
+        ? recipes
+        : recipes.filter((recipe) => author === recipe.author);
     setFilteredRecipes(filtered);
   };
 
-
   const handleTitleChange = (title) => {
     setSelectedTitle(title);
-    const filtered = title ? recipes.filter((recipe) => recipe.title === title) : recipes;
+    const filtered = title
+      ? recipes.filter((recipe) => recipe.title === title)
+      : recipes;
     setFilteredRecipes(filtered);
   };
 
@@ -190,11 +194,15 @@ const RecipeList = () => {
 
   const handlePrevSlide = () => {
     const totalSlides = Math.ceil(filteredRecipes.length / 20);
-    setSlideIndex((prevSlideIndex) => (prevSlideIndex - 1 + totalSlides) % totalSlides);
+    setSlideIndex(
+      (prevSlideIndex) => (prevSlideIndex - 1 + totalSlides) % totalSlides
+    );
   };
 
   const handleDescriptionToggle = () => {
-    setShowFullDescription((prevShowFullDescription) => !prevShowFullDescription);
+    setShowFullDescription(
+      (prevShowFullDescription) => !prevShowFullDescription
+    );
   };
 
   const startIndex = slideIndex * 20;
@@ -203,7 +211,7 @@ const RecipeList = () => {
   const currentRecipes = filteredRecipes.slice(startIndex, endIndex);
 
   const uniqueCreators = [...new Set(recipes.map((recipe) => recipe.author))];
-  const allCreatorsOption = selectedCreator ? '' : 'All Creators';
+  const allCreatorsOption = selectedCreator ? "" : "All Creators";
 
   return (
     <div className="bg-purple-700">
@@ -222,10 +230,15 @@ const RecipeList = () => {
             <p className="text-center text-orange-300 mb-2">
               Anda Bisa Request Untuk Penambahan Features
             </p>
-            <SearchBar onSearch={handleSearch} className="flex-1 text-center py-2 px-4" />
+            <SearchBar
+              onSearch={handleSearch}
+              className="flex-1 text-center py-2 px-4"
+            />
             <div className="flex flex-wrap justify-center p-4 mb-4">
-              <label htmlFor="sortBy" className="text-orange font-semibold mr-2">
-              </label>
+              <label
+                htmlFor="sortBy"
+                className="text-orange font-semibold mr-2"
+              ></label>
               <select
                 id="category"
                 value={selectedCategory}
@@ -268,8 +281,10 @@ const RecipeList = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 text-center item-center">
               {currentRecipes.map((recipe) => (
-                <div key={recipe.id} className="rounded-lg shadow-md bg-secondary-500 p-4">
-                  {/* Recipe details... */}
+                <div
+                  key={recipe.id}
+                  className="rounded-lg shadow-md bg-secondary-500 p-2"
+                >
                   <div className="mb-2">
                     <Link
                       className="block text-xl font-bold text-blue-700 hover:text-orange-600 transition-colors p-2"
@@ -292,22 +307,27 @@ const RecipeList = () => {
                       </p>
                     </div>
                   )}
-
-                  <div className="flex flex-row items-center mb-2">
-                    <img
-                      src={recipe.creatorPhoto}
-                      alt="Creator"
-                      className="rounded-full h-8 w-8 object-cover mr-2"
-                    />
-                    <p className="text-blue-700"> {recipe.author}</p>
-                  </div>
+                  <Link to={`/author/${recipe.authorId}`}>
+                    <div className="flex flex-row items-center mb-2">
+                      <img
+                        src={recipe.creatorPhoto}
+                        alt="Creator"
+                        className="rounded-full h-8 w-8 object-cover mr-2"
+                      />
+                      <p className="text-blue-700"> {recipe.author}</p>
+                    </div>
+                  </Link>
                   {/* Rating */}
                   <div className="flex items-center mb-2">
                     <div className="flex">
                       {[...Array(5)].map((_, index) => (
                         <FaStar
                           key={index}
-                          className={index < recipe.rating ? 'text-yellow-400 mr-1' : 'text-gray-400 mr-1'}
+                          className={
+                            index < recipe.rating
+                              ? "text-yellow-400 mr-1"
+                              : "text-gray-400 mr-1"
+                          }
                         />
                       ))}
                     </div>
@@ -316,15 +336,19 @@ const RecipeList = () => {
                     </span>
                   </div>
                   <p
-                    className="text-gray-800 mb-2 cursor-pointer"
+                    className="text-gray-700 mb-2 cursor-pointer"
                     onClick={() => handleDescriptionToggle()}
                   >
                     {showFullDescription
                       ? recipe.description
                       : `${recipe.description.slice(0, 50)}...`}
                   </p>
-                  <p className="mt-2 text-sm text-white">Kategori: {recipe.category}</p>
-                  <p className="text-gray-600 text-sm">Created: {recipe.createdAt.toLocaleDateString()}</p>
+                  <p className="mt-2 text-sm text-white">
+                    Kategori: {recipe.category}
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    Created: {recipe.createdAt.toLocaleDateString()}
+                  </p>
                 </div>
               ))}
             </div>
