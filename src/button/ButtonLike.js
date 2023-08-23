@@ -8,7 +8,7 @@ const ButtonLike = ({ commentId }) => {
 
   useEffect(() => {
     const likesRef = db.collection('comments').doc(commentId).collection('likes');
-    const currentAuthorId = 'CURRENT_USER_ID'; // Replace with actual user ID retrieval logic
+    const currentAuthorId = 'CURRENT_USER_ID';
 
     likesRef.doc(currentAuthorId).get()
       .then((doc) => {
@@ -28,7 +28,7 @@ const ButtonLike = ({ commentId }) => {
   const handleLikeClick = async () => {
     try {
       const likesRef = db.collection('comments').doc(commentId).collection('likes');
-      const currentAuthorId = 'CURRENT_USER_ID'; // Replace with actual user ID
+      const currentAuthorId = 'CURRENT_USER_ID';
 
       if (isLiked) {
         await likesRef.doc(currentAuthorId).delete();
