@@ -15,7 +15,7 @@ const ForwardedMessageBox = (props) => {
     messages,
   } = props;
 
-  const chatBoxRef = useRef(null); // Define chatBoxRef here
+  const chatBoxRef = useRef(null);
 
   const isCurrentUser = senderId === auth.currentUser.uid;
   const messageStyle = {
