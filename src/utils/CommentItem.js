@@ -24,7 +24,7 @@ const CommentItem = (props) => {
 
   useEffect(() => {
     if (user && Array.isArray(props.comment.likes)) {
-      setIsLiked(props.comment.likes.includes(user.displayName)); // Use user's uid or displayName
+      setIsLiked(props.comment.likes.includes(user.displayName));
     } else {
       setIsLiked(false);
     }
@@ -48,7 +48,6 @@ const CommentItem = (props) => {
       setIsLiked(!isLiked);
       setLikesCount(updatedLikes.length);
 
-      // Trigger the parent component's onToggleLike function
       if (props.onToggleLike) {
         props.onToggleLike();
       }
@@ -60,7 +59,7 @@ const CommentItem = (props) => {
   const handleLikeClick = async () => {
     try {
       const likesRef = db.collection('comments').doc(props.comment.id).collection('likes');
-      const currentAuthorId = 'currentAuthorId'; // Replace with actual current user ID
+      const currentAuthorId = 'currentAuthorId'; 
       const commentId = props.comment.id;
   
       const existingLike = await likesRef.doc(currentAuthorId).get();
@@ -134,7 +133,7 @@ const CommentItem = (props) => {
                       />
                     ) : (
                       <img
-                        src={props.userPhotoURL || DEFAULT_PROFILE_IMAGE} // Gunakan userPhotoURL prop
+                        src={props.userPhotoURL || DEFAULT_PROFILE_IMAGE}
                         alt="User"
                         className="w-8 h-8 rounded-full object-cover"
                       />
