@@ -487,7 +487,7 @@ const AddRecipeForm = ({ userAuth }) => {
           </Button>
         </div>
              <Link to="/profile" className="text-white mb-2 hover:underline">&lt; Back to Profile</Link>
-              <p className="mt-2 text-gray-700">
+              <p className="mt-2 text-gray-500">
                 Note : Setelah Berhasil Membuat Resep Silahkan Muat Ulang Halaman
               </p>
       </Form>
