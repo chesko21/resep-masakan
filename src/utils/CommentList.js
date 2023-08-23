@@ -10,7 +10,7 @@ const CommentList = ({ id }) => {
   const [user, setUser] = useState(null);
   const [comments, setComments] = useState([]);
   const [showReplies, setShowReplies] = useState({});
-  const [currentAuthorId, setCurrentAuthorId] = useState(null); // Define currentAuthorId state
+  const [currentAuthorId, setCurrentAuthorId] = useState(null);
 
   useEffect(() => {
     const userAuth = auth.currentUser;
@@ -19,10 +19,10 @@ const CommentList = ({ id }) => {
         displayName: userAuth.displayName,
         imageURL: userAuth.photoURL,
       });
-      setCurrentAuthorId(userAuth.uid); // Set currentAuthorId with user's UID
+      setCurrentAuthorId(userAuth.uid);
     } else {
       setUser(null);
-      setCurrentAuthorId(null); // Reset currentAuthorId when user is not authenticated
+      setCurrentAuthorId(null); 
     }
 
     // Ambil daftar komentar dari database berdasarkan ID resep atau lainnya
@@ -122,7 +122,7 @@ const CommentList = ({ id }) => {
       const userAuth = auth.currentUser;
   
       // Toggle like status for the current user
-      const updatedLikes = [...(commentData.likes || [])]; // Clone the likes array
+      const updatedLikes = [...(commentData.likes || [])];
   
       const userDisplayName = userAuth ? userAuth.displayName : 'Anonymous';
   
@@ -153,9 +153,9 @@ const CommentList = ({ id }) => {
     let totalLikes = 0;
   
     if (typeof comment.likes === 'number') {
-      totalLikes = comment.likes; // If comment.likes is a number
+      totalLikes = comment.likes;
     } else if (comment.likes && typeof comment.likes === 'object' && comment.likes[currentAuthorId]) {
-      totalLikes = comment.likes[currentAuthorId].likes; // If comment.likes is an object
+      totalLikes = comment.likes[currentAuthorId].likes;
     }
   
     if (comment.replies && Array.isArray(comment.replies)) {
