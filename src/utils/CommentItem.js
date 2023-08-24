@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import ButtonLike from '../button/ButtonLike';
-import { auth, commentsCollection, db } from '../services/firebase';
-import defaultProfileImage from '../assets/profile.svg';
+import React, { useState, useEffect } from "react";
+import ButtonLike from "../button/ButtonLike";
+import { auth, commentsCollection, db } from "../services/firebase";
+import defaultProfileImage from "../assets/profile.svg";
 
 const CommentItem = (props) => {
   const [user, setUser] = useState(null);
@@ -9,6 +9,11 @@ const CommentItem = (props) => {
   const [likesCount, setLikesCount] = useState(0);
   const DEFAULT_PROFILE_IMAGE = defaultProfileImage;
   const currentLikeCount = likesCount;
+
+    const [replyLikesCount, setReplyLikesCount] = useState(
+      Array.isArray(props.comment.likes) ? props.comment.likes.length : 0
+    );
+    const [replyIsLiked, setReplyIsLiked] = useState(isLiked);
 
   useEffect(() => {
     const userAuth = auth.currentUser;
@@ -22,65 +27,72 @@ const CommentItem = (props) => {
     }
   }, []);
 
+
   useEffect(() => {
     if (user && Array.isArray(props.comment.likes)) {
-      setIsLiked(props.comment.likes.includes(user.displayName));
+      setIsLiked(props.comment.likes.includes(user.uid));
     } else {
       setIsLiked(false);
     }
 
-    setLikesCount(Array.isArray(props.comment.likes) ? props.comment.likes.length : 0);
+    setLikesCount(
+      Array.isArray(props.comment.likes) ? props.comment.likes.length : 0
+    );
   }, [props.comment.likes, user]);
 
+
   const handleLikeReply = async () => {
+      if (!user) {
+        alert("You need to be logged in to like replies.");
+        return;
+      }
+
+      try {
+        const updatedLikes = replyIsLiked
+          ? props.comment.likes.filter((like) => like !== user.displayName)
+          : [...props.comment.likes, user.displayName];
+
+        await commentsCollection
+          .doc(props.comment.id)
+          .update({ likes: updatedLikes });
+
+        setReplyIsLiked(!replyIsLiked);
+        setReplyLikesCount(updatedLikes.length);
+
+        if (props.onToggleLike) {
+          props.onToggleLike();
+        }
+      } catch (error) {
+        console.error("Error handling like reply:", error);
+      }
+    };
+
+
+  const handleLikeClick = async () => {
     if (!user) {
-      alert('Anda harus login untuk memberi like pada reply.');
+      alert("You need to be logged in to like.");
       return;
     }
 
-    try {
-      const updatedLikes = isLiked
-        ? props.comment.likes.filter((like) => like !== user.displayName)
-        : [...props.comment.likes, user.displayName];
+    const likesRef = db
+      .collection("comments")
+      .doc(props.comment.id)
+      .collection("likes")
+      .doc(user.uid);
 
-      await commentsCollection.doc(props.comment.id).update({ likes: updatedLikes });
+    const existingLike = await likesRef.get();
 
-      setIsLiked(!isLiked);
-      setLikesCount(updatedLikes.length);
-
-      if (props.onToggleLike) {
-        props.onToggleLike();
-      }
-    } catch (error) {
-      console.error('Error handling like reply:', error);
+    if (existingLike.exists) {
+      await existingLike.ref.delete();
+      setIsLiked(false);
+      setLikesCount((prevCount) => prevCount - 1);
+    } else {
+      await likesRef.set({ likedAt: new Date() });
+      setIsLiked(true);
+      setLikesCount((prevCount) => prevCount + 1);
     }
   };
 
-  const handleLikeClick = async () => {
-    try {
-      const likesRef = db.collection('comments').doc(props.comment.id).collection('likes');
-      const currentAuthorId = 'currentAuthorId'; 
-      const commentId = props.comment.id;
-  
-      const existingLike = await likesRef.doc(currentAuthorId).get();
-      const currentLikeCount = likesCount;
-  
-      if (existingLike.exists) {
-        await existingLike.ref.delete();
-        setIsLiked(false);
-        if (currentLikeCount > 0) {
-          setLikesCount(currentLikeCount - 1);
-        }
-      } else {
-        await likesRef.doc(currentAuthorId).set({ likedAt: new Date() });
-        setIsLiked(true);
-        setLikesCount(currentLikeCount + 1);
-      }
-    } catch (error) {
-      console.error('Error updating like:', error);
-    }
-  };
-  
 
   return (
     <div className="comment-item ml-4">
@@ -107,25 +119,29 @@ const CommentItem = (props) => {
             <strong className="text-sm font-medium">
               {props.comment.user && props.comment.user.displayName
                 ? props.comment.user.displayName
-                : 'Anonymous'}
+                : "Anonymous"}
             </strong>
           </div>
           <div className="text-sm text-gray-700">{props.comment.content}</div>
           <div className="flex items-center mt-2 text-sm text-gray-500">
             <ButtonLike
               commentId={props.comment.id}
-              initialLikes={Array.isArray(props.comment.likes) ? props.comment.likes.length : 0}
+              initialLikes={
+                Array.isArray(props.comment.likes)
+                  ? props.comment.likes.length
+                  : 0
+              }
               isLiked={isLiked}
               onToggleLike={handleLikeReply}
             />
           </div>
           {props.comment.replies && props.comment.replies.length > 0 && (
-            <div className="pl-8 mt-4">
-              {props.comment.replies.map((reply) => {
-                const replyLikes = Array.isArray(reply.likes) ? reply.likes : [];
-                return (
-                  <div key={reply.id} className="flex items-start">
-                    {reply.user && reply.user.imageURL ? (
+      <div className="pl-8 mt-4">
+        {props.comment.replies.map((reply) => {
+          const replyLikes = Array.isArray(reply.likes) ? reply.likes : [];
+          return (
+            <div key={reply.id} className="flex items-start">
+               {reply.user && reply.user.imageURL ? (
                       <img
                         src={reply.user.imageURL}
                         alt="User"
@@ -144,18 +160,20 @@ const CommentItem = (props) => {
                         <strong className="text-sm font-medium">
                           {reply.user && reply.user.displayName
                             ? reply.user.displayName
-                            : 'Anonymous'}
+                            : "Anonymous"}
                         </strong>
                       </div>
-                      <div className="text-sm text-gray-700">{reply.content}</div>
+                      <div className="text-sm text-gray-700">
+                        {reply.content}
+                      </div>
                       <div className="flex items-center mt-2 text-sm text-gray-500">
-        <ButtonLike
-          commentId={props.comment.id}
-          initialLikes={likesCount}
-          isLiked={isLiked}
-          onToggleLike={handleLikeClick}
-        />
-      </div>
+                      <ButtonLike
+                                     commentId={reply.id}
+                                     initialLikes={replyLikesCount}
+                                     isLiked={replyIsLiked}
+                                     onToggleLike={handleLikeReply}
+                                   />
+                      </div>
                     </div>
                   </div>
                 );

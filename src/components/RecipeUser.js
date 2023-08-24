@@ -97,16 +97,16 @@ const RecipeUser = ({ authorId }) => {
               )}
               <div className="p-4">
                 <Link to={`/recipes/${recipe.id}`}>
-                  <h3 className="text-xl text-center font-semibold mb-2 text-primary hover:underline">
+                  <h3 className="text-xl font-bold text-center mb-2 text-primary hover:text-accent-500">
                     {recipe.title}
                   </h3>
                 </Link>
                 <Link to={`/author/${authorId}`} className="text-secondary">
-                  <div className="flex items-center mb-2 text-white">
+                  <div className="flex items-center mb-2 text-white font-bold hover:underline">
                     <img
                       src={recipe.creatorPhoto || DefaultImage}
                       alt="Creator"
-                      className="w-6 h-6 rounded-full object-cover mr-2"
+                      className="w-8 h-8 border-2 rounded-full object-cover mr-2"
                     />
                     {recipe.author}
                   </div>
@@ -120,10 +120,10 @@ const RecipeUser = ({ authorId }) => {
                     />
                   )}
                 </Link>
-                <div className="bg-secondary-100 rounded-lg p-2">
+                <div className="text-center rounded-lg p-2">
                   <p
                     className={`${showFullDescription[recipe.id] ? 'h-auto' : 'h-12'
-                      } overflow-hidden text-gray-800`}
+                      } overflow-hidden text-white`}
                     onClick={handleToggleDescription(recipe.id)}
                     style={{ cursor: 'pointer' }}
                   >
@@ -133,13 +133,13 @@ const RecipeUser = ({ authorId }) => {
                 {!showFullDescription[recipe.id] &&
                   recipe.description.split(' ').length > 12 && (
                     <button
-                      className="text-white hover:text-blue-700 focus:outline-none mt-2"
+                      className="text-white hover:text-primary-500 focus:outline-none mt-2"
                       onClick={handleToggleDescription(recipe.id)}
                     >
                       Lihat Selengkapnya
                     </button>
                   )}
-                <p className="mt-2 text-sm text-secondary-500">Kategori: {recipe.category}</p>
+                <p className="mt-2 text-sm">Kategori: {recipe.category}</p>
                 <p className="text-white text-sm mt-2">Created: {recipe.dateCreated?.toLocaleDateString()}</p>
                 <div className="flex mt-4 justify-center space-x-4">
                   <button

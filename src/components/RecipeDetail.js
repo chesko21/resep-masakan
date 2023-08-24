@@ -18,7 +18,6 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
 
-
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
@@ -164,7 +163,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   
   const shareOnInstagram = (recipe) => {
     alert(
-      'To share on Instagram, open the app and upload the recipe image along with the title and description.'
+      'Belum Berfungsi hehehe, Silahkan copy url di browser '
     );
   };
   
@@ -175,7 +174,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   };
   if (isLoading || !recipe) {
     return (
-      <div className="flex items-center justify-center h-48 bg-purple-200">
+      <div className="flex items-center justify-center min-h-screen bg-accent-300">
         <BeatLoader /> LOADING....
       </div>
     );
@@ -183,11 +182,19 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
 
   return (
     <div className="p-6 lg:px-12 xl:px-24 bg-purple-100">
-      <Link to="/recipe-list" className="text-blue-500 hover:underline">&lt; Back to Recipes</Link>
-      <h2 className="text-3xl font-semibold text-center mt-4">{recipe.title}</h2>
+      <Link to="/recipe-list" className="text-blue-500 hover:underline">
+        &lt; Back to Recipes
+      </Link>
+      <h2 className="text-3xl font-semibold text-center mt-4">
+        {recipe.title}
+      </h2>
       <div className="relative mt-4">
         {recipe.recipeImage && (
-          <img src={recipe.recipeImage} alt="Recipe" className="h-64 w-full object-cover rounded-md shadow-lg" />
+          <img
+            src={recipe.recipeImage}
+            alt="Recipe"
+            className="h-64 w-full object-cover rounded shadow-xl-dark"
+          />
         )}
 
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-black bg-opacity-50 text-white">
@@ -197,7 +204,10 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
               alt="Creator"
               className="rounded-full h-12 w-12 object-cover mr-2"
             />
-            <p className="text-orange-500 font-bold text-lg"> {recipe.author}</p>
+            <p className="text-orange-500 font-bold text-lg">
+              {" "}
+              {recipe.author}
+            </p>
           </div>
         </div>
       </div>
@@ -238,7 +248,11 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
       <div className="flex flex-col items-center justify-center my-4">
         <p className="text-center">Tekan Bintang Untuk Memberikan Rating</p>
         <div className="px-2 py-2 items-center text-center mt-4">
-          <Rating recipeId={id} initialRating={currentRating} onChange={handleRatingChange} />
+          <Rating
+            recipeId={id}
+            initialRating={currentRating}
+            onChange={handleRatingChange}
+          />
         </div>
       </div>
 
@@ -246,12 +260,16 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
         <p className="mr-2">Average Rating: </p>
         <div className="p-2 bg-blue-500 rounded-full flex items-center justify-center">
           <BsFillStarFill className="text-yellow-400 inline-block" />
-          <span className="text-white text-sm font-bold ml-1">{recipe.rating}</span>
+          <span className="text-white text-sm font-bold ml-1">
+            {recipe.rating}
+          </span>
         </div>
       </div>
 
       <div className="mt-8 text-center font-semibold">
-        <h2 className="text-xl text-gray-800">Share Resep ke Sosial Media Anda</h2>
+        <h2 className="text-xl text-gray-800">
+          Share Resep ke Sosial Media Anda
+        </h2>
       </div>
       <div className="flex mx-auto m-4 justify-center space-x-1">
         <button
@@ -277,7 +295,13 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
         </button>
       </div>
       <div className="mt-8">
-      <CommentList comments={comments} id={id} comment={comment} setComments={setComments} user={user} />
+        <CommentList
+          comments={comments}
+          id={id}
+          comment={comment}
+          setComments={setComments}
+          user={user}
+        />
       </div>
     </div>
   );

@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
 import { Trash } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
-import { Modal } from 'react-bootstrap';
 import { createUserProfileDocument } from '../services/firebase';
 import { storage, recipesCollection } from '../services/firebase';
-import { auth, db, firebase } from '../services/firebase';
+import {  db, firebase } from '../services/firebase';
 import { Link} from 'react-router-dom';
 
 const AddRecipeForm = ({ userAuth }) => {
@@ -22,8 +21,7 @@ const AddRecipeForm = ({ userAuth }) => {
     category: '',
     rating: '',
   });
-  const [user, setUser] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+  
   const [error, setError] = useState(null);
   const [isImageUrl, setIsImageUrl] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -475,7 +473,7 @@ const AddRecipeForm = ({ userAuth }) => {
             }}
           >
             {isLoading || isSubmitting ? (
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center p-2">
                 <div className="spinner-border text-light mr-2" role="status">
                   <span className="sr-only">Loading...</span>
                 </div>
@@ -487,7 +485,7 @@ const AddRecipeForm = ({ userAuth }) => {
           </Button>
         </div>
              <Link to="/profile" className="text-white mb-2 hover:underline">&lt; Back to Profile</Link>
-              <p className="mt-2 text-gray-500">
+              <p className="mt-2 text-secondary-500">
                 Note : Setelah Berhasil Membuat Resep Silahkan Muat Ulang Halaman
               </p>
       </Form>

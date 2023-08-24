@@ -45,6 +45,7 @@ const Signup = () => {
 
       await createUserProfileDocument(user, { displayName, photoURL: imageURL });
 
+      // Send the email verification
       await user.sendEmailVerification();
 
       setShowModal(true);
@@ -53,11 +54,14 @@ const Signup = () => {
         navigate('/');
       }, 3000);
     } catch (error) {
-      setError(error.message);
+      if (error.code === 'auth/email-already-in-use') {
+        setError('Email Sudah Terdaftar, Silahkan Login.');
+      } else {
+        setError(error.message);
+      }
     } finally {
       setIsLoading(false);
     }
-
   };
 
   const handleSignup = async (event) => {
@@ -89,12 +93,15 @@ const Signup = () => {
         navigate('/');
       }, 3000);
     } catch (error) {
-      setError(error.message);
+      if (error.code === 'auth/email-already-in-use') {
+        setError('Email Sudah Terdaftar, Silahkan Login.');
+      } else {
+        setError(error.message);
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
 
   return (
     <div className="flex flex-col items-center h-screen ">

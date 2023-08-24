@@ -4,7 +4,9 @@ import { MessageBox } from "react-chat-elements";
 import "react-chat-elements/dist/main.css";
 import { Link } from "react-router-dom";
 
+
 const ForwardedMessageBox = (props) => {
+
   const {
     position,
     text,
@@ -15,12 +17,13 @@ const ForwardedMessageBox = (props) => {
     messages,
   } = props;
 
+  const truncatedSenderName = senderName.slice(0, 20); 
   const chatBoxRef = useRef(null);
-
+  const truncatedText = text.slice(0, 100);
   const isCurrentUser = senderId === auth.currentUser.uid;
   const messageStyle = {
     backgroundColor: isCurrentUser ? "blue" : "orange",
-    color: "white",
+    color: isCurrentUser ? "white" : "black",
   };
 
   useEffect(() => {
@@ -30,54 +33,46 @@ const ForwardedMessageBox = (props) => {
   }, [messages]);
 
   return (
-    <div key={messages.id}>
-      <MessageBox className="p-1"
-        position={position}
-        type="text"
-        text={text}
-        date={timestamp ? timestamp.toDate() : null}
-        title={
-          <Link
-            to={`/author/${senderId}`}
-            className={
-              isCurrentUser
-                ? ""
-                : "font-bold text-black bg-primary-500 rounded m-1 p-1"
-            }
-          >
-            <span
-              className={`${
-                isCurrentUser
-                  ? "font-bold text-black bg-blue-500 rounded m-1 p-1"
-                  : ""
-              }`}
-            >
-              {isCurrentUser ? "You" : senderName }
-            </span>
-          </Link>
-        }
-        titleColor={isCurrentUser ? "blue" : "orange"}
-        avatar={senderPhoto}
-        avatarFlex={isCurrentUser ? "right" : "left"}
-        forwardedRef={
-          messages[messages.length - 1] === messages ? chatBoxRef : null
-        }
-        avatarSize={30}
-        style={{
-          maxWidth: "60",
-        }}
-        customStyle={messageStyle}
-      />
-      <div className="" ref={chatBoxRef}></div>
-    </div>
+    <Link to={`/author/${senderId}`}>
+      <div key={messages.id}>
+        <MessageBox
+          className={`p-1 text-start ${
+            isCurrentUser ? "text-right" : "text-left"
+          }`}
+          position={position}
+          type="text"
+          text={truncatedText}
+          date={timestamp ? timestamp.toDate() : null}
+          title={truncatedSenderName}
+          avatar={senderPhoto}
+          titleColor={isCurrentUser ? "blue" : "red"}
+          forwardedRef={
+            messages[messages.length - 1] === messages ? chatBoxRef : null
+          }
+          style={{
+            maxWidth: "80%",
+            width: text.length < 20 ? `${text.length * 10}px` : "auto",
+            color: isCurrentUser ? "white" : "black",
+            textAlign: isCurrentUser ? "right" : "left",
+            ...messageStyle,
+            wordWrap: "break-word",
+          }}
+          customStyle={messageStyle}
+        />
+
+        <div className="text-start bg-secondary-500" ref={chatBoxRef}></div>
+      </div>
+    </Link>
   );
 };
+
 
 const MessagesList = ({ messages }) => {
   return (
     <div>
       {messages.map((message) => (
         <ForwardedMessageBox
+          className="bg-secondary-500 text-start"
           key={message.id}
           position={
             message.senderId === auth.currentUser.uid ? "right" : "left"
@@ -87,7 +82,7 @@ const MessagesList = ({ messages }) => {
           senderId={message.senderId}
           senderName={message.senderName}
           senderPhoto={message.senderPhoto}
-          messages ={messages}
+          messages={messages}
         />
       ))}
     </div>

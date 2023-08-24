@@ -1,53 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import { FaThumbsUp } from 'react-icons/fa';
-import { db } from '../services/firebase';
+import React, { useState, useEffect } from "react";
+import { FaThumbsUp } from "react-icons/fa";
+import { db, auth } from "../services/firebase";
 
-const ButtonLike = ({ commentId }) => {
+const ButtonLike = ({ commentId, user }) => {
   const [likeCount, setLikeCount] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
+  const [userLiked, setUserLiked] = useState(false);
 
   useEffect(() => {
-    const likesRef = db.collection('comments').doc(commentId).collection('likes');
-    const currentAuthorId = 'CURRENT_USER_ID';
+    const commentRef = db.collection("comments").doc(commentId);
+    const likesRef = commentRef.collection("likes");
 
-    likesRef.doc(currentAuthorId).get()
-      .then((doc) => {
-        setIsLiked(doc.exists);
-      })
-      .catch((error) => {
-        console.error('Error checking like status:', error);
-      });
-
-    const unsubscribe = likesRef.onSnapshot((snapshot) => {
+    // Fetch like count
+    likesRef.get().then((snapshot) => {
       setLikeCount(snapshot.size);
     });
 
-    return () => unsubscribe();
+    // Check if the user has liked
+    if (auth.currentUser) {
+      likesRef
+        .doc(auth.currentUser.uid)
+        .get()
+        .then((doc) => {
+          setUserLiked(doc.exists);
+        });
+    }
   }, [commentId]);
 
   const handleLikeClick = async () => {
-    try {
-      const likesRef = db.collection('comments').doc(commentId).collection('likes');
-      const currentAuthorId = 'CURRENT_USER_ID';
+    if (!auth.currentUser) {
 
-      if (isLiked) {
-        await likesRef.doc(currentAuthorId).delete();
-      } else {
-        await likesRef.doc(currentAuthorId).set({ likedAt: new Date() });
-      }
-
-      setIsLiked(!isLiked);
-    } catch (error) {
-      console.error('Error updating like:', error);
+      return;
     }
+
+    const userAuth = auth.currentUser;
+    const commentRef = db.collection("comments").doc(commentId);
+    const likesRef = commentRef.collection("likes").doc(userAuth.uid);
+
+    if (userLiked) {
+      await likesRef.delete();
+      setLikeCount((prevCount) => prevCount - 1);
+    } else {
+      await likesRef.set({ likedAt: new Date() });
+      setLikeCount((prevCount) => prevCount + 1);
+    }
+
+    setUserLiked(!userLiked);
   };
 
   return (
     <button
-      className={`flex items-center ${isLiked ? 'text-blue-500' : 'text-gray-500'} hover:text-blue-500 transition-colors`}
+      className={`flex items-center ${
+        userLiked ? "text-blue-500" : "text-gray-500"
+      } hover:text-blue-500 transition-colors`}
       onClick={handleLikeClick}
+      disabled={!auth.currentUser}
     >
-      <FaThumbsUp className={`w-4 h-4 mr-1 ${isLiked ? 'text-blue-500' : 'text-gray-500'}`} />
+      <FaThumbsUp
+        className={`w-4 h-4 mr-1 ${
+          userLiked ? "text-blue-500" : "text-gray-500"
+        }`}
+      />
       <span>{likeCount}</span>
     </button>
   );

@@ -76,40 +76,40 @@ const MessagesListFloatButton = ({ user, messages }) => {
     setIsChatOpen(false);
   };
 
-  const handleDocumentClick = (event) => {
-    if (
-      isChatOpen &&
-      floatButtonRef.current &&
-      !floatButtonRef.current.contains(event.target)
-    ) {
-      const chatBox = document.querySelector(".chat-box");
-      if (chatBox && chatBox.contains(event.target)) {
-        return;
-      }
-      closeChatBox();
+const handleDocumentClick = (event) => {
+  if (
+    isChatOpen &&
+    floatButtonRef.current &&
+    !floatButtonRef.current.contains(event.target)
+  ) {
+    const chatBox = document.querySelector(".chat-box");
+    if (chatBox && chatBox.contains(event.target)) {
+      return;
     }
-  };
+    closeChatBox();
+  }
+};
 
-  useEffect(() => {
-    document.addEventListener("click", handleDocumentClick);
-    return () => {
-      document.removeEventListener("click", handleDocumentClick);
-    };
-  }, []);
+useEffect(() => {
+  document.addEventListener("click", handleDocumentClick);
+  return () => {
+    document.removeEventListener("click", handleDocumentClick);
+  };
+}, [handleDocumentClick]);
 
   return (
     <>
       {user && (
         <div
           ref={floatButtonRef}
-          className={`fixed bottom-4 right-4 bg-primary-500 p-2 rounded-full cursor-pointer chat-button ${
-            isMobile ? "md:right-4 md:bottom-4" : ""
+          className={`fixed bottom-12 right-12 bg-secondary-500 hover:bg-white p-2 rounded-full cursor-pointer chat-button ${
+            isMobile ? "md:right-10 md:bottom-10" : ""
           }`}
           onClick={toggleChat}
         >
-          <FontAwesomeIcon icon={faCommentAlt} size="lg" color="white" />
+          <FontAwesomeIcon icon={faCommentAlt} size="lg" color="accent-500" />
           {unreadMessagesCount > 0 && (
-            <div className="absolute top-0 right-0 bg-red-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
+            <div className="absolute top-0 right-0 rounded-full h-5 w-5 flex items-center justify-center text-xs">
               {unreadMessagesCount}
             </div>
           )}
@@ -122,24 +122,25 @@ const MessagesListFloatButton = ({ user, messages }) => {
               isChatOpen ? "block" : "hidden"
             }`}
           >
-            <div className="bg-primary-500 text-primary-800 rounded shadow-md">
-              <div className="flex justify-between bg-primary-500 text-white p-2 md:p-3 rounded-t-lg drag-handle">
-                <h3 className="text-md font-bold">Chat</h3>
+            <div className="rounded shadow-md">
+              <div className="flex justify-between bg-primary-700 p-2 md:p-3 rounded-t-lg drag-handle">
+                <h3 className="text-secondary-500 font-bold">Chat</h3>
                 <button
-                  className="text-white hover:text-gray focus:outline-none"
+                  className="text-white hover:text-gray-300 focus:outline-none"
                   onClick={closeChatBox}
                 >
                   <FontAwesomeIcon icon={faTimes} />
                 </button>
               </div>
-              <div className="h-80 w-80 md:max-w-md lg:max-w-md xl:max-w-xl overflow-y-auto bg-primary-200 dark:bg-gray-800">
+              <div className="bg-primary-200 h-80 w-80 md:max-w-md lg:max-w-md xl:max-w-xl overflow-y-auto">
                 <MessagesList
+                  className="bg-primary-500 p-2"
                   messages={messages}
                   user={user}
                   setIsChatOpen={setIsChatOpen}
                 />
               </div>
-              <div className="bg-primary-500 p-1">
+              <div className="bg-primary-500 p-2">
                 <Input
                   className="rounded-md w-full"
                   placeholder="Type a message..."
@@ -149,7 +150,7 @@ const MessagesListFloatButton = ({ user, messages }) => {
                   rightButtons={
                     <button
                       type="submit"
-                      className="bg-primary-400 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-md"
+                      className="bg-primary-500 hover:bg-secondary-500 text-white font-semibold py-2 px-4 rounded-md"
                       onClick={handleSendMessage}
                     >
                       <FontAwesomeIcon icon={faPaperPlane} />

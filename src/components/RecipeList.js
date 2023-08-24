@@ -153,11 +153,6 @@ const RecipeList = () => {
     setFilteredRecipes(filtered);
   };
 
-  const handleSortByChange = (event) => {
-    const selectedValue = event.target.value;
-    console.log("Selected Sorting Option:", selectedValue);
-    setSortBy(selectedValue);
-  };
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
@@ -214,9 +209,9 @@ const RecipeList = () => {
   const allCreatorsOption = selectedCreator ? "" : "All Creators";
 
   return (
-    <div className="bg-purple-700">
+    <div className="bg-gradient-to-tr from-primary-500 via-wavy-purple to-accent-400">
       {isRecipesLoading ? (
-        <div className="flex items-center justify-center h-48">
+        <div className="flex items-center justify-center min-h-screen">
           <BeatLoader /> LOADING...
         </div>
       ) : fetchError ? (
@@ -283,11 +278,11 @@ const RecipeList = () => {
               {currentRecipes.map((recipe) => (
                 <div
                   key={recipe.id}
-                  className="rounded-lg shadow-md bg-secondary-500 p-2"
+                  className="rounded-lg shadow-md bg-accent-500 hover:bg-accent-300 border border-secondary-200 p-2"
                 >
                   <div className="mb-2">
                     <Link
-                      className="block text-xl font-bold text-blue-700 hover:text-orange-600 transition-colors p-2"
+                      className="block text-xl font-bold text-white hover:text-secondary-700 transition-colors p-2"
                       to={`/recipes/${recipe.id}`}
                     >
                       {recipe.title}
@@ -308,17 +303,20 @@ const RecipeList = () => {
                     </div>
                   )}
                   <Link to={`/author/${recipe.authorId}`}>
-                    <div className="flex flex-row items-center mb-2">
+                    <div className="flex flex-row items-center mb-2 ">
                       <img
                         src={recipe.creatorPhoto}
                         alt="Creator"
-                        className="rounded-full h-8 w-8 object-cover mr-2"
+                        className="rounded-full h-8 w-8 object-cover hover:bg-secondary-700border mr-2"
                       />
-                      <p className="text-blue-700"> {recipe.author}</p>
+                      <p className="text-white font-bold rounded hover:bg-secondary-700">
+                        {" "}
+                        {recipe.author}
+                      </p>
                     </div>
                   </Link>
                   {/* Rating */}
-                  <div className="flex items-center mb-2">
+                  <div className="flex items-center justify-center mb-2">
                     <div className="flex">
                       {[...Array(5)].map((_, index) => (
                         <FaStar
@@ -331,12 +329,14 @@ const RecipeList = () => {
                         />
                       ))}
                     </div>
-                    <span className="text-sm p-2 text-gray-600 ml-1 bg-white rounded-full font-bold">
+                  </div>
+                  <div className="mb-4 mt-4">
+                    <span className="text-sm p-2 text-gray-600 bg-white rounded-full">
                       {recipe.rating}
                     </span>
                   </div>
                   <p
-                    className="text-gray-700 mb-2 cursor-pointer"
+                    className="mb-2 cursor-pointer"
                     onClick={() => handleDescriptionToggle()}
                   >
                     {showFullDescription
@@ -346,7 +346,7 @@ const RecipeList = () => {
                   <p className="mt-2 text-sm text-white">
                     Kategori: {recipe.category}
                   </p>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-yellow-600 text-sm">
                     Created: {recipe.createdAt.toLocaleDateString()}
                   </p>
                 </div>
@@ -367,6 +367,11 @@ const RecipeList = () => {
                 <FaChevronRight />
               </button>
             </div>
+          </div>
+          <div>
+            <h1 className="text-center font-bold text-xl">
+              Calon Iklan Disini
+            </h1>
           </div>
         </>
       )}

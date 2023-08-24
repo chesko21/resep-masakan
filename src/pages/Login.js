@@ -39,11 +39,16 @@ const Login = () => {
         navigate('/');
       }, 3000);
     } catch (error) {
-      setError(error.message);
+      if (error.code === 'auth/wrong-password') {
+        setError('Password Salah!! Coba Login dengan Akun Google');
+      } else {
+        setError(error.message);
+      }
     } finally {
       setIsLoading(false);
     }
   };
+
 
   const handleLoginWithGoogle = async () => {
     try {
@@ -121,7 +126,7 @@ const Login = () => {
           disabled={isLoading}
         >
           {isLoading ? (
-            <BeatLoader color="white" size={8} /> 
+            <BeatLoader color="white" size={8} />
           ) : (
             'Login'
           )}
@@ -154,4 +159,3 @@ const Login = () => {
 };
 
 export default Login;
-

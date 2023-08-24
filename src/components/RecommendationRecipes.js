@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { recipesCollection, db, isNewRecipe } from '../services/firebase';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { BeatLoader } from "react-spinners";
 
 const RecommendationRecipes = ({ setUserRecipes }) => {
   const [recommendations, setRecommendations] = useState([]);
@@ -99,7 +100,7 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
     dots: true,
     infinite: true,
     speed: 1000,
-    slidesToShow: recommendations.length >= 3 ? 3 : recommendations.length,
+    slidesToShow: recommendations.length >= 4 ? 4 : recommendations.length,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
@@ -107,8 +108,8 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
-          centerMode: false,
+          slidesToShow: 4,
+          centerMode: true,
         },
       },
       {
@@ -119,29 +120,41 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
         },
       },
     ],
+    spacing: 20,
   };
 
+
   return (
-    <div className="recommendation-container mx-auto p-2 max-w-5xl">
+    <div className="">
       <h2 className="recommendation-title text-3xl font-semibold mb-4 text-primary text-center">
         Saran Resep untuk Anda
       </h2>
       {isLoading ? (
-        <div className="flex items-center justify-center h-40">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-primary"></div>
+        <div className="flex flex-col justify-center  min-h-screen items-center px-4 py-4">
+          <BeatLoader /> LOADING...
         </div>
       ) : (
         <Slider {...settings}>
           {recommendations.map((recipe) => (
-            <div key={recipe.id} className="m-2 item-center items-center justify-center">
-              <div className="recipe-card-container relative w-64 mx-auto bg-purple-700 rounded-t-lg item-center text-center">
-                <span className="text-xl text-center item-center font-semibold text-yellow-500">
+            <div
+              key={recipe.id}
+              className="m-2 item-center items-center justify-center"
+            >
+              <div className="relative w-64 mx-auto bg-accent-600 rounded item-center text-center">
+                <Link
+                  className="block text-xl font-bold text-secondary-400 hover:text-primary-500 transition-colors p-2"
+                  to={`/recipes/${recipe.id}`}
+                >
                   {recipe.title}
-                </span>
-                <div className="rounded shadow-lg bg-purple-700 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                </Link>
+                <div className="rounded shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                   {recipe.recipeImage && (
                     <div className="relative">
-                      <img src={recipe.recipeImage} alt="Recipe" className="h-32 w-full p-2 object-cover rounded-t" />
+                      <img
+                        src={recipe.recipeImage}
+                        alt="Recipe"
+                        className="h-32 w-full p-2 object-cover rounded"
+                      />
                       <p className="text-sm italic text-white bg-opacity-50">
                         © {currentYear} Resep Masakan
                       </p>
@@ -156,19 +169,28 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
 
                   <div className="p-4">
                     <Link to={`/author/${recipe.authorId}`}>
-                      <div className="flex items-center mb-2">
+                      <div className="flex items-center rounded mb-4 ">
                         <img
-                          src={recipe.creatorPhoto || 'https://via.placeholder.com/30'}
+                          src={recipe.creatorPhoto || ""}
                           alt="Creator"
-                          className="rounded-full h-8 w-8 object-cover mr-2"
+                          className="rounded-full h-8 w-8 object-cover border mr-2"
                         />
-                        <p className="text-white font-semibold"> {recipe.author}</p>
+                        <p className="text-white font-semibold underline hover:text-secondary-700">
+                          {" "}
+                          {recipe.author}
+                        </p>
                       </div>
                     </Link>
-                    <p className="mt-2 text-sm text-white">Kategori: {recipe.category}</p>
+                    <span className="text-sm p-2 text-secondary-500 bg-white rounded-full font-bold">
+                      {recipe.rating}
+                    </span>
+                    <p className="mt-2 text-sm text-white">
+                      Kategori: {recipe.category}
+                    </p>
+
                     {/* Add the "New!!" label */}
                     {isNewRecipe(recipe.createdAt) && (
-                      <div className="absolute top-4 left-0 font-bold px-2 py-1 rounded-t-lg transform -rotate-45 text-white">
+                      <div className="absolute top-4 left-0 font-bold px-2 py-1 rounded-t-lg transform -rotate-45 text-yellow-500">
                         New!!
                       </div>
                     )}
@@ -181,11 +203,13 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
       )}
 
       <div className="text-center mt-6 font-semibold">
-        <h2>Bingung Mau Masak Apa?? Ayo Cari Rekomendasi Resep yang Cocok untuk di Masak Hari ini..</h2>
+        <h2>
+          Bingung Mau Masak Apa?? Ayo Cari Rekomendasi Resep yang Cocok untuk di
+          Masak Hari ini..
+        </h2>
       </div>
     </div>
   );
 };
 
 export default RecommendationRecipes;
-

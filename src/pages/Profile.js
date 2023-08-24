@@ -3,12 +3,12 @@ import { auth, db, handleUploadPhoto, createUserProfileDocument } from '../servi
 import defaultProfileImage from '../assets/profile.svg';
 import { FiEdit } from 'react-icons/fi';
 import { MdAddAPhoto } from 'react-icons/md';
-import { ClipLoader } from 'react-spinners';
+import { BeatLoader } from 'react-spinners';
 import ActivityFloatButton from '../button/ActivityFloatButton';
 import RecipeUser from '../components/RecipeUser';
 import { useParams } from 'react-router-dom';
 
-const Profile = () => {
+const Profile = ({recipe}) => {
   const [user, setUser] = useState(null);
   const { authorId } = useParams();
   const [newPhoto, setNewPhoto] = useState(null);
@@ -187,8 +187,8 @@ const Profile = () => {
 
   if (!authReady) {
     return (
-      <div className="flex flex-col items-center px-4 py-4 bg-purple-700 border-top">
-        <ClipLoader size={50} color={'#fff'} loading={!authReady} />LOADING...
+      <div className="flex flex-col justify-center  min-h-screen items-center px-4 py-4 bg-gradient-to-br from-purple-700 to-pink-500 border-top">
+        <BeatLoader /> LOADING...
       </div>
     );
   }
@@ -209,7 +209,7 @@ const Profile = () => {
             <img
               src={user.photoURL}
               alt="Profile Preview"
-              className="w-full h-full object-cover rounded-full"
+              className="w-full h-full object-cover border-2 rounded-full"
             />
           ) : (
             <img
@@ -233,7 +233,9 @@ const Profile = () => {
           </label>
         </div>
         <div className="flex flex-row items-center mt-4">
-          <p className="text-xl text-white text-center item-center justify-center">{user.displayName}</p>
+          <p className="text-xl text-white text-center item-center justify-center">
+            {user.displayName}
+          </p>
           <div
             className="flex flex-col items-center text-blue-500 m-1 cursor-pointer transition-opacity hover:opacity-75"
             onClick={handleDisplayNameClick}
@@ -275,7 +277,6 @@ const Profile = () => {
       <div>
         <RecipeUser authorId={auth.currentUser.uid} />
       </div>
-
       <div>
         <ActivityFloatButton authorId={auth.currentUser.uid} />
       </div>

@@ -80,7 +80,9 @@ const AuthorProfile = () => {
             className="w-16 h-16 rounded-full mb-2 md:mb-0 md:mr-4 object-cover"
           />
           <div>
-            <h2 className="text-xl md:text-3xl font-bold mb-1 text-center md:text-left">{displayName}</h2>
+            <h2 className="text-xl md:text-3xl font-bold mb-1 text-center md:text-left">
+              {displayName}
+            </h2>
             <p className="text-base md:text-lg font-medium text-gray-600">
               Recipes Created by {displayName}
             </p>
@@ -96,6 +98,7 @@ const AuthorProfile = () => {
           </div>
         )}
       </div>
+
     </div>
   );
 };
