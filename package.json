@@ -5,10 +5,10 @@
   "description": "Temukan kelezatan kuliner dari resep-resep istimewa! Dari hidangan klasik hingga inovasi, nikmati petualangan rasa yang menggugah selera. Bergabunglah dalam seni memasak dengan instruksi praktis dan bahan-bahan lezat. Mari masak bersama! 🍳🍽️🌮",
   "author": "Chesko",
   "dependencies": {
-    "@babel/core": "latest",
+    "@babel/core": "^7.22.10",
     "@babel/plugin-syntax-flow": "latest",
     "@babel/plugin-transform-react-jsx": "latest",
-    "@babel/preset-env": "latest",
+    "@babel/preset-env": "^7.22.10",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -20,12 +20,15 @@
     "@typescript-eslint/parser": "^6.0.0",
     "animate.css": "^4.1.1",
     "axios": "^1.4.0",
+    "babel-loader": "^9.1.3",
     "crypto-browserify": "^3.12.0",
+    "css-loader": "^6.8.1",
     "dotenv": "^16.3.1",
     "emoji-mart": "^5.5.2",
     "eslint": "^8.46.0",
     "express": "^4.18.2",
     "firebase": "^10.1.0",
+    "html-webpack-plugin": "^5.5.3",
     "jquery": "^3.7.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
@@ -45,17 +48,21 @@
     "react-slick": "^0.29.0",
     "react-spinners": "^0.13.8",
     "slick-carousel": "^1.8.1",
+    "style-loader": "^3.3.3",
     "tailwindcss": "^3.3.3",
     "tsutils": "^3.21.0",
     "typescript": "^4.4.3",
-    "webpack": "^5.88.2"
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "electron ."
+    "electron": "electron .",
+    "webpack": "webpack serve"
   },
   "eslintConfig": {
     "extends": [
@@ -89,6 +96,7 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-react": "^7.22.5",
     "electron": "^26.0.0",
     "electron-builder": "^24.6.3"
   }

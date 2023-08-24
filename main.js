@@ -11,6 +11,7 @@ function createWindow() {
     },
   });
 
+  // Load your hosted website URL
   mainWindow.loadURL('https://cheskoweb.site');
 
   mainWindow.on('closed', () => {
