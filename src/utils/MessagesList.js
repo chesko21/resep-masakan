@@ -4,9 +4,7 @@ import { MessageBox } from "react-chat-elements";
 import "react-chat-elements/dist/main.css";
 import { Link } from "react-router-dom";
 
-
 const ForwardedMessageBox = (props) => {
-
   const {
     position,
     text,
@@ -17,7 +15,7 @@ const ForwardedMessageBox = (props) => {
     messages,
   } = props;
 
-  const truncatedSenderName = senderName.slice(0, 20); 
+  const truncatedSenderName = senderName.slice(0, 20);
   const chatBoxRef = useRef(null);
   const truncatedText = text.slice(0, 100);
   const isCurrentUser = senderId === auth.currentUser.uid;
@@ -65,7 +63,6 @@ const ForwardedMessageBox = (props) => {
     </Link>
   );
 };
-
 
 const MessagesList = ({ messages }) => {
   return (

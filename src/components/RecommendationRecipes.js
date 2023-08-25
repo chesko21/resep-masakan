@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Slider from 'react-slick';
-import { Link, useParams } from 'react-router-dom';
-import { recipesCollection, db, isNewRecipe } from '../services/firebase';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
+import { Link, useParams } from "react-router-dom";
+import { recipesCollection, db, isNewRecipe } from "../services/firebase";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { BeatLoader } from "react-spinners";
 
 const RecommendationRecipes = ({ setUserRecipes }) => {
@@ -16,7 +16,9 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
     const fetchUserRecipes = async () => {
       try {
         if (authorId) {
-          const userRecipesRef = db.collection('recipes').where('authorId', '==', authorId);
+          const userRecipesRef = db
+            .collection("recipes")
+            .where("authorId", "==", authorId);
           const recipeSnapshot = await userRecipesRef.get();
           const recipesData = recipeSnapshot.docs.map((doc) => {
             const data = doc.data();
@@ -29,18 +31,25 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
           });
 
           // Fetch the creator's photo for each recipe
-          const creatorIds = [...new Set(recipesData.map((recipe) => recipe.authorId))];
-          const usersSnapshot = await db.collection('users').where('authorId', 'in', creatorIds).get();
+          const creatorIds = [
+            ...new Set(recipesData.map((recipe) => recipe.authorId)),
+          ];
+          const usersSnapshot = await db
+            .collection("users")
+            .where("authorId", "in", creatorIds)
+            .get();
           const usersData = usersSnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
 
           const recipesWithCreator = recipesData.map((recipe) => {
-            const creator = usersData.find((user) => user.authorId === recipe.authorId);
+            const creator = usersData.find(
+              (user) => user.authorId === recipe.authorId
+            );
             return {
               ...recipe,
-              creatorPhoto: creator?.photoURL || creator?.imageURL || '',
+              creatorPhoto: creator?.photoURL || creator?.imageURL || "",
             };
           });
 
@@ -49,13 +58,12 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
           setUserRecipes([]);
         }
       } catch (error) {
-        console.error('Error fetching user recipes:', error);
+        console.error("Error fetching user recipes:", error);
       }
     };
 
     fetchUserRecipes();
   }, [authorId, setUserRecipes]);
-
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -70,25 +78,32 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
         }));
 
         // Fetch the creator's photo for each recipe
-        const creatorIds = [...new Set(recommendationsData.map((recipe) => recipe.authorId))];
-        const usersSnapshot = await db.collection('users').where('authorId', 'in', creatorIds).get();
+        const creatorIds = [
+          ...new Set(recommendationsData.map((recipe) => recipe.authorId)),
+        ];
+        const usersSnapshot = await db
+          .collection("users")
+          .where("authorId", "in", creatorIds)
+          .get();
         const usersData = usersSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
         const recommendationsWithCreator = recommendationsData.map((recipe) => {
-          const creator = usersData.find((user) => user.authorId === recipe.authorId);
+          const creator = usersData.find(
+            (user) => user.authorId === recipe.authorId
+          );
           return {
             ...recipe,
-            creatorPhoto: creator?.photoURL || creator?.imageURL || '',
+            creatorPhoto: creator?.photoURL || creator?.imageURL || "",
           };
         });
 
         setRecommendations(recommendationsWithCreator);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching recommendation recipes:', error);
+        console.error("Error fetching recommendation recipes:", error);
         setIsLoading(false);
       }
     };
@@ -96,33 +111,53 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
     fetchRecommendations();
   }, []);
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 1000,
-    slidesToShow: recommendations.length >= 4 ? 4 : recommendations.length,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 4,
-          centerMode: true,
-        },
+const settings = {
+  dots: true,
+  infinite: true,
+  speed: 1000,
+  slidesToShow: Math.min(4, recommendations.length),
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 5000,
+  responsive: [
+    {
+      breakpoint: 1440,
+      settings: {
+        slidesToShow: 4,
+        centerMode: true,
       },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          centerMode: true,
-        },
+    },
+    {
+      breakpoint: 1280,
+      settings: {
+        slidesToShow: 3,
+        centerMode: true,
       },
-    ],
-    spacing: 20,
-  };
-
+    },
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        centerMode: true,
+      },
+    },
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 1,
+        centerMode: true,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        centerMode: false,
+      },
+    },
+  ],
+  spacing: 20,
+};
 
   return (
     <div className="">

@@ -1,50 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { db, storage } from '../services/firebase';
-import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
-import { Trash } from 'react-bootstrap-icons';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { db, storage } from "../services/firebase";
+import { Form, Button, FormControl, InputGroup } from "react-bootstrap";
+import { Trash } from "react-bootstrap-icons";
 
 const EditRecipePage = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const categories = [
-    'Sarapan',
-    'Makan Siang',
-    'Makan Malam',
-    'Camilan',
-    'Seafood',
-    'Hidangan Pembuka',
-    'Hidangan Utama',
-    'Hidangan Penutup',
-    'Kue/Roti',
-    'Minuman',
-    'Hidangan Tradisional',
-    'Hidangan Sehat',
-    'Hidangan Vegetarian',
+    "Sarapan",
+    "Makan Siang",
+    "Makan Malam",
+    "Camilan",
+    "Seafood",
+    "Hidangan Pembuka",
+    "Hidangan Utama",
+    "Hidangan Penutup",
+    "Kue/Roti",
+    "Minuman",
+    "Hidangan Tradisional",
+    "Hidangan Sehat",
+    "Hidangan Vegetarian",
   ];
   const [recipe, setRecipe] = useState({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     ingredients: [],
     instructions: [],
-    category: '',
+    category: "",
   });
   const [isImageUrlEdit, setIsImageUrlEdit] = useState(false);
 
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const recipeRef = db.collection('recipes').doc(id);
+        const recipeRef = db.collection("recipes").doc(id);
         const snapshot = await recipeRef.get();
 
         if (snapshot.exists) {
           const recipeData = snapshot.data();
           setRecipe(recipeData);
         } else {
-          console.log('Recipe does not exist.');
+          console.log("Recipe does not exist.");
         }
       } catch (error) {
-        console.error('Error fetching recipe:', error);
+        console.error("Error fetching recipe:", error);
       }
     };
 
@@ -96,28 +96,28 @@ const EditRecipePage = ({ user }) => {
   };
 
   const handleAddInput = (name) => {
-    if (name === 'ingredients') {
+    if (name === "ingredients") {
       setRecipe((prevState) => ({
         ...prevState,
-        ingredients: [...prevState.ingredients, ''],
+        ingredients: [...prevState.ingredients, ""],
       }));
-    } else if (name === 'instructions') {
+    } else if (name === "instructions") {
       setRecipe((prevState) => ({
         ...prevState,
-        instructions: [...prevState.instructions, ''],
+        instructions: [...prevState.instructions, ""],
       }));
     }
   };
 
   const handleRemoveInput = (name, index) => {
-    if (name === 'ingredients') {
+    if (name === "ingredients") {
       const updatedIngredients = [...recipe.ingredients];
       updatedIngredients.splice(index, 1);
       setRecipe((prevState) => ({
         ...prevState,
         ingredients: updatedIngredients,
       }));
-    } else if (name === 'instructions') {
+    } else if (name === "instructions") {
       const updatedInstructions = [...recipe.instructions];
       updatedInstructions.splice(index, 1);
       setRecipe((prevState) => ({
@@ -131,37 +131,44 @@ const EditRecipePage = ({ user }) => {
     e.preventDefault();
     try {
       if (isImageUrlEdit) {
-        const recipeRef = db.collection('recipes').doc(id);
+        const recipeRef = db.collection("recipes").doc(id);
         await recipeRef.update(recipe);
-        console.log('Recipe updated successfully!');
+        console.log("Recipe updated successfully!");
         navigate(`/recipes/${id}`);
       } else {
         if (!recipe.recipeImage) {
-          console.error('Recipe image is required.');
+          console.error("Recipe image is required.");
           return;
         }
 
-        const storageRef = storage.ref().child(`images/${recipe.recipeImage.name}`);
+        const storageRef = storage
+          .ref()
+          .child(`images/${recipe.recipeImage.name}`);
         const snapshot = await storageRef.put(recipe.recipeImage);
         const updatedRecipeImageUrl = await snapshot.ref.getDownloadURL();
 
         const updatedRecipe = { ...recipe, recipeImage: updatedRecipeImageUrl };
 
-        const recipeRef = db.collection('recipes').doc(id);
+        const recipeRef = db.collection("recipes").doc(id);
         await recipeRef.update(updatedRecipe);
-        console.log('Recipe with updated image from storage updated successfully!');
+        console.log(
+          "Recipe with updated image from storage updated successfully!"
+        );
         navigate(`/recipes/${id}`);
       }
     } catch (error) {
-      console.error('Error updating recipe:', error);
+      console.error("Error updating recipe:", error);
     }
   };
 
-
   return (
     <div className="container mx-auto px-8 py-4 bg-purple-700">
-      <Link to="/profile" className="text-orange-300 hover:underline">&lt; Back to Profile</Link>
-      <h2 className="text-2xl font-bold mb-4 text-center text-white">Edit Recipe</h2>
+      <Link to="/profile" className="text-orange-300 hover:underline">
+        &lt; Back to Profile
+      </Link>
+      <h2 className="text-2xl font-bold mb-4 text-center text-white">
+        Edit Recipe
+      </h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="title">
           <Form.Label className="text-white">Nama Resep</Form.Label>
@@ -207,7 +214,9 @@ const EditRecipePage = ({ user }) => {
         </Form.Group>
 
         <div>
-          <h4 className="text-lg font-semibold mb-2 text-white">Bahan-Bahan:</h4>
+          <h4 className="text-lg font-semibold mb-2 text-white">
+            Bahan-Bahan:
+          </h4>
           {recipe.ingredients.map((ingredient, index) => (
             <InputGroup key={index} className="mb-4">
               <textarea
@@ -218,19 +227,27 @@ const EditRecipePage = ({ user }) => {
                 className="w-full resize-y border rounded py-2 px-4"
                 rows={2}
               />
-              <Button onClick={() => handleRemoveInput('ingredients', index)} variant="danger">
+              <Button
+                onClick={() => handleRemoveInput("ingredients", index)}
+                variant="danger"
+              >
                 <Trash />
               </Button>
             </InputGroup>
           ))}
-          <Button onClick={() => handleAddInput('ingredients')} variant="primary" className="btn-icon bg-white rounded-full px-2 text-center text-orange-500 hover:text-secondary-700"
+          <Button
+            onClick={() => handleAddInput("ingredients")}
+            variant="primary"
+            className="btn-icon bg-white rounded-full px-2 text-center text-orange-500 hover:text-secondary-700"
           >
             Add
           </Button>
         </div>
 
         <div className="mt-4">
-          <h4 className="text-lg font-semibold mb-2 text-white">Cara Membuat:</h4>
+          <h4 className="text-lg font-semibold mb-2 text-white">
+            Cara Membuat:
+          </h4>
           {recipe.instructions.map((instruction, index) => (
             <InputGroup key={index} className="mb-4">
               <textarea
@@ -241,12 +258,18 @@ const EditRecipePage = ({ user }) => {
                 className="w-full resize-y border rounded py-2 px-4"
                 rows={2}
               />
-              <Button onClick={() => handleRemoveInput('instructions', index)} variant="danger">
+              <Button
+                onClick={() => handleRemoveInput("instructions", index)}
+                variant="danger"
+              >
                 <Trash />
               </Button>
             </InputGroup>
           ))}
-          <Button onClick={() => handleAddInput('instructions')} variant="primary" className="btn-icon bg-white rounded-full px-2 text-center text-orange-500 hover:text-secondary-700"
+          <Button
+            onClick={() => handleAddInput("instructions")}
+            variant="primary"
+            className="btn-icon bg-white rounded-full px-2 text-center text-orange-500 hover:text-secondary-700"
           >
             Add
           </Button>
@@ -304,16 +327,15 @@ const EditRecipePage = ({ user }) => {
           )}
         </div>
 
-
         <div className="text-center mt-4">
           <Button
             type="submit"
             variant="primary"
             style={{
-              display: 'inline-block',
-              width: 'auto',
-              backgroundColor: 'orange',
-              borderRadius: '10px',
+              display: "inline-block",
+              width: "auto",
+              backgroundColor: "orange",
+              borderRadius: "10px",
             }}
           >
             Simpan Perubahan

@@ -35,7 +35,7 @@ const App = () => {
   }, []);
 
   return (
-    <HashRouter className="h-screen w-full">
+    <HashRouter className="h-screen w-full bg-gradient-to-tr from-primary-500 via-wavy-purple to-accent-400">
       <div>
         <Header />
         <Routes>

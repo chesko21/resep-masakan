@@ -124,7 +124,8 @@ const Home = ({ profilePhoto, authorId, isChatOpen, userAuth }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-between text-center bg-gradient-to-tr from-primary-500 via-wavy-purple to-accent-400 font-logo">
+    <div className="min-h-screen flex flex-col justify-between text-center
+     bg-gradient-to-tr from-primary-500 via-wavy-purple to-accent-400 font-logo">
       <div>
         <div className="m-4 text-yellow-500">
           <span className="border-b-2 border-t-2 border-white">

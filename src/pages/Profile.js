@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { auth, db, handleUploadPhoto, createUserProfileDocument } from '../services/firebase';
-import defaultProfileImage from '../assets/profile.svg';
-import { FiEdit } from 'react-icons/fi';
-import { MdAddAPhoto } from 'react-icons/md';
-import { BeatLoader } from 'react-spinners';
-import ActivityFloatButton from '../button/ActivityFloatButton';
-import RecipeUser from '../components/RecipeUser';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import {
+  auth,
+  db,
+  handleUploadPhoto,
+  createUserProfileDocument,
+} from "../services/firebase";
+import defaultProfileImage from "../assets/profile.svg";
+import { FiEdit } from "react-icons/fi";
+import { MdAddAPhoto } from "react-icons/md";
+import { BeatLoader } from "react-spinners";
+import ActivityFloatButton from "../button/ActivityFloatButton";
+import RecipeUser from "../components/RecipeUser";
+import { useParams } from "react-router-dom";
 
-const Profile = ({recipe}) => {
+const Profile = ({ recipe }) => {
   const [user, setUser] = useState(null);
   const { authorId } = useParams();
   const [newPhoto, setNewPhoto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [defaultImageURL, setDefaultImageURL] = useState(defaultProfileImage);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [newDisplayName, setNewDisplayName] = useState('');
+  const [newDisplayName, setNewDisplayName] = useState("");
   const [authReady, setAuthReady] = useState(false);
   const DEFAULT_PROFILE_IMAGE = defaultProfileImage;
 
@@ -24,7 +29,7 @@ const Profile = ({recipe}) => {
       if (userAuth) {
         try {
           await createUserProfileDocument(userAuth);
-          const userRef = db.collection('users').doc(userAuth.uid);
+          const userRef = db.collection("users").doc(userAuth.uid);
           const snapshot = await userRef.get();
 
           if (snapshot.exists) {
@@ -33,7 +38,7 @@ const Profile = ({recipe}) => {
             setDefaultImageURL(userData.photoURL || defaultProfileImage);
           } else {
             const defaultUserData = {
-              displayName: userAuth.displayName || 'Unknown',
+              displayName: userAuth.displayName || "Unknown",
               email: userAuth.email,
               photoURL: userAuth.photoURL || defaultProfileImage,
             };
@@ -42,7 +47,7 @@ const Profile = ({recipe}) => {
             setDefaultImageURL(defaultProfileImage);
           }
         } catch (error) {
-          console.error('Error fetching user data:', error);
+          console.error("Error fetching user data:", error);
         } finally {
           setLoading(false);
           setAuthReady(true);
@@ -60,7 +65,7 @@ const Profile = ({recipe}) => {
   useEffect(() => {
     const fetchDefaultImageURL = async () => {
       try {
-        const userRef = db.collection('users').doc(authorId);
+        const userRef = db.collection("users").doc(authorId);
         const snapshot = await userRef.get();
 
         if (snapshot.exists) {
@@ -74,7 +79,7 @@ const Profile = ({recipe}) => {
           setDefaultImageURL(defaultProfileImage);
         }
       } catch (error) {
-        console.error('Error retrieving default profile image URL:', error);
+        console.error("Error retrieving default profile image URL:", error);
       }
     };
 
@@ -90,7 +95,12 @@ const Profile = ({recipe}) => {
       setLoading(true);
 
       if (file) {
-        const photoUrl = await handleUploadPhoto(auth.currentUser, file, setLoading, setUser);
+        const photoUrl = await handleUploadPhoto(
+          auth.currentUser,
+          file,
+          setLoading,
+          setUser
+        );
 
         if (photoUrl) {
           const updatedProfile = {
@@ -104,7 +114,7 @@ const Profile = ({recipe}) => {
           }));
           updateRecipesAuthor(auth.currentUser.uid, user.displayName, photoUrl);
         } else {
-          console.error('Invalid image URL.');
+          console.error("Invalid image URL.");
         }
       } else {
         setUser((prevUser) => ({
@@ -113,7 +123,7 @@ const Profile = ({recipe}) => {
         }));
       }
     } catch (error) {
-      console.error('Error uploading photo:', error);
+      console.error("Error uploading photo:", error);
     } finally {
       setLoading(false);
     }
@@ -121,49 +131,57 @@ const Profile = ({recipe}) => {
 
   const updateRecipesAuthor = async (authorId, newDisplayName, newPhotoURL) => {
     try {
-      const userRecipesRef = db.collection('recipes').where('authorId', '==', authorId);
+      const userRecipesRef = db
+        .collection("recipes")
+        .where("authorId", "==", authorId);
       const snapshot = await userRecipesRef.get();
 
       const batch = db.batch();
       snapshot.forEach((doc) => {
-        const recipeRef = db.collection('recipes').doc(doc.id);
-        batch.update(recipeRef, { author: newDisplayName, photoURL: newPhotoURL });
+        const recipeRef = db.collection("recipes").doc(doc.id);
+        batch.update(recipeRef, {
+          author: newDisplayName,
+          photoURL: newPhotoURL,
+        });
       });
 
       await batch.commit();
     } catch (error) {
-      console.error('Error updating recipes author:', error);
+      console.error("Error updating recipes author:", error);
     }
   };
 
   const handlePopupClose = () => {
-    console.log('Popup Closed');
+    console.log("Popup Closed");
     setIsPopupOpen(false);
-    setNewDisplayName(user.displayName || '');
-    localStorage.removeItem('newDisplayName');
+    setNewDisplayName(user.displayName || "");
+    localStorage.removeItem("newDisplayName");
   };
 
   const handleDisplayNameClick = () => {
     setIsPopupOpen(true);
-    setNewDisplayName(user.displayName || '');
+    setNewDisplayName(user.displayName || "");
   };
 
   const handleDisplayNameUpdate = async () => {
     setLoading(true);
 
     try {
-
       await auth.currentUser.updateProfile({
         displayName: newDisplayName,
       });
 
-      await createUserProfileDocument(auth.currentUser, { displayName: newDisplayName });
+      await createUserProfileDocument(auth.currentUser, {
+        displayName: newDisplayName,
+      });
 
-      const userRecipesRef = db.collection('recipes').where('authorId', '==', auth.currentUser.uid);
+      const userRecipesRef = db
+        .collection("recipes")
+        .where("authorId", "==", auth.currentUser.uid);
       const snapshot = await userRecipesRef.get();
 
       const updateRecipePromises = snapshot.docs.map(async (doc) => {
-        const recipeRef = db.collection('recipes').doc(doc.id);
+        const recipeRef = db.collection("recipes").doc(doc.id);
         await recipeRef.update({ author: newDisplayName });
       });
 
@@ -175,12 +193,12 @@ const Profile = ({recipe}) => {
       }));
 
       setNewDisplayName(newDisplayName);
-      localStorage.setItem('newDisplayName', newDisplayName);
+      localStorage.setItem("newDisplayName", newDisplayName);
 
       setLoading(false);
       handlePopupClose();
     } catch (error) {
-      console.error('Error updating display name:', error);
+      console.error("Error updating display name:", error);
       setLoading(false);
     }
   };

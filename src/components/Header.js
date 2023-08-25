@@ -52,9 +52,8 @@ const Header = () => {
     <header className="bg-gradient-to-br from-secondary-500 via-wavy-purple to-accent-400 py-2 px-2 flex flex-wrap items-center justify-between top-0 z-10 sticky top-0">
       <Link
         to="/"
-        className="heading flex items-center text-xl font-bold underline text-white hover:bg-accent-400 rounded font-bold mb-2 sm:mb-0"
+        className="heading flex p-1 items-center text-xl font-bold underline text-white hover:bg-accent-400 rounded font-bold mb-2 sm:mb-0"
       >
-        <FaUtensils className="text-accent-400 m-2 rounded-full bg-white" />{" "}
         Beranda
       </Link>
       <nav className="desktop-menu items-center text-center hidden sm:block">
@@ -130,7 +129,7 @@ const Header = () => {
           )}
         </ul>
       </nav>
-      <div className="mobile-menu sm:hidden relative ">
+      <div className="mobile-menu sm:hidden relative justify-center text-center ">
         <button
           className={`menu-toggle focus:outline-none p-1 rounded-md bg-white hover:bg-accent-400 ${
             isMobileMenuOpen ? "close" : ""
@@ -140,18 +139,14 @@ const Header = () => {
           {isMobileMenuOpen ? <FaTimes /> : "Menu"}
         </button>
         {isMobileMenuOpen && (
-          <ul className="flex-1 text-center absolute right-0 bg-accent-400 rounded shadow-md p-1 w-28">
+          <ul className="flex-1 absolute right-0 bg-accent-500 rounded shadow-md mr-2 w-28">
             <li>
               <Link
                 to="/recipe-list"
-                className="menu-link hover:bg-yellow-400 rounded"
+                className="menu-link hover:bg-accent-400 rounded text-center block py-2"
                 onClick={closeMobileMenu}
               >
-                <FaUtensils
-                  className={`menu-icon mr-2 ${
-                    isMobileMenuOpen ? "text-yellow-400" : ""
-                  }`}
-                />{" "}
+                <FaUtensils className="menu-icon m-auto text-center text-yellow-400" />
                 Resep
               </Link>
             </li>
@@ -160,19 +155,17 @@ const Header = () => {
                 <li>
                   <Link
                     to="/profile"
-                    className={`menu-link hover:bg-yellow-400 rounded ${
-                      isMobileMenuOpen ? "" : ""
-                    }`}
+                    className="menu-link hover:bg-accent-400 rounded block py-2"
                     onClick={closeMobileMenu}
                   >
                     {userProfilePhoto ? (
                       <img
                         src={userProfilePhoto}
                         alt="Profile"
-                        className="w-6 h-6 rounded-full mr-2"
+                        className="w-6 h-6 rounded-full border m-auto"
                       />
                     ) : (
-                      <FaUserCircle className="menu-icon mr-2" />
+                      <FaUserCircle className="menu-icon m-auto" />
                     )}
                     Profile
                   </Link>
@@ -180,23 +173,19 @@ const Header = () => {
                 <li>
                   <Link
                     to="/add-recipe"
-                    className="menu-link hover:bg-yellow-400 rounded"
+                    className="menu-link hover:bg-accent-400 rounded block py-2"
                     onClick={closeMobileMenu}
                   >
-                    <FaPencilAlt
-                      className={`menu-icon mr-2 ${
-                        isMobileMenuOpen ? "text-yellow-400" : ""
-                      }`}
-                    />{" "}
+                    <FaPencilAlt className="menu-icon m-auto text-center text-yellow-400" />
                     Add Recipe
                   </Link>
                 </li>
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="menu-link flex items-center text-white mx-auto mt-2 text-sm hover:bg-yellow-400 rounded "
+                    className="menu-link flex items-center text-white mx-auto mt-2 text-sm hover:bg-accent-400 rounded block py-2"
                   >
-                    <FaSignOutAlt className="menu-icon text-center item-center" />{" "}
+                    <FaSignOutAlt className="menu-icon m-auto text-center" />{" "}
                     Logout
                   </button>
                 </li>
@@ -206,11 +195,11 @@ const Header = () => {
                 <li>
                   <Link
                     to="/login"
-                    className="menu-link"
+                    className="menu-link hover:bg-accent-400 rounded block py-2"
                     onClick={closeMobileMenu}
                   >
                     <FaSignInAlt
-                      className={`menu-icon mr-2 ${
+                      className={`menu-icon m-auto text-center text-yellow-400 ${
                         isMobileMenuOpen ? "text-yellow-400" : ""
                       }`}
                     />{" "}
@@ -220,11 +209,11 @@ const Header = () => {
                 <li>
                   <Link
                     to="/signup"
-                    className="menu-link"
+                    className="menu-link hover:bg-accent-400 rounded block py-2"
                     onClick={closeMobileMenu}
                   >
                     <FaUserPlus
-                      className={`menu-icon mr-2 ${
+                      className={`menu-icon m-auto text-center text-yellow-400 ${
                         isMobileMenuOpen ? "text-yellow-400" : ""
                       }`}
                     />{" "}

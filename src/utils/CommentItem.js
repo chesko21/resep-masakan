@@ -10,10 +10,10 @@ const CommentItem = (props) => {
   const DEFAULT_PROFILE_IMAGE = defaultProfileImage;
   const currentLikeCount = likesCount;
 
-    const [replyLikesCount, setReplyLikesCount] = useState(
-      Array.isArray(props.comment.likes) ? props.comment.likes.length : 0
-    );
-    const [replyIsLiked, setReplyIsLiked] = useState(isLiked);
+  const [replyLikesCount, setReplyLikesCount] = useState(
+    Array.isArray(props.comment.likes) ? props.comment.likes.length : 0
+  );
+  const [replyIsLiked, setReplyIsLiked] = useState(isLiked);
 
   useEffect(() => {
     const userAuth = auth.currentUser;
@@ -27,7 +27,6 @@ const CommentItem = (props) => {
     }
   }, []);
 
-
   useEffect(() => {
     if (user && Array.isArray(props.comment.likes)) {
       setIsLiked(props.comment.likes.includes(user.uid));
@@ -40,33 +39,31 @@ const CommentItem = (props) => {
     );
   }, [props.comment.likes, user]);
 
-
   const handleLikeReply = async () => {
-      if (!user) {
-        alert("You need to be logged in to like replies.");
-        return;
+    if (!user) {
+      alert("You need to be logged in to like replies.");
+      return;
+    }
+
+    try {
+      const updatedLikes = replyIsLiked
+        ? props.comment.likes.filter((like) => like !== user.displayName)
+        : [...props.comment.likes, user.displayName];
+
+      await commentsCollection
+        .doc(props.comment.id)
+        .update({ likes: updatedLikes });
+
+      setReplyIsLiked(!replyIsLiked);
+      setReplyLikesCount(updatedLikes.length);
+
+      if (props.onToggleLike) {
+        props.onToggleLike();
       }
-
-      try {
-        const updatedLikes = replyIsLiked
-          ? props.comment.likes.filter((like) => like !== user.displayName)
-          : [...props.comment.likes, user.displayName];
-
-        await commentsCollection
-          .doc(props.comment.id)
-          .update({ likes: updatedLikes });
-
-        setReplyIsLiked(!replyIsLiked);
-        setReplyLikesCount(updatedLikes.length);
-
-        if (props.onToggleLike) {
-          props.onToggleLike();
-        }
-      } catch (error) {
-        console.error("Error handling like reply:", error);
-      }
-    };
-
+    } catch (error) {
+      console.error("Error handling like reply:", error);
+    }
+  };
 
   const handleLikeClick = async () => {
     if (!user) {
@@ -92,7 +89,6 @@ const CommentItem = (props) => {
       setLikesCount((prevCount) => prevCount + 1);
     }
   };
-
 
   return (
     <div className="comment-item ml-4">
@@ -136,12 +132,14 @@ const CommentItem = (props) => {
             />
           </div>
           {props.comment.replies && props.comment.replies.length > 0 && (
-      <div className="pl-8 mt-4">
-        {props.comment.replies.map((reply) => {
-          const replyLikes = Array.isArray(reply.likes) ? reply.likes : [];
-          return (
-            <div key={reply.id} className="flex items-start">
-               {reply.user && reply.user.imageURL ? (
+            <div className="pl-8 mt-4">
+              {props.comment.replies.map((reply) => {
+                const replyLikes = Array.isArray(reply.likes)
+                  ? reply.likes
+                  : [];
+                return (
+                  <div key={reply.id} className="flex items-start">
+                    {reply.user && reply.user.imageURL ? (
                       <img
                         src={reply.user.imageURL}
                         alt="User"
@@ -167,12 +165,12 @@ const CommentItem = (props) => {
                         {reply.content}
                       </div>
                       <div className="flex items-center mt-2 text-sm text-gray-500">
-                      <ButtonLike
-                                     commentId={reply.id}
-                                     initialLikes={replyLikesCount}
-                                     isLiked={replyIsLiked}
-                                     onToggleLike={handleLikeReply}
-                                   />
+                        <ButtonLike
+                          commentId={reply.id}
+                          initialLikes={replyLikesCount}
+                          isLiked={replyIsLiked}
+                          onToggleLike={handleLikeReply}
+                        />
                       </div>
                     </div>
                   </div>

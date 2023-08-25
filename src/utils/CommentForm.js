@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { FaUserCircle } from "react-icons/fa";
 import { auth } from "../services/firebase";
 import { Link } from "react-router-dom";
 
 const CommentForm = ({ onSubmit, user }) => {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-useEffect(() => {
-  const userAuth = auth.currentUser;
-  setIsAnonymous(!userAuth);
-}, []);
+  useEffect(() => {
+    const userAuth = auth.currentUser;
+    setIsAnonymous(!userAuth);
+  }, []);
 
   const handleChange = (event) => {
     setComment(event.target.value);
@@ -19,12 +19,12 @@ useEffect(() => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (comment.trim() !== '') {
+    if (comment.trim() !== "") {
       const newComment = {
         content: comment,
       };
       onSubmit(newComment);
-      setComment('');
+      setComment("");
     }
   };
 
@@ -40,7 +40,7 @@ useEffect(() => {
           <Link to="/signup" className="text-blue-500">
             SignUp
           </Link>
-           &nbsp;to like or comment.
+          &nbsp;to like or comment.
         </div>
       )}
       <div className="w-full px-4">
@@ -57,7 +57,7 @@ useEffect(() => {
             )}
 
             <span className="ml-2 font-medium">
-              {user && user.displayName ? user.displayName : 'Anonymous'}
+              {user && user.displayName ? user.displayName : "Anonymous"}
             </span>
           </div>
           <label htmlFor="commentInput" className="sr-only">
@@ -69,17 +69,16 @@ useEffect(() => {
             onChange={handleChange}
             placeholder="Add a public comment..."
             className="w-full p-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            style={{ minHeight: '80px' }}
+            style={{ minHeight: "80px" }}
           />
           <div className="flex justify-end mt-2">
-          <button
-    type="submit"
-    className="bg-blue-500 text-white rounded px-4 py-2 text-sm hover:bg-blue-600 transition-colors duration-300 focus:outline-none"
-    disabled={!comment.trim() || isAnonymous}
-  >
-    Comment
-  </button>
-
+            <button
+              type="submit"
+              className="bg-blue-500 text-white rounded px-4 py-2 text-sm hover:bg-blue-600 transition-colors duration-300 focus:outline-none"
+              disabled={!comment.trim() || isAnonymous}
+            >
+              Comment
+            </button>
           </div>
         </form>
       </div>

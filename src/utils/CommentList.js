@@ -25,13 +25,13 @@ const CommentList = ({ id }) => {
       setCurrentAuthorId(null);
     }
 
-    // Ambil daftar komentar dari database berdasarkan ID resep atau lainnya
+    // Ambil daftar komentar dari database berdasarkan ID resep
     fetchCommentsDataFromDatabase(id);
   }, [id]);
 
   const fetchCommentsDataFromDatabase = async (id) => {
     try {
-      // Fetch comments for the given recipe ID
+
       const snapshot = await db
         .collection("comments")
         .where("recipeId", "==", id)
@@ -41,7 +41,6 @@ const CommentList = ({ id }) => {
       for (const doc of snapshot.docs) {
         const commentData = { id: doc.id, ...doc.data() };
 
-        // Fetch replies for the current comment
         const repliesSnapshot = await doc.ref.collection("replies").get();
         const repliesData = repliesSnapshot.docs.map((replyDoc) => ({
           id: replyDoc.id,
@@ -95,12 +94,11 @@ const CommentList = ({ id }) => {
   };
 
   const handleReplyComment = async (parentId, reply, comment) => {
-
-const updatedComment = { ...comment };
-updatedComment.replies.push(reply);
-setComments((prevComments) =>
-  prevComments.map((c) => (c.id === comment.id ? updatedComment : c))
-);
+    const updatedComment = { ...comment };
+    updatedComment.replies.push(reply);
+    setComments((prevComments) =>
+      prevComments.map((c) => (c.id === comment.id ? updatedComment : c))
+    );
 
     try {
       if (parentId) {
@@ -140,7 +138,6 @@ setComments((prevComments) =>
       const commentData = commentDoc.data();
       const userAuth = auth.currentUser;
 
-      // Toggle like status for the current user
       const updatedLikes = [...(commentData.likes || [])];
 
       const userDisplayName = userAuth ? userAuth.displayName : "Anonymous";
@@ -151,10 +148,8 @@ setComments((prevComments) =>
         updatedLikes.push(userDisplayName);
       }
 
-      // Update the likes in the database
       await commentRef.update({ likes: updatedLikes });
 
-      // Fetch updated comments data from the database
       fetchCommentsDataFromDatabase(id);
     } catch (error) {
       console.error("Error handling like toggle:", error);
@@ -189,17 +184,17 @@ setComments((prevComments) =>
     }
     return (
       <div key={comment.id}>
-      <div className="mb-4 item-center">
-        <div className="flex items-start">
-          {comment.user && comment.user.imageURL ? (
-            <img
-              src={comment.user.imageURL}
-              alt="User"
-              className="w-8 h-8 border-2 border-blue-500 rounded-full object-cover"
-            />
-          ) : (
-            <FaUserCircle className="w-6 h-6 text-gray-500 border-2 border-blue-500" />
-          )}
+        <div className="mb-4 item-center">
+          <div className="flex items-start">
+            {comment.user && comment.user.imageURL ? (
+              <img
+                src={comment.user.imageURL}
+                alt="User"
+                className="w-8 h-8 border-2 border-blue-500 rounded-full object-cover"
+              />
+            ) : (
+              <FaUserCircle className="w-6 h-6 text-gray-500 border-2 border-blue-500" />
+            )}
             <div className="ml-3 flex-grow mb-2 max-h-screen">
               <div className="flex items-center mb-1">
                 <strong className="text-sm font-medium">
@@ -243,24 +238,24 @@ setComments((prevComments) =>
 
         {/* Render balasan */}
         {showReplies[comment.id] &&
-                  comment.replies &&
-                  comment.replies.length > 0 && (
-                    <div className="pl-8 mt-4">
-                      {comment.replies.map((reply) => (
-                        <CommentItem
-                          key={reply.id}
-                          comment={reply}
-                          onReplyComment={(replyContent) =>
-                            handleReplyComment(comment.id, { content: replyContent })
-                          }
-                          onToggleLike={fetchCommentsDataFromDatabase}
-                        />
-                      ))}
-                    </div>
-                  )}
-              </div>
-            );
-          };
+          comment.replies &&
+          comment.replies.length > 0 && (
+            <div className="pl-8 mt-4">
+              {comment.replies.map((reply) => (
+                <CommentItem
+                  key={reply.id}
+                  comment={reply}
+                  onReplyComment={(replyContent) =>
+                    handleReplyComment(comment.id, { content: replyContent })
+                  }
+                  onToggleLike={fetchCommentsDataFromDatabase}
+                />
+              ))}
+            </div>
+          )}
+      </div>
+    );
+  };
 
   return (
     <div className="mt-6 justify-center item-center">
@@ -269,22 +264,20 @@ setComments((prevComments) =>
         <CommentForm onSubmit={handleCommentSubmit} user={user} />
       </div>
       <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-          {comments.length === 0 ? (
-            <p>No comments yet.</p>
-          ) : (
-            <div>
-              {comments.map((comment) => (
-                <React.Fragment key={comment.id}>
-                  {renderComment(comment)}
-                </React.Fragment>
-              ))}
-            </div>
-          )}
-        </div>
+        {comments.length === 0 ? (
+          <p>No comments yet.</p>
+        ) : (
+          <div>
+            {comments.map((comment) => (
+              <React.Fragment key={comment.id}>
+                {renderComment(comment)}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
+      </div>
       <div className="mt-4 text-center underline text-italic">
-      <p>
-        Note: Silahkan Reload Page jika Comment Anda Tidak Tampil
-      </p>
+        <p>Note: Silahkan Reload Page jika Comment Anda Tidak Tampil</p>
       </div>
     </div>
   );
