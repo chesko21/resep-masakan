@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   auth,
-  googleAuthProvider,
   createUserProfileDocument,
 } from "../services/firebase";
 import "animate.css";

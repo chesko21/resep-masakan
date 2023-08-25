@@ -92,7 +92,7 @@
       "icon": "public/logo512.png"
     }
   },
-  "main": "main.js",
+  "main": "src/app.js",
   "license": "MIT",
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
