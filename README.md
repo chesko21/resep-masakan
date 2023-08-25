@@ -16,7 +16,7 @@
 
 Nikmati koleksi resep kami yang beragam, mulai dari makanan sehat, hidangan cepat saji, hingga kuliner mewah. Setiap resep dilengkapi dengan panduan langkah demi langkah yang mudah diikuti.
 
-## 🍴 Cara Mulai
+## 🍴 Daftar dan Buat Resep 
 
 Kunjungi [Resep Kita](https://cheskoweb.site) untuk memulai petualangan kuliner Anda. Tersedia pula fitur pencarian untuk mencari resep spesifik sesuai keinginan.
 ## 📞 Hubungi Kami
