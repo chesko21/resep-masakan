@@ -1,65 +1,67 @@
-import React, { useState, useEffect } from 'react';
-import { db } from '../services/firebase';
+import React, { useState, useEffect } from "react";
+import { db } from "../services/firebase";
 
 const ButtonReply = ({ onClick, commentId }) => {
   const [isReplying, setIsReplying] = useState(false);
-  const [replyContent, setReplyContent] = useState('');
+  const [replyContent, setReplyContent] = useState("");
   const [replies, setReplies] = useState([]);
 
   useEffect(() => {
+    // Fetch the replies for the given commentId from Firebase
     const fetchReplies = async () => {
       try {
         const repliesSnapshot = await db
-          .collection('comments')
+          .collection("comments")
           .doc(commentId)
-          .collection('replies')
-          .orderBy('createdAt', 'asc')
+          .collection("replies")
+          .orderBy("createdAt", "asc")
           .get();
-  
+
         const fetchedReplies = repliesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setReplies(fetchedReplies);
       } catch (error) {
-        console.error('Error fetching replies:', error);
+        console.error("Error fetching replies:", error);
       }
     };
-  
+
     fetchReplies();
   }, [commentId]);
-  
+
   const handleReplySubmit = async () => {
-    if (replyContent.trim() !== '') {
-      onClick(replyContent, commentId); 
+    if (replyContent.trim() !== "") {
+      onClick(replyContent, commentId);
       setIsReplying(false);
-      setReplyContent('');
+      setReplyContent("");
+
       try {
         const repliesSnapshot = await db
-          .collection('comments')
+          .collection("comments")
           .doc(commentId)
-          .collection('replies')
-          .orderBy('createdAt', 'asc')
+          .collection("replies")
+          .orderBy("createdAt", "asc")
           .get();
-  
+
         const fetchedReplies = repliesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setReplies(fetchedReplies);
       } catch (error) {
-        console.error('Error fetching replies:', error);
+        console.error("Error fetching replies:", error);
       }
     }
   };
-  
+
   const handleReplyClick = () => {
     setIsReplying(true);
   };
 
   const handleCancelReply = () => {
     setIsReplying(false);
-    setReplyContent('');
+    setReplyContent("");
   };
 
   return (
@@ -73,17 +75,26 @@ const ButtonReply = ({ onClick, commentId }) => {
             onChange={(e) => setReplyContent(e.target.value)}
           />
           <div className="flex items-center ml-4">
-            <button className="text-blue-500 hover:text-blue-700" onClick={handleReplySubmit}>
+            <button
+              className="text-blue-500 hover:text-blue-700"
+              onClick={handleReplySubmit}
+            >
               Reply
             </button>
-            <button className="text-gray-500 hover:text-gray-700 ml-2" onClick={handleCancelReply}>
+            <button
+              className="text-gray-500 hover:text-gray-700 ml-2"
+              onClick={handleCancelReply}
+            >
               Cancel
             </button>
           </div>
         </div>
       ) : (
         <div>
-          <button className="text-blue-500 hover:text-blue-700 ml-4" onClick={handleReplyClick}>
+          <button
+            className="text-blue-500 hover:text-blue-700 ml-4"
+            onClick={handleReplyClick}
+          >
             Reply
           </button>
           {replies && replies.length > 0 && (

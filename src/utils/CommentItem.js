@@ -8,8 +8,6 @@ const CommentItem = (props) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const DEFAULT_PROFILE_IMAGE = defaultProfileImage;
-  const currentLikeCount = likesCount;
-
   const [replyLikesCount, setReplyLikesCount] = useState(
     Array.isArray(props.comment.likes) ? props.comment.likes.length : 0
   );

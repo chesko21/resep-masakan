@@ -205,7 +205,8 @@ const Profile = ({ recipe }) => {
 
   if (!authReady) {
     return (
-      <div className="flex flex-col justify-center  min-h-screen items-center px-4 py-4 bg-gradient-to-br from-purple-700 to-pink-500 border-top">
+      <div className="flex flex-col justify-center  min-h-screen items-center px-4 py-4
+       bg-gradient-to-br from-purple-600 to-pink-400 border-top">
         <BeatLoader /> LOADING...
       </div>
     );
@@ -221,7 +222,8 @@ const Profile = ({ recipe }) => {
 
   return (
     <>
-      <div className="flex flex-col items-center px-4 py-4 bg-gradient-to-br from-purple-700 to-pink-500 font-logo">
+      <div className="flex flex-col items-center px-4 py-4 
+      bg-gradient-to-br from-purple-600 to-pink-500 font-logo">
         <div className="w-32 h-32 relative rounded-full">
           {user.photoURL ? (
             <img
@@ -238,7 +240,8 @@ const Profile = ({ recipe }) => {
           )}
           <label
             htmlFor="photoUpload"
-            className="absolute bottom-0 right-0 bg-white rounded-full p-1 cursor-pointer transition-opacity hover:opacity-75"
+            className="absolute bottom-0 right-0 bg-white rounded-full p-1
+             cursor-pointer transition-opacity hover:opacity-75"
           >
             <MdAddAPhoto className="h-6 w-6 text-blue-500" />
             <input

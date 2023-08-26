@@ -10,7 +10,7 @@ const RecipeCard = ({ recipe }) => {
       <div className="border rounded-lg overflow-hidden shadow-md bg-primary-500 font-logo hover:shadow-lg transition-shadow">
         <img src={recipeImage} alt="Recipe" className="w-full h-48 object-cover" />
         <div className="p-2">
-          <h3 className="text-lg font-semibold">{title}</h3>
+          <h3 className="text-lg text-center font-semibold">{title}</h3>
         </div>
       </div>
     </Link>

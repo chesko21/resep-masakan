@@ -25,13 +25,11 @@ const CommentList = ({ id }) => {
       setCurrentAuthorId(null);
     }
 
-    // Ambil daftar komentar dari database berdasarkan ID resep
     fetchCommentsDataFromDatabase(id);
   }, [id]);
 
   const fetchCommentsDataFromDatabase = async (id) => {
     try {
-
       const snapshot = await db
         .collection("comments")
         .where("recipeId", "==", id)
@@ -59,7 +57,6 @@ const CommentList = ({ id }) => {
 
   const handleCommentSubmit = async (comment) => {
     try {
-      // Kirim komentar baru ke database
       const docRef = await commentsCollection.add({
         recipeId: id,
         content: comment.content,
@@ -93,13 +90,7 @@ const CommentList = ({ id }) => {
     }
   };
 
-  const handleReplyComment = async (parentId, reply, comment) => {
-    const updatedComment = { ...comment };
-    updatedComment.replies.push(reply);
-    setComments((prevComments) =>
-      prevComments.map((c) => (c.id === comment.id ? updatedComment : c))
-    );
-
+  const handleReplyComment = async (parentId, reply) => {
     try {
       if (parentId) {
         // Balasan untuk komentar yang ada
@@ -117,8 +108,7 @@ const CommentList = ({ id }) => {
             likes: 0,
           });
       } else {
-        // Komentar baru
-        await handleCommentSubmit(reply);
+        console.error("Parent ID is missing for reply.");
       }
     } catch (error) {
       console.error("Error replying to comment:", error);
@@ -182,79 +172,77 @@ const CommentList = ({ id }) => {
         0
       );
     }
-    return (
-      <div key={comment.id}>
-        <div className="mb-4 item-center">
-          <div className="flex items-start">
-            {comment.user && comment.user.imageURL ? (
-              <img
-                src={comment.user.imageURL}
-                alt="User"
-                className="w-8 h-8 border-2 border-blue-500 rounded-full object-cover"
-              />
-            ) : (
-              <FaUserCircle className="w-6 h-6 text-gray-500 border-2 border-blue-500" />
-            )}
-            <div className="ml-3 flex-grow mb-2 max-h-screen">
-              <div className="flex items-center mb-1">
-                <strong className="text-sm font-medium">
-                  {comment.user && comment.user.displayName
-                    ? comment.user.displayName
-                    : "Anonymous"}
-                </strong>
-              </div>
-              <div className="text-sm text-gray-700 mb-6">
-                {comment.content}
-              </div>
-              <div className="flex items-center mt-2 text-sm text-gray-500">
-                <ButtonLike
-                  commentId={comment.id}
-                  initialLikes={totalLikes}
-                  isLiked={
-                    comment.likes &&
-                    comment.likes[currentAuthorId] &&
-                    comment.likes[currentAuthorId].likedAt
-                  }
-                  onToggleLike={() => handleLikeToggle(comment.id)}
-                />
-                <ButtonReply
-                  onClick={(replyContent) =>
-                    handleReplyComment(comment.id, { content: replyContent })
-                  }
-                  replies={comment.replies}
-                />
-                {comment.replies && comment.replies.length > 0 && (
-                  <button
-                    className="ml-2 item-center text-center text-blue-500"
-                    onClick={() => toggleReplies(comment.id)}
-                  >
-                    {showReplies[comment.id] ? "Tutup" : "Lihat"}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+ return (
+   <div key={comment.id}>
+     <div className="mb-4 item-center">
+       <div className="flex items-start">
+         {comment.user && comment.user.imageURL ? (
+           <img
+             src={comment.user.imageURL}
+             alt="User"
+             className="w-8 h-8 border-2 border-blue-500 rounded-full object-cover"
+           />
+         ) : (
+           <FaUserCircle className="w-6 h-6 text-gray-500 border-2 border-blue-500" />
+         )}
+         <div className="ml-3 flex-grow mb-2 max-h-screen">
+           <div className="flex items-center mb-1">
+             <strong className="text-sm font-medium">
+               {comment.user && comment.user.displayName
+                 ? comment.user.displayName
+                 : "Anonymous"}
+             </strong>
+           </div>
+           <div className="text-sm text-gray-700 mb-6">{comment.content}</div>
+           <div className="flex items-center mt-2 text-sm text-gray-500">
+             <ButtonLike
+               commentId={comment.id}
+               initialLikes={totalLikes}
+               isLiked={
+                 comment.likes &&
+                 comment.likes[currentAuthorId] &&
+                 comment.likes[currentAuthorId].likedAt
+               }
+               onToggleLike={() => handleLikeToggle(comment.id)}
+             />
+             <ButtonReply
+               onClick={(replyContent) => {
+                 handleReplyComment(comment.id, { content: replyContent });
+                 fetchCommentsDataFromDatabase(id);
+               }}
+             />
+             {comment.replies && comment.replies.length > 0 && (
+               <button
+                 className="ml-2 item-center text-center text-blue-500"
+                 onClick={() => toggleReplies(comment.id)}
+               >
+                 {showReplies[comment.id] ? "Tutup" : "Lihat"}
+               </button>
+             )}
+           </div>
+         </div>
+       </div>
+     </div>
 
-        {/* Render balasan */}
-        {showReplies[comment.id] &&
-          comment.replies &&
-          comment.replies.length > 0 && (
-            <div className="pl-8 mt-4">
-              {comment.replies.map((reply) => (
-                <CommentItem
-                  key={reply.id}
-                  comment={reply}
-                  onReplyComment={(replyContent) =>
-                    handleReplyComment(comment.id, { content: replyContent })
-                  }
-                  onToggleLike={fetchCommentsDataFromDatabase}
-                />
-              ))}
-            </div>
-          )}
-      </div>
-    );
+     {/* Render balasan */}
+     {showReplies[comment.id] &&
+       comment.replies &&
+       comment.replies.length > 0 && (
+         <div className="pl-8 mt-4">
+           {comment.replies.map((reply) => (
+             <CommentItem
+               key={reply.id}
+               comment={reply}
+               onReplyComment={(replyContent) =>
+                 handleReplyComment(comment.id, { content: replyContent })
+               }
+               onToggleLike={fetchCommentsDataFromDatabase}
+             />
+           ))}
+         </div>
+       )}
+   </div>
+ );
   };
 
   return (
