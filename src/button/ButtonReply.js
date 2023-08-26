@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../services/firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faReply, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const ButtonReply = ({ onClick, commentId }) => {
   const [isReplying, setIsReplying] = useState(false);
@@ -79,13 +81,13 @@ const ButtonReply = ({ onClick, commentId }) => {
               className="text-blue-500 hover:text-blue-700"
               onClick={handleReplySubmit}
             >
-              Reply
+              <FontAwesomeIcon icon={faReply} />
             </button>
             <button
               className="text-gray-500 hover:text-gray-700 ml-2"
               onClick={handleCancelReply}
             >
-              Cancel
+              <FontAwesomeIcon icon={faTimes} /> 
             </button>
           </div>
         </div>
@@ -95,7 +97,7 @@ const ButtonReply = ({ onClick, commentId }) => {
             className="text-blue-500 hover:text-blue-700 ml-4"
             onClick={handleReplyClick}
           >
-            Reply
+            <FontAwesomeIcon icon={faReply} /> Reply
           </button>
           {replies && replies.length > 0 && (
             <ul className="pl-8 mt-4 mb-6">

@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import {
   auth,
   createUserProfileDocument,
+  googleAuthProvider,
 } from "../services/firebase";
 import "animate.css";
 import defaultProfileImage from "../assets/profile.svg";
@@ -39,38 +40,44 @@ const Signup = () => {
     setConfirmPassword(event.target.value);
   };
 
-  const handleGoogleSignup = async () => {
-    try {
-      setIsLoading(true);
-      const { user } = await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      const imageURL = defaultProfileImage;
+const handleGoogleSignup = async () => {
+  try {
+    setIsLoading(true);
+    const googleUser = await auth.signInWithPopup(googleAuthProvider);
+    const googleEmail = googleUser.user.email;
 
-      await createUserProfileDocument(user, {
-        displayName,
-        photoURL: imageURL,
-      });
+    setEmail(googleEmail);
 
-      // Send the email verification
-      await user.sendEmailVerification();
+    const defaultPassword = "google-password";
 
-      setShowModal(true);
-      setTimeout(() => {
-        setShowModal(false);
-        navigate("/");
-      }, 3000);
-    } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        setError("Email Sudah Terdaftar, Silahkan Login.");
-      } else {
-        setError(error.message);
-      }
-    } finally {
-      setIsLoading(false);
+    const { user } = await auth.createUserWithEmailAndPassword(
+      googleEmail,
+      defaultPassword 
+    );
+    const imageURL = defaultProfileImage;
+
+    await createUserProfileDocument(user, {
+      displayName,
+      photoURL: imageURL,
+    });
+
+    await user.sendEmailVerification();
+
+    setShowModal(true);
+    setTimeout(() => {
+      setShowModal(false);
+      navigate("/");
+    }, 3000);
+  } catch (error) {
+    if (error.code === "auth/email-already-in-use") {
+      setError("Email Sudah Terdaftar, Silahkan Login.");
+    } else {
+      setError(error.message);
     }
-  };
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -98,7 +105,6 @@ const Signup = () => {
         photoURL: imageURL,
       });
 
-      // Send the email verification
       await user.sendEmailVerification();
 
       setShowModal(true);

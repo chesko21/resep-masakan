@@ -5,6 +5,8 @@ import ButtonLike from "../button/ButtonLike";
 import CommentItem from "../utils/CommentItem";
 import CommentForm from "../utils/CommentForm";
 import { auth, db, commentsCollection } from "../services/firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash, faReply } from "@fortawesome/free-solid-svg-icons";
 
 const CommentList = ({ id }) => {
   const [user, setUser] = useState(null);
@@ -210,13 +212,20 @@ const CommentList = ({ id }) => {
                  handleReplyComment(comment.id, { content: replyContent });
                  fetchCommentsDataFromDatabase(id);
                }}
-             />
+             >
+               <FontAwesomeIcon icon={faReply} />{" "}
+               
+             </ButtonReply>
              {comment.replies && comment.replies.length > 0 && (
                <button
                  className="ml-2 item-center text-center text-blue-500"
                  onClick={() => toggleReplies(comment.id)}
                >
-                 {showReplies[comment.id] ? "Tutup" : "Lihat"}
+                 {showReplies[comment.id] ? (
+                   <FontAwesomeIcon icon={faEyeSlash} />
+                 ) : (
+                   <FontAwesomeIcon icon={faEye} />
+                 )}
                </button>
              )}
            </div>

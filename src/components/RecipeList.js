@@ -16,10 +16,10 @@ const RecipeList = () => {
   const [selectedTitle, setSelectedTitle] = useState("");
   const [slideIndex, setSlideIndex] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // <-- Menggunakan isLoading
-  const [pageNumber, setPageNumber] = useState(1); // <-- Menggunakan setPageNumber
-  const [searchTerm, setSearchTerm] = useState(""); // <-- Menggunakan searchTerm
-  const [sortBy, setSortBy] = useState(""); // <-- Menggunakan sortBy
+  const [isLoading, setIsLoading] = useState(true); 
+  const [pageNumber, setPageNumber] = useState(1); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("");
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [isRecipesLoading, setIsRecipesLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
@@ -318,11 +318,11 @@ const RecipeList = () => {
                       <FaStar
                         key={index}
                         className={
-                          index < Math.floor(recipe.rating) 
+                          index < Math.floor(recipe.rating)
                             ? "text-yellow-500 mr-1"
                             : index === Math.floor(recipe.rating)
                             ? "text-primary-500 mr-1 opacity-50"
-                            : "text-gray-200 mr-1" 
+                            : "text-primary-500 mr-1 opacity-50"
                         }
                       />
                     ))}

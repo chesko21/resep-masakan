@@ -21,7 +21,7 @@ const ActivityFloatButton = ({ authorId }) => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        setIsLoading(true);
+        setIsLoading(false);
         await new Promise((resolve) => setTimeout(resolve, 2000));
         setIsLoading(false);
       } catch (error) {
@@ -52,7 +52,7 @@ const ActivityFloatButton = ({ authorId }) => {
       <Draggable nodeRef={draggableRef}>
         <div ref={draggableRef}>
           <button
-            className="bg-yellow-500 text-blue rounded-full p-4 shadow hover:bg-purple-600 cursor-pointer focus:outline-none"
+            className="bg-yellow-500 text-blue rounded-full p-3 shadow hover:bg-purple-600 cursor-pointer focus:outline-none"
             onClick={handleToggleActivity}
             onTouchStart={handleTouchToggleActivity}
             ref={buttonRef}
@@ -62,8 +62,7 @@ const ActivityFloatButton = ({ authorId }) => {
         </div>
       </Draggable>
       {showActivity && (
-        <div className="bg-blue-300 rounded-lg p-4 shadow mt-2 text-xs md:text-sm">
-          <h3 className="text-sm md:text-base font-semibold mb-2">Activity History</h3>
+        <div className="bg-blue-300 rounded-lg p-3 shadow mt-2 text-xs md:text-sm">
           {isLoading ? (
             <div className="flex justify-center items-center h-16 w-16">
               <BeatLoader color="#000000" loading={isLoading} size={16} />
