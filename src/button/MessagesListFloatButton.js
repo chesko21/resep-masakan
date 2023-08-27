@@ -102,8 +102,8 @@ useEffect(() => {
       {user && (
         <div
           ref={floatButtonRef}
-          className={`fixed bottom-12 right-12 bg-secondary-500 hover:bg-white p-2 rounded-full cursor-pointer chat-button ${
-            isMobile ? "md:right-10 md:bottom-10" : ""
+          className={`fixed bottom-8 right-8 bg-secondary-500 hover:bg-white p-2 rounded-full cursor-pointer chat-button ${
+            isMobile ? "md:right-10 md:bottom-8" : ""
           }`}
           onClick={toggleChat}
         >
@@ -118,12 +118,12 @@ useEffect(() => {
       {user && isChatOpen && (
         <Draggable handle=".drag-handle" nodeRef={floatButtonRef}>
           <div
-            className={`fixed bottom-4 right-4 sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-xl text-primary logo chat-box ${
+            className={`fixed bottom-4 right-6 sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-xl text-primary logo chat-box ${
               isChatOpen ? "block" : "hidden"
             }`}
           >
             <div className="rounded shadow-md">
-              <div className="flex justify-between bg-primary-700 p-2 md:p-3 rounded-t-lg drag-handle">
+              <div className="flex justify-between bg-primary-600 p-2 md:p-2 rounded-t-lg drag-handle">
                 <h3 className="text-secondary-500 font-bold">Chat</h3>
                 <button
                   className="text-white hover:text-gray-300 focus:outline-none"
@@ -132,7 +132,7 @@ useEffect(() => {
                   <FontAwesomeIcon icon={faTimes} />
                 </button>
               </div>
-              <div className="bg-primary-200 h-80 w-80 md:max-w-md lg:max-w-md xl:max-w-xl overflow-y-auto">
+              <div className="bg-primary-200 h-60 w-80 md:max-w-md lg:max-w-md xl:max-w-xl overflow-y-auto">
                 <MessagesList
                   className="bg-primary-500 p-2"
                   messages={messages}

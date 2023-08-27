@@ -62,7 +62,7 @@ const RecipeList = () => {
         const snapshot = await query.limit(20).get();
 
         if (snapshot.docs.length === 0) {
-          setIsRecipesLoading(false);
+          setIsRecipesLoading(true);
           return;
         }
 
@@ -116,7 +116,7 @@ const RecipeList = () => {
         const snapshot = await query.limit(20).get();
 
         if (snapshot.docs.length === 0) {
-          setIsLoading(false);
+          setIsLoading(true);
           return;
         }
 
@@ -229,8 +229,7 @@ const RecipeList = () => {
             className="flex-1 text-center py-2 px-4"
           />
           <div className="flex flex-wrap justify-center p-4 mb-4">
-            <label htmlFor="sortBy" className="text-orange font-semibold mr-2">
-              Sort By:
+            <label htmlFor="sortBy" >
             </label>
             <select
               id="category"
@@ -328,13 +327,13 @@ const RecipeList = () => {
                     ))}
                   </div>
                 </div>
-                <div className="mb-4 mt-4">
+                <div className="mb-4 mt-4 font-bold">
                   <span className="text-sm p-2 text-gray-600 bg-white rounded-full">
                     {recipe.rating}
                   </span>
                 </div>
                 <p
-                  className="mb-2 cursor-pointer text-sm"
+                  className="mb-2 cursor-pointer text-sm text-yellow-500"
                   onClick={() => handleDescriptionToggle()}
                 >
                   {showFullDescription

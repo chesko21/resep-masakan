@@ -6,39 +6,39 @@ const Rating = ({ recipeId, initialRating, onChange }) => {
   const [rating, setRating] = useState(parseFloat(initialRating));
   const [isRated, setIsRated] = useState(false);
   const [currentRating, setCurrentRating] = useState(0);
-  const [isStarOn, setIsStarOn] = useState(false);
+  const [hoverRating, setHoverRating] = useState(0); // State untuk mengontrol bintang yang dihover
 
   useEffect(() => {
     setRating(parseFloat(initialRating));
   }, [initialRating]);
 
-  useEffect(() => {
-    const fetchUserRating = async () => {
-      try {
-        const userAuth = auth.currentUser;
-        if (userAuth) {
-          const userId = userAuth.uid;
-          const ratingDocRef = db
-            .collection("recipes")
-            .doc(recipeId)
-            .collection("ratings")
-            .doc(userId);
-          const ratingDoc = await ratingDocRef.get();
+useEffect(() => {
+  const fetchUserRating = async () => {
+    try {
+      const userAuth = auth.currentUser;
+      if (userAuth) {
+        const userId = userAuth.uid;
+        const ratingDocRef = db
+          .collection("recipes")
+          .doc(recipeId)
+          .collection("ratings")
+          .doc(userId);
+        const ratingDoc = await ratingDocRef.get();
 
-          if (ratingDoc.exists) {
-            const userRating = ratingDoc.data().rating;
-            setCurrentRating(userRating);
-            setIsRated(true);
-            setIsStarOn(true);
-          }
+        if (ratingDoc.exists) {
+          const userRating = ratingDoc.data().rating;
+          setCurrentRating(userRating);
+          setIsRated(true); // <-- Ubah dari setIsStarOn menjadi setIsRated
         }
-      } catch (error) {
-        console.error("Error fetching user rating:", error);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching user rating:", error);
+    }
+  };
 
-    fetchUserRating();
-  }, [recipeId]);
+  fetchUserRating();
+}, [recipeId]);
+
 
   const handleRatingChange = async (value) => {
     const ratingValue = parseFloat(value);
@@ -46,8 +46,7 @@ const Rating = ({ recipeId, initialRating, onChange }) => {
     if (!isRated) {
       setRating(ratingValue);
       setCurrentRating(ratingValue);
-      setIsRated(true);
-      setIsStarOn(true);
+      setIsRated(true); 
       onChange(ratingValue);
 
       try {
@@ -90,16 +89,16 @@ const Rating = ({ recipeId, initialRating, onChange }) => {
           const isHalfStar =
             starValue === Math.ceil(rating) && rating % 1 !== 0;
           const starColor = isRated ? "text-yellow-500" : "text-gray-400";
+          const isStarLit = starValue <= hoverRating; // Mengontrol apakah bintang harus nyala
+
           return (
             <span
               key={index}
               className={`text-3xl cursor-pointer ${
-                isFilledStar || isStarOn
-                  ? starColor
-                  : isHalfStar
-                  ? starColor
-                  : "text-gray-400"
+                isStarLit ? "text-yellow-500" : starColor
               }`}
+              onMouseEnter={() => setHoverRating(starValue)} // Mengatur hoverRating saat mengarahkan kursor
+              onMouseLeave={() => setHoverRating(0)} // Mengatur hoverRating saat meninggalkan bintang
               onClick={() => handleRatingChange(starValue)}
             >
               {isFilledStar ? (

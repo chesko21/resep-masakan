@@ -75,51 +75,61 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
     fetchComments();
   }, [id]);
 
-  const handleCommentSubmit = async (comment) => {
-    try {
-      const newComment = {
-        recipeId: id,
-        content: comment,
-        rating: hasRated ? 0 : currentRating,
-        likes: [],
-        user: {
-          displayName: user.displayName || 'Anonymous',
-          photoURL: user.photoURL,
-        },
-      };
+ const handleCommentSubmit = async (comment) => {
+   try {
+     const newComment = {
+       recipeId: id,
+       content: comment,
+       rating: hasRated ? userRating : currentRating, // Use userRating if rated, else currentRating
+       likes: [],
+       user: {
+         displayName: user.displayName || "Anonymous",
+         photoURL: user.photoURL,
+       },
+     };
+     const docRef = await commentsCollection.add(newComment);
+     const newCommentWithId = { id: docRef.id, ...newComment };
 
-      const docRef = await commentsCollection.add(newComment);
-      const newCommentWithId = { id: docRef.id, ...newComment };
+     setComments([...comments, newCommentWithId]);
 
-      setComments([...comments, newCommentWithId]);
+     if (hasRated) {
+       const userAuth = auth.currentUser;
+       if (userAuth) {
+         const authorId = userAuth.uid;
+         const ratingDocRef = db
+           .collection("recipes")
+           .doc(id)
+           .collection("ratings")
+           .doc(authorId);
+         await ratingDocRef.set({ rating: currentRating });
 
-      if (hasRated) {
-        const userAuth = auth.currentUser;
-        if (userAuth) {
-          const authorId = userAuth.uid;
-          const ratingDocRef = db.collection('recipes').doc(id).collection('ratings').doc(authorId);
-          await ratingDocRef.set({ rating: currentRating });
-
-          const recipeDocRef = db.collection('recipes').doc(id);
-          const recipeDoc = await recipeDocRef.get();
-          if (recipeDoc.exists) {
-            const recipeData = recipeDoc.data();
-            const comments = recipeData.comments || [];
-            const userComment = comments.find((comment) => comment.authorId === authorId);
-            if (userComment) {
-              userComment.rating = currentRating;
-              const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0) + currentRating;
-              const average = totalRating / (comments.length + 1);
-              setAverageRating(average.toFixed(1));
-              await recipeDocRef.update({ rating: average.toFixed(1), comments });
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error submitting comment:', error);
-    }
-  };
+         const recipeDocRef = db.collection("recipes").doc(id);
+         const recipeDoc = await recipeDocRef.get();
+         if (recipeDoc.exists) {
+           const recipeData = recipeDoc.data();
+           const comments = recipeData.comments || [];
+           const userComment = comments.find(
+             (comment) => comment.authorId === authorId
+           );
+           if (userComment) {
+             userComment.rating = currentRating;
+             const totalRating =
+               comments.reduce((sum, comment) => sum + comment.rating, 0) +
+               currentRating;
+             const average = totalRating / (comments.length + 1);
+             setAverageRating(average.toFixed(1));
+             await recipeDocRef.update({
+               rating: average.toFixed(1),
+               comments,
+             });
+           }
+         }
+       }
+     }
+   } catch (error) {
+     console.error("Error submitting comment:", error);
+   }
+ };
 
   const handleRatingChange = (rating) => {
     setCurrentRating(rating);
@@ -181,8 +191,11 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   }
 
   return (
-    <div className="p-6 lg:px-12 xl:px-24 bg-purple-100">
-      <Link to="/recipe-list" className="text-blue-500 hover:underline">
+    <div className="p-6 lg:px-12 xl:px-24 bg-purple-200">
+      <Link
+        to="/recipe-list"
+        className="text-blue-500 font-bold hover:underline"
+      >
         &lt; Back to Recipes
       </Link>
       <h2 className="text-3xl font-semibold text-center mt-4">
@@ -193,21 +206,18 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
           <img
             src={recipe.recipeImage}
             alt="Recipe"
-            className="h-64 w-full object-cover rounded shadow-xl-dark"
+            className="h-64 w-full object-cover rounded-md shadow-xl-dark"
           />
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-black bg-opacity-50 text-white">
+        <div className="absolute  bottom-0 left-0 right-0 p-4 bg-black bg-opacity-50 text-white">
           <div className="flex flex-row items-center mb-2">
             <img
               src={recipe.creatorPhoto || user.photoURL}
               alt="Creator"
-              className="rounded-full h-12 w-12 object-cover mr-2"
+              className="rounded-full h-12 w-12 object-cover mr-2 border-2"
             />
-            <p className="text-orange-500 font-bold text-lg">
-              {" "}
-              {recipe.author}
-            </p>
+            <p className="text-white font-bold text-lg"> {recipe.author}</p>
           </div>
         </div>
       </div>
@@ -248,6 +258,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
       <div className="flex flex-col items-center justify-center my-4">
         <p className="text-center">Tekan Bintang Untuk Memberikan Rating</p>
         <div className="px-2 py-2 items-center text-center mt-4">
+          Your Rating
           <Rating
             recipeId={id}
             initialRating={currentRating}

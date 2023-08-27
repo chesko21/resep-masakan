@@ -154,31 +154,35 @@ const AddRecipeForm = ({ userAuth }) => {
       }));
     }
   };
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  setRecipe((prevState) => ({
+    ...prevState,
+    recipeImage: file,
+  }));
+  setIsImageUrl(false);
+};
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setRecipe((prevState) => ({
-      ...prevState,
-      recipeImage: file,
-    }));
-    setIsImageUrl(false);
-  };
+const handleImageUrlChange = (e) => {
+  const imageURL = e.target.value;
+  setRecipe((prevState) => ({
+    ...prevState,
+    recipeImage: imageURL,
+  }));
+  setIsImageUrl(true);
+};
 
-  const handleImageUrlChange = (e) => {
-    const imageURL = e.target.value;
-    setRecipe((prevState) => ({
-      ...prevState,
-      recipeImage: imageURL,
-    }));
-    setIsImageUrl(true);
-  };
-
-  const uploadImageToStorage = async (recipeImageUrl) => {
-    const storageRef = storage.ref().child(`images/${recipeImageUrl.name}`);
-    const snapshot = await storageRef.put(recipeImageUrl);
-    const recipeImage = await snapshot.ref.getDownloadURL();
-    return recipeImage;
-  };
+const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
+  try {
+    const storageRef = storage.ref().child(`images/${uniqueImageName}`);
+    const snapshot = await storageRef.put(recipeImage);
+    const recipeImageUrl = await snapshot.ref.getDownloadURL();
+    return recipeImageUrl;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
+};
 
   const uploadDefaultImageToStorage = async () => {
     try {
@@ -190,7 +194,6 @@ const AddRecipeForm = ({ userAuth }) => {
       return '';
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -221,30 +224,27 @@ const AddRecipeForm = ({ userAuth }) => {
       const authorId = userAuth.uid;
       const recipeId = uuidv4();
       const createdAt = firebase.firestore.Timestamp.now();
-
-      let recipeImageUrl = recipe.recipeImage;
-      if (!recipe.creatorPhoto) {
-        setRecipe((prevState) => ({
-          ...prevState,
-          creatorPhoto: creatorPhoto,
-        }));
-      }
-
-      if (!isImageUrl) {
-        try {
-          if (!recipeImageUrl) {
-            recipeImageUrl = await uploadDefaultImageToStorage();
-          } else {
-            recipeImageUrl = await uploadImageToStorage(recipeImageUrl);
-          }
-        } catch (error) {
-          console.error('Error uploading image:', error);
-          setShowModal(true);
-          setIsSubmitting(false);
-          return;
-        }
-      }
-
+ let recipeImageUrl = recipe.recipeImage;
+ if (!isImageUrl) {
+   try {
+     if (!recipeImageUrl) {
+       recipeImageUrl = await uploadDefaultImageToStorage();
+     } else {
+       const uniqueImageName = `${uuidv4()}-${Date.now()}-${
+         recipeImageUrl.name
+       }`;
+       recipeImageUrl = await uploadImageToStorage(
+         recipeImageUrl,
+         uniqueImageName
+       );
+     }
+   } catch (error) {
+     console.error("Error uploading image:", error);
+     setShowModal(true);
+     setIsSubmitting(false);
+     return;
+   }
+ }
       const newRecipe = {
         title: recipe.title,
         description: recipe.description,
@@ -284,6 +284,7 @@ const AddRecipeForm = ({ userAuth }) => {
       setIsSubmitting(false);
     }
   };
+  
 
   return (
     <div className="container mx-auto px-8 py-4 bg-purple-700">

@@ -175,7 +175,7 @@ const settings = {
               key={recipe.id}
               className="m-2 item-center items-center justify-center"
             >
-              <div className="relative w-64 mx-auto bg-accent-600 rounded item-center text-center">
+              <div className="relative w-64 mx-auto bg-accent-500 rounded item-center text-center">
                 <Link
                   className="block font-bold text-secondary-400 hover:text-primary-500 transition-colors p-2"
                   to={`/recipes/${recipe.id}`}

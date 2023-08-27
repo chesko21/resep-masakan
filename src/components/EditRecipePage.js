@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { db, storage } from "../services/firebase";
 import { Form, Button, FormControl, InputGroup } from "react-bootstrap";
 import { Trash } from "react-bootstrap-icons";
+import { v4 as uuidv4 } from "uuid";
 
 const EditRecipePage = ({ user }) => {
   const { id } = useParams();
@@ -77,13 +78,30 @@ const EditRecipePage = ({ user }) => {
     }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setRecipe((prevState) => ({
-      ...prevState,
-      recipeImage: file,
-    }));
-  };
+const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+
+  if (recipe.recipeImageName) {
+    const storageRef = storage.ref().child(`images/${recipe.recipeImageName}`);
+    try {
+      await storageRef.delete();
+      console.log("Previous image deleted from storage.");
+    } catch (error) {
+      console.error("Error deleting previous image:", error);
+    }
+  }
+
+  const randomImageId = uuidv4();
+  const fileExtension = file.name.split(".").pop();
+  const randomImageName = `${randomImageId}.${fileExtension}`;
+
+  setRecipe((prevState) => ({
+    ...prevState,
+    recipeImage: file,
+    recipeImageName: randomImageName,
+  }));
+};
+
 
   const handleInstructionChange = (e, index) => {
     const { value } = e.target;
@@ -143,7 +161,7 @@ const EditRecipePage = ({ user }) => {
 
         const storageRef = storage
           .ref()
-          .child(`images/${recipe.recipeImage.name}`);
+          .child(`images/${recipe.recipeImageName}`);
         const snapshot = await storageRef.put(recipe.recipeImage);
         const updatedRecipeImageUrl = await snapshot.ref.getDownloadURL();
 
@@ -152,7 +170,7 @@ const EditRecipePage = ({ user }) => {
         const recipeRef = db.collection("recipes").doc(id);
         await recipeRef.update(updatedRecipe);
         console.log(
-          "Recipe with updated image from storage updated successfully!"
+          "Recipe updated successfully!"
         );
         navigate(`/recipes/${id}`);
       }
@@ -160,7 +178,6 @@ const EditRecipePage = ({ user }) => {
       console.error("Error updating recipe:", error);
     }
   };
-
   return (
     <div className="container mx-auto px-8 py-4 bg-purple-700">
       <Link to="/profile" className="text-orange-300 hover:underline">
