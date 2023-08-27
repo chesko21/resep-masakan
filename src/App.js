@@ -20,6 +20,7 @@ import ActivityFloatButton from "./button/ActivityFloatButton";
 import EditRecipePage from "./components/EditRecipePage";
 import AuthorProfile from "./components/AuthorProfile";
 import RecommendationRecipes from "./components/RecommendationRecipes";
+import ErrorPage from "./pages/ErrorPage";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -67,6 +68,12 @@ const App = () => {
             path="/recipes/edit/:id"
             element={<EditRecipePage user={user} />}
           />
+          <Route path="/404" element={<ErrorPage code="404" />} />
+          <Route path="/400" element={<ErrorPage code="400" />} />
+          <Route path="/401" element={<ErrorPage code="401" />} />
+          <Route path="/403" element={<ErrorPage code="403" />} />
+          <Route path="/503" element={<ErrorPage code="503" />} />
+          <Route path="*" element={<ErrorPage code="404" />} />
         </Routes>
         <Footer />
       </div>
