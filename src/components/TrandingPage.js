@@ -47,7 +47,7 @@ const TrandingPage = () => {
   );
 
   return (
-    <div className="bg-gradient-to-tl from-blue-500 to-secondary-400 min-h-screen">
+    <div className="bg-gradient-to-tl from-blue-500 via-wavy-purple to-accent-400 min-h-screen">
       <div className="container mx-auto px-8 py-4">
         <h2 className="text-2xl font-bold mb-4 text-white">
           Resep Lagi Tranding
