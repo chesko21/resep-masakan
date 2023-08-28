@@ -47,7 +47,7 @@ const TrandingPage = () => {
   );
 
   return (
-    <div className="min-h-screen">
+    <div className="bg-gradient-to-tl from-blue-500 to-secondary-400 min-h-screen">
       <div className="container mx-auto px-8 py-4">
         <h2 className="text-2xl font-bold mb-4 text-white">
           Resep Lagi Tranding
@@ -59,10 +59,10 @@ const TrandingPage = () => {
               className="story-card p-6 bg-gradient-to-br from-purple-500 to-accent-600 rounded-lg
                shadow-md hover:shadow-lg
                 transition duration-300 transform hover:scale-105"
-              initial={{ opacity: 1, scale: 1, }}
-              animate={{ opacity: 1, scale: 0.90, }}
+              initial={{ opacity: 1, scale: 1 }}
+              animate={{ opacity: 1, scale: 0.9 }}
               exit={{ opacity: 0 }}
-              whileHover={{ scale: 1, opacity:0.90 , rotate: 15 }}
+              whileHover={{ scale: 1, opacity: 0.9, rotate: 15 }}
             >
               <div className="relative mb-4">
                 <img

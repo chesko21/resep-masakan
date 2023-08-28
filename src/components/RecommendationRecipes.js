@@ -177,7 +177,7 @@ const settings = {
             >
               <div className="relative w-64 mx-auto bg-accent-500 rounded item-center text-center">
                 <Link
-                  className="block font-bold text-secondary-400 hover:text-primary-500 transition-colors p-2"
+                  className="block font-bold text-secondary-400 hover:text-blue-500 transition-colors p-2"
                   to={`/recipes/${recipe.id}`}
                 >
                   {recipe.title}
