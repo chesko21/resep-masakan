@@ -14,11 +14,11 @@ const SearchBar = ({ onSearch }) => {
         placeholder="Cari resep..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="px-4 py-2 border border-black-500 rounded-l-full focus:outline-none"
+        className="text-center mr-2 px-2 py-2 border border-black-500 rounded-l-full focus:outline-none"
       />
       <button
         onClick={handleSearch}
-        className="bg-amber-500  border-white ml-2 text-white px-4 py-2 rounded-r-full hover:bg-blue-600 focus:outline-none"
+        className="bg-amber-500 text-white px-2 py-2 rounded-r-full hover:bg-blue-600 focus:outline-none"
       >
         Cari
       </button>

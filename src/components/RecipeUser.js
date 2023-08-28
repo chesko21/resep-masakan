@@ -80,15 +80,19 @@ const RecipeUser = ({ authorId }) => {
 
   return (
     <div className="mx-auto bg-primary-200 min-h-screen p-4">
-      <h2 className="text-3xl font-bold mb-6 text-center text-secondary">Resep Collection</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-secondary">
+        Resep Collection
+      </h2>
       {userRecipes.length === 0 ? (
-        <p className="text-secondary text-center">Tidak ada resep yang dibuat.</p>
+        <p className="text-secondary text-center">
+          Tidak ada resep yang dibuat.
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {userRecipes.map((recipe) => (
             <div
               key={recipe.id}
-              className="border rounded-lg overflow-hidden shadow-md hover:shadow-lg bg-gradient-to-br from-purple-700 to-pink-500 relative transition duration-300"
+              className="transition-transform transform hover:scale-105 border rounded-lg overflow-hidden shadow-md hover:shadow-lg bg-gradient-to-br from-purple-700 to-pink-500 relative transition duration-300"
             >
               {isNewRecipe(recipe.dateCreated) && (
                 <div className="absolute top-0 left-0 font-bold text-orange-700 mt-3 px-2 rounded-b-lg transform -rotate-45 underline text-white">
@@ -122,16 +126,17 @@ const RecipeUser = ({ authorId }) => {
                 </Link>
                 <div className="text-center rounded-lg p-2">
                   <p
-                    className={`${showFullDescription[recipe.id] ? 'h-auto' : 'h-12'
-                      } overflow-hidden text-white`}
+                    className={`${
+                      showFullDescription[recipe.id] ? "h-auto" : "h-12"
+                    } overflow-hidden text-white`}
                     onClick={handleToggleDescription(recipe.id)}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: "pointer" }}
                   >
                     {recipe.description}
                   </p>
                 </div>
                 {!showFullDescription[recipe.id] &&
-                  recipe.description.split(' ').length > 12 && (
+                  recipe.description.split(" ").length > 12 && (
                     <button
                       className="text-white hover:text-primary-500 focus:outline-none mt-2"
                       onClick={handleToggleDescription(recipe.id)}
@@ -140,7 +145,9 @@ const RecipeUser = ({ authorId }) => {
                     </button>
                   )}
                 <p className="mt-2 text-sm">Kategori: {recipe.category}</p>
-                <p className="text-white text-sm mt-2">Created: {recipe.dateCreated?.toLocaleDateString()}</p>
+                <p className="text-white text-sm mt-2">
+                  Created: {recipe.dateCreated?.toLocaleDateString()}
+                </p>
                 <div className="flex mt-4 justify-center space-x-4">
                   <button
                     className="px-3 py-1 text-sm bg-red-500 text-white rounded-lg flex items-center hover:bg-red-600 transition-colors duration-300"

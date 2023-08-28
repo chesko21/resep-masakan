@@ -21,6 +21,7 @@ import EditRecipePage from "./components/EditRecipePage";
 import AuthorProfile from "./components/AuthorProfile";
 import RecommendationRecipes from "./components/RecommendationRecipes";
 import ErrorPage from "./pages/ErrorPage";
+import TrandingPage from "./components/TrandingPage";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -54,6 +55,7 @@ const App = () => {
             path="/recipe-list"
             element={<RecipeList userAuth={userAuth} />}
           />
+          <Route path="/tranding" element={<TrandingPage />} />
           <Route path="/user/:authorId" element={<RecipeUser user={user} />} />
           <Route path="/recipes/:id" element={<RecipeDetail user={user} />} />
           <Route

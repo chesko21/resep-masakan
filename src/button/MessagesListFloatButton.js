@@ -75,6 +75,8 @@ const MessagesListFloatButton = ({ user, messages }) => {
   const closeChatBox = () => {
     setIsChatOpen(false);
   };
+  
+  
 
 const handleDocumentClick = (event) => {
   if (
@@ -90,12 +92,14 @@ const handleDocumentClick = (event) => {
   }
 };
 
-useEffect(() => {
-  document.addEventListener("click", handleDocumentClick);
-  return () => {
-    document.removeEventListener("click", handleDocumentClick);
-  };
-}, [handleDocumentClick]);
+  useEffect(() => {
+    document.addEventListener("click", handleDocumentClick);
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, [handleDocumentClick]);
+
+  
 
   return (
     <>

@@ -29,6 +29,7 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+const firestore = firebase.firestore();
 
 const recipesCollection = db.collection("recipes");
 
@@ -228,6 +229,7 @@ export {
   commentsCollection,
   handleAddRecipe,
   handleDeleteRecipe,
+  firestore ,
 };
 
 export default firebase;

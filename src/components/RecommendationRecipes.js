@@ -173,7 +173,7 @@ const settings = {
           {recommendations.map((recipe) => (
             <div
               key={recipe.id}
-              className="m-2 item-center items-center justify-center"
+              className="transition-transform transform hover:scale-105 m-2 item-center items-center justify-center"
             >
               <div className="relative w-64 mx-auto bg-accent-500 rounded item-center text-center">
                 <Link

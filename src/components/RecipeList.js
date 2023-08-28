@@ -183,12 +183,12 @@ const RecipeList = () => {
   };
 
   const handleNextSlide = () => {
-    const totalSlides = Math.ceil(filteredRecipes.length / 20);
+    const totalSlides = Math.ceil(filteredRecipes.length / 12);
     setSlideIndex((prevSlideIndex) => (prevSlideIndex + 1) % totalSlides);
   };
 
   const handlePrevSlide = () => {
-    const totalSlides = Math.ceil(filteredRecipes.length / 20);
+    const totalSlides = Math.ceil(filteredRecipes.length / 12);
     setSlideIndex(
       (prevSlideIndex) => (prevSlideIndex - 1 + totalSlides) % totalSlides
     );
@@ -200,14 +200,13 @@ const RecipeList = () => {
     );
   };
 
-  const startIndex = slideIndex * 20;
-  const endIndex = startIndex + 20;
+  const startIndex = slideIndex * 12;
+  const endIndex = startIndex + 12;
 
   const currentRecipes = filteredRecipes.slice(startIndex, endIndex);
 
   const uniqueCreators = [...new Set(recipes.map((recipe) => recipe.author))];
-  const allCreatorsOption = selectedCreator ? "" : "All Creators";
-
+  
   return (
     <div className="bg-gradient-to-tr from-primary-500 via-wavy-purple to-accent-400">
       {isRecipesLoading ? (
@@ -226,16 +225,15 @@ const RecipeList = () => {
           </p>
           <SearchBar
             onSearch={handleSearch}
-            className="flex-1 text-center py-2 px-4"
+            className="text-center py-2 px-2"
           />
-          <div className="flex flex-wrap justify-center p-4 mb-4">
-            <label htmlFor="sortBy" >
-            </label>
+          <div className="flex-1 text-center justify-center p-2 mb-4">
+            <label htmlFor="sortBy"></label>
             <select
               id="category"
               value={selectedCategory}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="ml-2 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 mb-2 md:mb-0"
+              className="ml-2 hover:bg-gray-300 border border-gray-300 text-center rounded focus:outline-none focus:border-blue-500 mb-2 md:mb-0 text-sm"
             >
               <option value="">All Categories</option>
               {categories.map((category) => (
@@ -248,9 +246,9 @@ const RecipeList = () => {
               id="creator"
               value={selectedCreator}
               onChange={(e) => handleCreatorChange(e.target.value)}
-              className="ml-2 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 mb-2 md:mb-0"
+              className="ml-2 hover:bg-gray-300 border border-gray-300 text-center rounded focus:outline-none focus:border-blue-500 mb-2 md:mb-0 text-sm"
             >
-              <option value="">{allCreatorsOption}</option>
+              <option value="">All Creators</option>
               {uniqueCreators.map((creator) => (
                 <option key={creator} value={creator}>
                   {creator}
@@ -261,7 +259,7 @@ const RecipeList = () => {
               id="title"
               value={selectedTitle}
               onChange={(e) => handleTitleChange(e.target.value)}
-              className="ml-2 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:border-blue-500 mb-2 md:mb-0"
+              className="ml-2 hover:bg-gray-300 border border-gray-300 text-center rounded focus:outline-none focus:border-blue-500 mb-2 md:mb-0 text-sm"
             >
               <option value="">All Titles</option>
               {recipes.map((recipe) => (
@@ -275,7 +273,7 @@ const RecipeList = () => {
             {currentRecipes.map((recipe) => (
               <div
                 key={recipe.id}
-                className="rounded-lg shadow-md bg-accent-500 hover:bg-accent-300 border border-secondary-200 p-2"
+                className="rounded-lg shadow-md bg-accent-500 hover:bg-accent-300 border border-secondary-200 p-2 transition-transform transform hover:scale-105"
               >
                 <div className="mb-2">
                   <Link

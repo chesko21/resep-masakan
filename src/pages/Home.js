@@ -9,6 +9,7 @@ import {
 } from "../services/firebase";
 import MessagesListFloatButton from "../button/MessagesListFloatButton";
 import BeatLoader from "react-spinners/BeatLoader";
+import TrandingPage from "../components/TrandingPage";
 
 const Home = ({ profilePhoto, authorId, isChatOpen, userAuth }) => {
   const [recipes, setRecipes] = useState([]);
@@ -153,8 +154,13 @@ const Home = ({ profilePhoto, authorId, isChatOpen, userAuth }) => {
         <div className="mb-4">
           <RecipeList userAuth={userAuth} />
         </div>
+        <div>
+          <TrandingPage />
+        </div>
+        <div>
         <RecommendationRecipes setUserRecipes={setRecipes} />
       </div>
+        </div>
       <MessagesListFloatButton user={user} messages={messages} />
     </div>
   );
