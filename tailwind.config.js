@@ -46,7 +46,11 @@ module.exports = {
           background: "#1A202C",
           primary: "#4A90E2",
         },
+        backgroundImage: {
+          wave: "linear-gradient(to bottom, #4c51bf, #9f7aea, #4c51bf)",
+        },
       },
+
       fontFamily: {
         heading: ["Montserrat", "sans-serif"],
         body: ["Open Sans", "sans-serif"],

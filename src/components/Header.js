@@ -8,6 +8,7 @@ import {
   FaUtensils,
   FaTimes,
   FaSignOutAlt,
+  FaHotjar,
 } from "react-icons/fa";
 import { auth } from "../services/firebase";
 import "../styles/tailwind.css";
@@ -60,6 +61,15 @@ const Header = () => {
         <ul className="menu-items flex items-center justify-center space-x-2">
           <li>
             <Link
+              to="/tranding"
+              className="menu-link flex items-center text-white rounded py-2 px-3 hover:bg-accent-400"
+              onClick={closeMobileMenu}
+            >
+              <FaHotjar className="menu-icon mr-2" /> Tranding
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/recipe-list"
               className="menu-link flex items-center text-white rounded py-2 px-3 hover:bg-accent-400"
               onClick={closeMobileMenu}
@@ -101,7 +111,7 @@ const Header = () => {
                   onClick={handleLogout}
                   className="menu-link flex items-center text-white hover:bg-accent-400 rounded py-2 px-3"
                 >
-                  <FaSignOutAlt className="menu-icon mr-2" /> Logout
+                  <FaSignOutAlt className="menu-icon mr-2" />
                 </button>
               </li>
             </>
@@ -140,6 +150,16 @@ const Header = () => {
         </button>
         {isMobileMenuOpen && (
           <ul className="flex-1 absolute right-0 bg-accent-500 rounded shadow-md mr-2 w-28">
+            <li>
+              <Link
+                to="/tranding"
+                className="menu-link hover:bg-accent-400 rounded text-center block py-2"
+                onClick={closeMobileMenu}
+              >
+                <FaHotjar className="menu-icon m-auto text-center text-yellow-400" />
+                Tranding
+              </Link>
+            </li>
             <li>
               <Link
                 to="/recipe-list"
@@ -186,7 +206,7 @@ const Header = () => {
                     className="menu-link flex items-center text-white mx-auto mt-2 text-sm hover:bg-accent-400 rounded block py-2"
                   >
                     <FaSignOutAlt className="menu-icon m-auto text-center" />{" "}
-                    Logout
+                    
                   </button>
                 </li>
               </>
