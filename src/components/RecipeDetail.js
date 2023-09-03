@@ -7,6 +7,7 @@ import { BsCheckCircle, BsFillStarFill } from 'react-icons/bs';
 import Rating from '../utils/Rating';
 import BeatLoader from 'react-spinners/BeatLoader';
 import defaultProfileImage from '../assets/profile.svg';
+import ReactPlayer from 'react-player';
 
 const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   const { id } = useParams();
@@ -18,7 +19,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
   const [playVideo, setPlayVideo] = useState(false);
-  const [useIframe, setUseIframe] = useState(true);
+
 
   const extractVideoId = (url) => {
     if (!url) {
@@ -148,8 +149,9 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
     setUserRating(rating);
   };
 
+
   const handlePlay = () => {
-    setPlayVideo(true);
+    setPlayVideo(!playVideo);
   };
 
   const handleReplyComment = async (parentId, replyContent) => {
@@ -270,24 +272,15 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
           ))}
         </ol>
       </div>
-      <div className="video-frame h-auto w-full">
+      <div className="video-frame h-auto w-full mt-4">
         <div className={`video-curtain ${playVideo ? 'played' : ''}`} onClick={handlePlay}>
           {playVideo ? (
-            recipe.isYouTubeVideo ? (
-              <iframe
-                width="100%"
-                height="315"
-                src={`https://www.youtube.com/embed/${videoId}`}
-                title="YouTube video player"
-                frameBorder="0"
-                allowFullScreen
-              ></iframe>
-            ) : (
-              <video controls className="mx-auto my-2" style={{ width: '100%' }}>
-                <source src={recipe.recipeVideo} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            )
+            <ReactPlayer
+              url={recipe.recipeVideo}
+              width="100%"
+              height="315px"
+              controls
+            />
           ) : (
             <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md shadow-md" onClick={handlePlay}>
               Play Video
@@ -295,7 +288,6 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
           )}
         </div>
       </div>
-
       <div className="flex flex-col items-center justify-center my-4">
         <p className="text-center">Tekan Bintang Untuk Memberikan Rating</p>
         <div className="px-2 py-2 items-center text-center mt-4">

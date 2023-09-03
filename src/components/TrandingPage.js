@@ -56,7 +56,7 @@ const TrandingPage = () => {
   return (
     <div className="relative bg-gradient-to-bl from-accent-500 via-wavy-purple to-secondary-500 h-min-screen">
       <div className="container mx-auto px-8 py-4">
-        <h2 className="text-2xl font-bold mb-4 text-secondary-900">
+        <h2 className="text-3xl font-logo mb-4 text-secondary-900">
           Resep Lagi Trending
         </h2>
 
@@ -71,10 +71,9 @@ const TrandingPage = () => {
             {displayedRecipes.map((recipe, index) => (
               <motion.div
                 key={recipe.id}
-                className="border-2 p-4 bg-wavy-purple rounded-lg
-               shadow-md hover:shadow-lg
+                className="border-2 p-4 bg-wavy-purple rounded-lg hover:shadow-lg
                 transition duration-100 transform hover:scale-105
-                text-center mb-4"
+                text-center mb-4 shadow-lg-dark"
                 initial={{ opacity: 0, scale: 1 }}
                 animate={{ opacity: 1, scale: 0.9, rotate: 0 }}
                 exit={{ opacity: 1 }}

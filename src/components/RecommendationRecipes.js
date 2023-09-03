@@ -157,7 +157,7 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
 
   return (
     <div className="mt-4">
-      <h2 className="recommendation-title text-3xl font-semibold mb-4 text-primary text-center">
+      <h2 className="recommendation-title text-3xl font-logo mb-4 text-primary text-center">
         Saran Resep untuk Anda
       </h2>
       {isLoading ? (
@@ -171,14 +171,14 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
               key={recipe.id}
               className="transition-transform transform hover:scale-105 m-2 item-center items-center justify-center"
             >
-              <div className="relative w-64 mx-auto bg-purple-700 opacity:50 rounded item-center text-center hover:bg-primary-500">
+              <div className="relative shadow-xl-dark w-64 mx-auto bg-secondary-400 opacity:50 rounded item-center text-center hover:bg-secondary-300">
                 <Link
-                  className="block text-secondary-400 hover:text-blue-500 transition-colors p-2"
+                  className="block text-primary-600 hover:text-white text-xl font-bold transition-colors p-2"
                   to={`/recipes/${recipe.id}`}
                 >
                   {recipe.title}
                 </Link>
-                <div className="rounded p-2 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div className="rounded p-2 overflow-hidden hover:shadow-xl transition-shadow duration-300">
                   {recipe.recipeImage && (
                     <div className="relative">
                       <img

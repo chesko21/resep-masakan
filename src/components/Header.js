@@ -68,7 +68,7 @@ const Header = () => {
           <li>
             <Link
               to="/recipe-list"
-              className="menu-link flex items-center text-white rounded py-2 px-3 hover:bg-accent-400"
+              className="menu-link flex items-center text-primary-500 rounded py-2 px-3 hover:bg-accent-400"
               onClick={() => {
                 const recipelistSection = document.getElementById("recipelist-section");
                 if (recipelistSection) {
@@ -78,13 +78,13 @@ const Header = () => {
                 closeMobileMenu();
               }}
             >
-              <FaUtensils className="menu-icon m-auto text-center text-yellow-400" /> Recipe
+              <FaUtensils className="menu-icon m-auto text-center text-primary-500" /> Recipe
             </Link>
           </li>
           <li>
             <Link
               to="/tranding"
-              className="menu-link flex items-center text-white rounded py-2 px-3 hover:bg-accent-400"
+              className="menu-link flex items-center text-primary-500 rounded py-2 px-3 hover:bg-accent-400"
               onClick={() => {
                 const trandingSection = document.getElementById("tranding-section");
                 if (trandingSection) {
@@ -94,7 +94,7 @@ const Header = () => {
                 closeMobileMenu();
               }}
             >
-              <FaHotjar className="menu-icon m-auto text-center text-yellow-400" /> Trending
+              <FaHotjar className="menu-icon m-auto text-center text-primary-500" /> Trending
             </Link>
           </li>
 
@@ -104,17 +104,17 @@ const Header = () => {
               <li>
                 <Link
                   to="/profile"
-                  className="menu-link flex items-center text-white hover:bg-accent-400 rounded py-2 px-3"
+                  className="menu-link flex items-center text-primary-500 hover:bg-accent-400 rounded py-1 px-3"
                   onClick={closeMobileMenu}
                 >
                   {userProfilePhoto ? (
                     <img
                       src={userProfilePhoto}
                       alt="Profile"
-                      className="w-8 h-8 rounded-full mr-2 border-2"
+                      className="w-7 h-7 rounded-full border-2"
                     />
                   ) : (
-                    <FaUserCircle className="menu-icon m-auto text-center text-yellow-400" />
+                    <FaUserCircle className="menu-icon m-auto text-center text-primary-500" />
                   )}
                   Profile
                 </Link>
@@ -122,18 +122,18 @@ const Header = () => {
               <li>
                 <Link
                   to="/add-recipe"
-                  className="menu-link flex items-center text-white rounded py-2 px-3 hover:bg-accent-400"
+                  className="menu-link flex items-center text-primary-500 rounded py-1 px-3 hover:bg-accent-400"
                   onClick={closeMobileMenu}
                 >
-                  <FaPencilAlt className="menu-icon m-auto text-center text-yellow-400" /> Add Recipe
+                  <FaPencilAlt className="menu-icon m-auto text-center text-primary-500" /> Add Recipe
                 </Link>
               </li>
               <li>
                 <button
                   onClick={handleLogout}
-                  className="menu-link flex items-center text-white hover:bg-accent-400 rounded py-2 px-3"
+                  className="menu-link flex items-center text-primary-500 hover:bg-accent-400 rounded py-1 px-3"
                 >
-                  <FaSignOutAlt className="menu-icon m-auto text-center text-yellow-400" />
+                  <FaSignOutAlt className="menu-icon m-auto text-center text-primary-500" />
                 </button>
               </li>
             </>
@@ -142,19 +142,19 @@ const Header = () => {
               <li>
                 <Link
                   to="/login"
-                  className="menu-link flex items-center text-white hover:bg-accent-400 rounded py-2 px-3"
+                  className="menu-link flex items-center text-primary-500 hover:bg-accent-400 rounded py-1 px-3"
                   onClick={closeMobileMenu}
                 >
-                  <FaSignInAlt className="menu-icon m-auto text-center text-yellow-400" /> Login
+                  <FaSignInAlt className="menu-icon m-auto text-center text-primary-500" /> Login
                 </Link>
               </li>
               <li>
                 <Link
                   to="/signup"
-                  className="menu-link flex items-center text-white hover:bg-accent-400 rounded py-2 px-3"
+                  className="menu-link flex items-center text-primary-500 hover:bg-accent-400 rounded py-1 px-3"
                   onClick={closeMobileMenu}
                 >
-                  <FaUserPlus className="menu-icon m-auto text-center text-yellow-400" /> Signup
+                  <FaUserPlus className="menu-icon m-auto text-center text-primary-500" /> Signup
                 </Link>
               </li>
             </>

@@ -6,6 +6,7 @@ import { createUserProfileDocument } from '../services/firebase';
 import { storage, recipesCollection } from '../services/firebase';
 import { db, firebase } from '../services/firebase';
 import { Link } from 'react-router-dom';
+import { FaUpload } from "react-icons/fa";
 
 const AddRecipeForm = ({ userAuth }) => {
   const [recipe, setRecipe] = useState({
@@ -346,7 +347,7 @@ const AddRecipeForm = ({ userAuth }) => {
 
 
   return (
-    <div className="p-4 bg-secondary-700">
+    <div className="p-4 bg-secondary-700 justify-center">
       <h2 className="text-2xl font-bold mb-4 text-center text-white">FORM RECIPE</h2>
       <h2 className="text-xl font-bold mb-4 text-center text-white">Resep Masakan Indonesia</h2>
       <Form onSubmit={handleSubmit}>
@@ -441,166 +442,170 @@ const AddRecipeForm = ({ userAuth }) => {
             Add
           </Button>
         </div>
-
-        <Form.Group controlId="category">
-          <Form.Label className="text-white mr-2">Kategori</Form.Label>
-          <Form.Control
-            as="select"
-            name="category"
-            value={recipe.category}
-            onChange={(e) => handleChange(e, null, 'category')}
-            className="custom-select rounded w-54 bg-gray-500"
-          >
-            <option value="">-- Pilih Kategori --</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </Form.Control>
-        </Form.Group>
-        {/* Image */}
-        <div>
-          <label className="block text-white font-bold mb-2">Gambar</label>
-          <div className="flex items-center space-x-4 mb-4">
-            <div>
-              <input
-                type="radio"
-                id="imageFromStorage"
-                name="imageSource"
-                checked={!isImageUrl}
-                onChange={() => {
-                  setIsImageUrl(false);
-                  setRecipe((prevState) => ({
-                    ...prevState,
-                    recipeImage: '',
-                  }));
-                }}
-                aria-label="Pilih Gambar dari Penyimpanan"
-              />
-              <label htmlFor="imageFromStorage" className="mr-2">
-                Pilih Gambar dari Penyimpanan
-              </label>
-            </div>
-            <div>
-              <input
-                type="radio"
-                id="imageFromUrl"
-                name="imageSource"
-                checked={isImageUrl}
-                onChange={() => setIsImageUrl(true)}
-                aria-label="Masukkan URL Gambar"
-              />
-              <label htmlFor="imageFromUrl">Masukkan URL Gambar</label>
-            </div>
-          </div>
-          {!isImageUrl ? (
-            <div>
-              <input
-                type="file"
-                accept="image/*"
-                id="image"
-                onChange={handleImageChange}
-                className="custom-file-input"
-              />
-            </div>
-          ) : (
-            <div>
-              <input
-                type="text"
-                id="imageUrl"
-                value={recipe.recipeImage}
-                onChange={handleImageUrlChange}
-                placeholder="URL Gambar"
-                aria-label="URL Gambar"
-                className="custom-input"
-              />
-            </div>
-          )}
+        <div className="flex justify-center">
+          <Form.Group controlId="category" className="text-white">
+            <Form.Label className="mr-2">Kategori</Form.Label>
+            <Form.Control
+              as="select"
+              name="category"
+              value={recipe.category}
+              onChange={(e) => handleChange(e, null, 'category')}
+              className="custom-select rounded w-54 bg-yellow-500"
+            >
+              <option value="">-- Pilih Kategori --</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
         </div>
-        {/* video */}
-        <div>
-          <label className="block text-white font-bold mb-2">Video</label>
-          <div className="flex items-center space-x-4 mb-4">
-            <div>
-              <input
-                type="radio"
-                id="videoFromStorage"
-                name="videoSource"
-                checked={!isVideoUrl}
-                onChange={() => {
-                  setIsVideoUrl(false);
-                  setRecipe((prevState) => ({
-                    ...prevState,
-                    recipeVideo: '',
-                  }));
-                }}
-                aria-label="Pilih Video dari Penyimpanan"
-              />
-              <label htmlFor="videoFromStorage" className="mr-2">
-                Pilih Video dari Penyimpanan
-              </label>
+
+        <div className="flex text-center item-center justify-center mt-4 p-2">
+          {/* Image */}
+          <div className="border rounded p-2">
+            <label className="text-center text-white font-bold mb-2 px-2 bg-yellow-500 rounded">Gambar</label>
+            <div className="flex items-center space-x-4 mb-4">
+              <div>
+                <input
+                  type="radio"
+                  id="imageFromStorage"
+                  name="imageSource"
+                  checked={!isImageUrl}
+                  onChange={() => {
+                    setIsImageUrl(false);
+                    setRecipe((prevState) => ({
+                      ...prevState,
+                      recipeImage: '',
+                    }));
+                  }}
+                  aria-label="Pilih Gambar dari Penyimpanan"
+                />
+                <label htmlFor="imageFromStorage" className="mr-2">
+                  Pilih dari Penyimpanan
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="imageFromUrl"
+                  name="imageSource"
+                  checked={isImageUrl}
+                  onChange={() => setIsImageUrl(true)}
+                  aria-label="Masukkan URL Gambar"
+                />
+                <label htmlFor="imageFromUrl">Masukkan URL</label>
+              </div>
             </div>
-            <div>
-              <input
-                type="radio"
-                id="videoFromUrl"
-                name="videoSource"
-                checked={isVideoUrl}
-                onChange={() => setIsVideoUrl(true)}
-                aria-label="Masukkan URL Video"
-              />
-              <label htmlFor="videoFromUrl">Masukkan URL Video</label>
-            </div>
+            {!isImageUrl ? (
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="image"
+                  onChange={handleImageChange}
+                  className="custom-file-input"
+                />
+              </div>
+            ) : (
+              <div>
+                <input
+                  type="text"
+                  id="imageUrl"
+                  value={recipe.recipeImage}
+                  onChange={handleImageUrlChange}
+                  placeholder="URL Gambar"
+                  aria-label="URL Gambar"
+                  className="custom-input"
+                />
+              </div>
+            )}
           </div>
-          {!isVideoUrl ? (
-            <div>
-              <input
-                type="file"
-                accept="video/*"
-                id="video"
-                onChange={handleVideoChange}
-                className="custom-file-input"
-              />
+        </div>
+        <div className="flex text-center item-center justify-center mt-4 p-2">
+          {/* Video */}
+          <div className="border rounded p-2">
+            <label className="text-center text-white font-bold mb-2 px-2 bg-yellow-500 rounded">Video</label>
+            <div className="flex items-center space-x-4 mb-4">
+              <div>
+                <input
+                  type="radio"
+                  id="videoFromStorage"
+                  name="videoSource"
+                  checked={!isVideoUrl}
+                  onChange={() => {
+                    setIsVideoUrl(false);
+                    setRecipe((prevState) => ({
+                      ...prevState,
+                      recipeVideo: '',
+                    }));
+                  }}
+                  aria-label="Pilih Video dari Penyimpanan"
+                />
+                <label htmlFor="videoFromStorage" className="mr-2">
+                  Pilih dari Penyimpanan
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="videoFromUrl"
+                  name="videoSource"
+                  checked={isVideoUrl}
+                  onChange={() => setIsVideoUrl(true)}
+                  aria-label="Masukkan URL Video"
+                />
+                <label htmlFor="videoFromUrl">Masukkan URL</label>
+              </div>
             </div>
-          ) : (
-            <div>
-              <input
-                type="text"
-                id="videoUrl"
-                value={recipe.recipevideo}
-                onChange={handleVideoUrlChange}
-                placeholder="URL Video"
-                aria-label="URL Video"
-                className="custom-input"
-              />
-            </div>
-          )}
+            {!isVideoUrl ? (
+              <div>
+                <input
+                  type="file"
+                  accept="video/*"
+                  id="video"
+                  onChange={handleVideoChange}
+                  className="custom-file-input"
+                />
+              </div>
+            ) : (
+              <div>
+                <input
+                  type="text"
+                  id="videoUrl"
+                  value={recipe.recipevideo}
+                  onChange={handleVideoUrlChange}
+                  placeholder="URL Video"
+                  aria-label="URL Video"
+                  className="custom-input"
+                />
+              </div>
+            )}
+          </div>
         </div>
         {/* tombol submit */}
-        <div className="text-center mt-4 px-2 py-2 ">
-          <Button
+        <div className="flex justify-center mt-4">
+          <button
             type="submit"
-            variant="primary"
-            style={{
-              display: 'inline-block',
-              width: 'auto',
-              backgroundColor: 'orange',
-              borderRadius: '10px',
-            }}
+            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-full flex items-center"
+            disabled={isLoading || isSubmitting}
           >
             {isLoading || isSubmitting ? (
-              <div className="flex items-center justify-center p-2">
+              <>
                 <div className="spinner-border text-light mr-2" role="status">
                   <span className="sr-only">Loading...</span>
                 </div>
-                {isLoading ? 'Loading...' : 'Uploading...Please Wait!!'}
-              </div>
+                <span>Uploading... Please Wait!!</span>
+              </>
             ) : (
-              'Upload Resep'
+              <>
+                <FaUpload className="mr-2" /> Upload Resep
+              </>
             )}
-          </Button>
+          </button>
         </div>
+
         <Link to="/profile" className="text-white mb-2 hover:underline">&lt; Back to Profile</Link>
         <p className="mt-2 text-secondary-500">
           Note : Setelah Berhasil Membuat Resep Silahkan Muat Ulang Halaman

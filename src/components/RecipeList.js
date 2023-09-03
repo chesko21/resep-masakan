@@ -273,11 +273,11 @@ const RecipeList = () => {
             {currentRecipes.map((recipe) => (
               <div
                 key={recipe.id}
-                className="rounded-lg shadow-md bg-secondary-900 hover:bg-accent-600 border border-secondary-200 p-2 transition-transform transform hover:scale-105"
+                className="rounded-lg shadow-lg-dark bg-secondary-900 hover:bg-secondary-700 border border-secondary-200 p-2 transition-transform transform hover:scale-105"
               >
                 <div className="mb-2 text-yellow-500 font-logo">
                   <Link
-                    className="block text-1x1 hover:text-secondary-700 transition-colors p-2"
+                    className="block text-xl hover:text-white transition-colors p-2"
                     to={`/recipes/${recipe.id}`}
                   >
                     {recipe.title}
@@ -302,9 +302,9 @@ const RecipeList = () => {
                     <img
                       src={recipe.creatorPhoto}
                       alt="Creator"
-                      className="rounded-full border-2 h-8 w-8 object-cover hover:bg-secondary-700 mr-2"
+                      className=" transition-transform transform hover:scale-110 rounded-full border-2 h-8 w-8 object-cover hover:bg-secondary-700 mr-2"
                     />
-                    <p className="text-white rounded hover:bg-secondary-700">
+                    <p className="text-white rounded hover:bg-yellow-700 px-2">
                       {recipe.author}
                     </p>
                   </div>
@@ -349,13 +349,13 @@ const RecipeList = () => {
           </div>
           <div className="flex justify-center font-bold mt-4 p-2">
             <button
-              className="text-white rounded-full bg-black hover:text-blue-700 focus:outline-none mr-2"
+              className="px-2 py-2 font-logo rounded-full bg-gray-300 hover:bg-gray-400 transition duration-300 mr-2"
               onClick={handlePrevSlide}
             >
               <FaChevronLeft />
             </button>
             <button
-              className="text-white rounded-full bg-black hover:text-blue-700 focus:outline-none"
+              className="px-2 py-2 font-logo rounded-full bg-gray-300 hover:bg-gray-400 transition duration-300 mr-2"
               onClick={handleNextSlide}
             >
               <FaChevronRight />
