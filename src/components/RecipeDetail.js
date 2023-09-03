@@ -272,6 +272,8 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
           ))}
         </ol>
       </div>
+      {/* tombol Video */}
+      {recipe.recipeVideo && (
       <div className="video-frame h-auto w-full mt-4">
         <div className={`video-curtain ${playVideo ? 'played' : ''}`} onClick={handlePlay}>
           {playVideo ? (
@@ -288,6 +290,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
           )}
         </div>
       </div>
+    )}
       <div className="flex flex-col items-center justify-center my-4">
         <p className="text-center">Tekan Bintang Untuk Memberikan Rating</p>
         <div className="px-2 py-2 items-center text-center mt-4">

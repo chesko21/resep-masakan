@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createUserProfileDocument } from '../services/firebase';
 import { storage, recipesCollection } from '../services/firebase';
 import { db, firebase } from '../services/firebase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaUpload } from "react-icons/fa";
 
 const AddRecipeForm = ({ userAuth }) => {
@@ -23,7 +23,7 @@ const AddRecipeForm = ({ userAuth }) => {
     category: '',
     rating: '',
   });
-
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [isImageUrl, setIsImageUrl] = useState(false);
   const [isVideoUrl, setIsVideoUrl] = useState(false);
@@ -616,7 +616,10 @@ const AddRecipeForm = ({ userAuth }) => {
           <p className="text-center text-gray-800">Resep berhasil ditambahkan!</p>
           <button
             className="mt-2 bg-blue-500 text-white py-2 px-4 rounded"
-            onClick={() => hideNotificationMessage()}
+            onClick={() => {
+              hideNotificationMessage();
+              navigate('/');
+            }}
           >
             Tutup
           </button>
