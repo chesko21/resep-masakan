@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { db } from '../services/firebase';
+import { db, auth } from '../services/firebase';
+
 
 const RecipeCard = ({ recipe }) => {
   const { recipeImage, id, title } = recipe;
@@ -63,7 +64,7 @@ const AuthorProfile = () => {
       </div>
     );
   }
-  
+
   if (!authorData) {
     return <div>User profile not found.</div>;
   }
@@ -98,7 +99,6 @@ const AuthorProfile = () => {
           </div>
         )}
       </div>
-
     </div>
   );
 };

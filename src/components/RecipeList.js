@@ -16,8 +16,8 @@ const RecipeList = () => {
   const [selectedTitle, setSelectedTitle] = useState("");
   const [slideIndex, setSlideIndex] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); 
-  const [pageNumber, setPageNumber] = useState(1); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [pageNumber, setPageNumber] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -59,7 +59,7 @@ const RecipeList = () => {
           query = query.where("title", "==", selectedTitle);
         }
 
-        const snapshot = await query.limit(20).get();
+        const snapshot = await query.limit(12).get();
 
         if (snapshot.docs.length === 0) {
           setIsRecipesLoading(true);
@@ -113,7 +113,7 @@ const RecipeList = () => {
             .startAfter(lastRecommendation.createdAt);
         }
 
-        const snapshot = await query.limit(20).get();
+        const snapshot = await query.limit(12).get();
 
         if (snapshot.docs.length === 0) {
           setIsLoading(true);
@@ -157,8 +157,8 @@ const RecipeList = () => {
     setSelectedCategory(category);
     const filtered = category
       ? recipes.filter(
-          (recipe) => recipe.category.toLowerCase() === category.toLowerCase()
-        )
+        (recipe) => recipe.category.toLowerCase() === category.toLowerCase()
+      )
       : recipes;
 
     setFilteredRecipes(filtered);
@@ -206,21 +206,21 @@ const RecipeList = () => {
   const currentRecipes = filteredRecipes.slice(startIndex, endIndex);
 
   const uniqueCreators = [...new Set(recipes.map((recipe) => recipe.author))];
-  
+
   return (
-    <div className="bg-gradient-to-tr from-primary-500 via-wavy-purple to-accent-400">
+    <div className="bg-gradient-to-tr from-primary-500 via-wavy-purple to-accent-500">
       {isRecipesLoading ? (
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center font-logo min-h-screen">
           <BeatLoader /> LOADING...
         </div>
       ) : fetchError ? (
         <div>Error: {fetchError}</div>
       ) : (
         <div className="container mx-auto px-4 md:px-4 lg:px-12 xl:px-16">
-          <h2 className="text-2xl font-bold text-purple text-center mb-4">
+          <h2 className="text-2xl font-bold text-primary-500 text-center mb-4">
             Resep Masakan
           </h2>
-          <p className="text-center text-orange-300 mb-2">
+          <p className="text-center mb-2">
             Anda Bisa Request Untuk Penambahan Features
           </p>
           <SearchBar
@@ -273,11 +273,11 @@ const RecipeList = () => {
             {currentRecipes.map((recipe) => (
               <div
                 key={recipe.id}
-                className="rounded-lg shadow-md bg-accent-500 hover:bg-accent-300 border border-secondary-200 p-2 transition-transform transform hover:scale-105"
+                className="rounded-lg shadow-md bg-secondary-900 hover:bg-accent-600 border border-secondary-200 p-2 transition-transform transform hover:scale-105"
               >
-                <div className="mb-2">
+                <div className="mb-2 text-yellow-500 font-logo">
                   <Link
-                    className="block text-xl font-bold text-white hover:text-secondary-700 transition-colors p-2"
+                    className="block text-1x1 hover:text-secondary-700 transition-colors p-2"
                     to={`/recipes/${recipe.id}`}
                   >
                     {recipe.title}
@@ -304,7 +304,7 @@ const RecipeList = () => {
                       alt="Creator"
                       className="rounded-full border-2 h-8 w-8 object-cover hover:bg-secondary-700 mr-2"
                     />
-                    <p className="text-white font-bold rounded hover:bg-secondary-700">
+                    <p className="text-white rounded hover:bg-secondary-700">
                       {recipe.author}
                     </p>
                   </div>
@@ -318,8 +318,8 @@ const RecipeList = () => {
                           index < Math.floor(recipe.rating)
                             ? "text-yellow-500 mr-1"
                             : index === Math.floor(recipe.rating)
-                            ? "text-primary-500 mr-1 opacity-50"
-                            : "text-primary-500 mr-1 opacity-50"
+                              ? "text-primary-500 mr-1 opacity-50"
+                              : "text-primary-500 mr-1 opacity-50"
                         }
                       />
                     ))}
@@ -331,7 +331,7 @@ const RecipeList = () => {
                   </span>
                 </div>
                 <p
-                  className="mb-2 cursor-pointer text-sm text-yellow-500"
+                  className="mb-2 cursor-pointer text-sm text-yellow-500 font-logo"
                   onClick={() => handleDescriptionToggle()}
                 >
                   {showFullDescription

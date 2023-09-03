@@ -78,11 +78,10 @@ const ForgetPassword = () => {
               </label>
               <button
                 type="submit"
-                className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-2 rounded-md animate__animated ${
-                  isLoading
+                className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-2 rounded-md animate__animated ${isLoading
                     ? "opacity-75 cursor-not-allowed"
                     : "animate__fadeIn"
-                }`}
+                  }`}
                 disabled={isLoading}
               >
                 {isLoading ? "Sending..." : "Reset Password"}

@@ -13,7 +13,7 @@ import AddRecipeForm from "./components/AddRecipeForm";
 import RecipeUser from "./components/RecipeUser";
 import ActivityHistory from "./components/ActivityHistory";
 import "./styles/tailwind.css";
-import { auth } from "./services/firebase";
+import { auth, db } from "./services/firebase";
 import MessagesList from "./utils/MessagesList";
 import MessagesListFloatButton from "./button/MessagesListFloatButton";
 import ActivityFloatButton from "./button/ActivityFloatButton";
@@ -22,10 +22,30 @@ import AuthorProfile from "./components/AuthorProfile";
 import RecommendationRecipes from "./components/RecommendationRecipes";
 import ErrorPage from "./pages/ErrorPage";
 import TrandingPage from "./components/TrandingPage";
+import OnlineStatus from "./utils/OnlineStatus";
 
-const App = () => {
+function App() {
+  const [data, setData] = useState([]);
   const [user, setUser] = useState(null);
   const [userAuth, setUserAuth] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataCollection = db.collection('data');
+        const snapshot = await dataCollection.get();
+
+        const fetchedData = snapshot.docs.map(doc => doc.data());
+
+        localStorage.setItem('cachedData', JSON.stringify(fetchedData));
+        setData(fetchedData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [data]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -44,6 +64,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/online" element={<OnlineStatus user={user} />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/activity-history" element={<ActivityHistory />} />

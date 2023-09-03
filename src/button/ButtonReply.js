@@ -9,7 +9,7 @@ const ButtonReply = ({ onClick, commentId }) => {
   const [replies, setReplies] = useState([]);
 
   useEffect(() => {
-    // Fetch the replies for the given commentId from Firebase
+
     const fetchReplies = async () => {
       try {
         const repliesSnapshot = await db
@@ -87,7 +87,7 @@ const ButtonReply = ({ onClick, commentId }) => {
               className="text-gray-500 hover:text-gray-700 ml-2"
               onClick={handleCancelReply}
             >
-              <FontAwesomeIcon icon={faTimes} /> 
+              <FontAwesomeIcon icon={faTimes} />
             </button>
           </div>
         </div>

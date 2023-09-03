@@ -40,44 +40,44 @@ const Signup = () => {
     setConfirmPassword(event.target.value);
   };
 
-const handleGoogleSignup = async () => {
-  try {
-    setIsLoading(true);
-    const googleUser = await auth.signInWithPopup(googleAuthProvider);
-    const googleEmail = googleUser.user.email;
+  const handleGoogleSignup = async () => {
+    try {
+      setIsLoading(true);
+      const googleUser = await auth.signInWithPopup(googleAuthProvider);
+      const googleEmail = googleUser.user.email;
 
-    setEmail(googleEmail);
+      setEmail(googleEmail);
 
-    const defaultPassword = "google-password";
+      const defaultPassword = "google-password";
 
-    const { user } = await auth.createUserWithEmailAndPassword(
-      googleEmail,
-      defaultPassword 
-    );
-    const imageURL = defaultProfileImage;
+      const { user } = await auth.createUserWithEmailAndPassword(
+        googleEmail,
+        defaultPassword
+      );
+      const imageURL = defaultProfileImage;
 
-    await createUserProfileDocument(user, {
-      displayName,
-      photoURL: imageURL,
-    });
+      await createUserProfileDocument(user, {
+        displayName,
+        photoURL: imageURL,
+      });
 
-    await user.sendEmailVerification();
+      await user.sendEmailVerification();
 
-    setShowModal(true);
-    setTimeout(() => {
-      setShowModal(false);
-      navigate("/");
-    }, 3000);
-  } catch (error) {
-    if (error.code === "auth/email-already-in-use") {
-      setError("Email Sudah Terdaftar, Silahkan Login.");
-    } else {
-      setError(error.message);
+      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+        navigate("/");
+      }, 3000);
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        setError("Email Sudah Terdaftar, Silahkan Login.");
+      } else {
+        setError(error.message);
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -114,7 +114,7 @@ const handleGoogleSignup = async () => {
       }, 3000);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
-        setError("Email Sudah Terdaftar, Silahkan Login.");
+        setError("SignUp Success!!");
       } else {
         setError(error.message);
       }
@@ -124,7 +124,7 @@ const handleGoogleSignup = async () => {
   };
 
   return (
-    <div className="flex flex-col items-center h-screen ">
+    <div className="flex flex-col items-center bg-wavy-purple min-h-screen ">
       <h2 className="text-3xl font-bold mb-6 animate__animated animate__fadeIn">
         Signup
       </h2>
@@ -203,9 +203,8 @@ const handleGoogleSignup = async () => {
         </div>
         <button
           type="submit"
-          className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md animate__animated ${
-            isLoading ? "opacity-75 cursor-not-allowed" : "animate__fadeIn"
-          }`}
+          className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md animate__animated ${isLoading ? "opacity-75 cursor-not-allowed" : "animate__fadeIn"
+            }`}
           disabled={isLoading}
         >
           {isLoading ? <BeatLoader color="white" size={8} /> : "Signup"}

@@ -4,8 +4,8 @@ import { Trash } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
 import { createUserProfileDocument } from '../services/firebase';
 import { storage, recipesCollection } from '../services/firebase';
-import {  db, firebase } from '../services/firebase';
-import { Link} from 'react-router-dom';
+import { db, firebase } from '../services/firebase';
+import { Link } from 'react-router-dom';
 
 const AddRecipeForm = ({ userAuth }) => {
   const [recipe, setRecipe] = useState({
@@ -18,12 +18,14 @@ const AddRecipeForm = ({ userAuth }) => {
     creatorPhoto: userAuth?.photoURL || userAuth?.imageURL || '',
     createdAt: '',
     recipeImage: '',
+    recipeVideo: '',
     category: '',
     rating: '',
   });
-  
+
   const [error, setError] = useState(null);
   const [isImageUrl, setIsImageUrl] = useState(false);
+  const [isVideoUrl, setIsVideoUrl] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -154,35 +156,75 @@ const AddRecipeForm = ({ userAuth }) => {
       }));
     }
   };
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  setRecipe((prevState) => ({
-    ...prevState,
-    recipeImage: file,
-  }));
-  setIsImageUrl(false);
-};
+  const handleImageChange = (e) => {
+    const imageFile = e.target.files[0];
+    setRecipe((prevState) => ({
+      ...prevState,
+      recipeImage: imageFile,
+    }));
+    setIsImageUrl(false);
+  };
 
-const handleImageUrlChange = (e) => {
-  const imageURL = e.target.value;
-  setRecipe((prevState) => ({
-    ...prevState,
-    recipeImage: imageURL,
-  }));
-  setIsImageUrl(true);
-};
+  const handleVideoChange = (e) => {
+    if (e.target.files.length > 0) {
+      const videoFile = e.target.files[0];
+      setRecipe((prevState) => ({
+        ...prevState,
+        recipeVideo: videoFile,
+      }));
+      setIsVideoUrl(false);
+    } else {
 
-const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
-  try {
-    const storageRef = storage.ref().child(`images/${uniqueImageName}`);
-    const snapshot = await storageRef.put(recipeImage);
-    const recipeImageUrl = await snapshot.ref.getDownloadURL();
-    return recipeImageUrl;
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    throw error;
-  }
-};
+      const videoURL = e.target.value;
+      setRecipe((prevState) => ({
+        ...prevState,
+        recipeVideo: videoURL,
+      }));
+      setIsVideoUrl(true);
+    }
+  };
+
+  const handleImageUrlChange = (e) => {
+    const imageURL = e.target.value;
+    setRecipe((prevState) => ({
+      ...prevState,
+      recipeImage: imageURL,
+    }));
+    setIsImageUrl(true);
+  };
+
+  const handleVideoUrlChange = (e) => {
+    const videoURL = e.target.value;
+    setRecipe((prevState) => ({
+      ...prevState,
+      recipeVideo: videoURL,
+    }));
+    setIsVideoUrl(true);
+  };
+
+  const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
+    try {
+      const storageRef = storage.ref().child(`images/${uniqueImageName}`);
+      const snapshot = await storageRef.put(recipeImage);
+      const recipeImageUrl = await snapshot.ref.getDownloadURL();
+      return recipeImageUrl;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
+  };
+
+  const uploadVideoToStorage = async (recipeVideo, uniqueVideoName) => {
+    try {
+      const storageRef = storage.ref().child(`videos/${uniqueVideoName}`);
+      const snapshot = await storageRef.put(recipeVideo);
+      const recipeVideoUrl = await snapshot.ref.getDownloadURL();
+      return recipeVideoUrl;
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      throw error;
+    }
+  };
 
   const uploadDefaultImageToStorage = async () => {
     try {
@@ -224,27 +266,42 @@ const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
       const authorId = userAuth.uid;
       const recipeId = uuidv4();
       const createdAt = firebase.firestore.Timestamp.now();
- let recipeImageUrl = recipe.recipeImage;
- if (!isImageUrl) {
-   try {
-     if (!recipeImageUrl) {
-       recipeImageUrl = await uploadDefaultImageToStorage();
-     } else {
-       const uniqueImageName = `${uuidv4()}-${Date.now()}-${
-         recipeImageUrl.name
-       }`;
-       recipeImageUrl = await uploadImageToStorage(
-         recipeImageUrl,
-         uniqueImageName
-       );
-     }
-   } catch (error) {
-     console.error("Error uploading image:", error);
-     setShowModal(true);
-     setIsSubmitting(false);
-     return;
-   }
- }
+      let recipeImageUrl = recipe.recipeImage;
+      let recipeVideoUrl = recipe.recipeVideo;
+
+      if (!isImageUrl) {
+        try {
+          if (!recipeImageUrl) {
+            recipeImageUrl = await uploadDefaultImageToStorage();
+          } else {
+            const uniqueImageName = `${uuidv4()}-${Date.now()}-${recipeImageUrl.name
+              }`;
+            recipeImageUrl = await uploadImageToStorage(
+              recipeImageUrl,
+              uniqueImageName
+            );
+          }
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setShowModal(true);
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      if (isVideoUrl) {
+        recipeVideoUrl = recipeVideoUrl.trim();
+      } else if (recipeVideoUrl instanceof File) {
+        try {
+          const uniqueVideoName = `${uuidv4()}-${Date.now()}-${recipeVideoUrl.name}`;
+          recipeVideoUrl = await uploadVideoToStorage(recipeVideoUrl, uniqueVideoName);
+        } catch (error) {
+          console.error("Error uploading video:", error);
+          setShowModal(true);
+          setIsSubmitting(false);
+          return;
+        }
+      }
       const newRecipe = {
         title: recipe.title,
         description: recipe.description,
@@ -255,6 +312,7 @@ const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
         creatorPhoto: creatorPhoto,
         createdAt: createdAt,
         recipeImage: recipeImageUrl,
+        recipeVideo: recipeVideoUrl,
         recipeId: recipeId,
         category: recipe.category,
         rating: recipe.rating,
@@ -272,6 +330,7 @@ const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
         creatorPhoto: '',
         createdAt: '',
         recipeImage: '',
+        recipeVideo: '',
         recipeId: '',
         category: '',
         rating: '',
@@ -284,10 +343,10 @@ const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
       setIsSubmitting(false);
     }
   };
-  
+
 
   return (
-    <div className="container mx-auto px-8 py-4 bg-purple-700">
+    <div className="p-4 bg-secondary-700">
       <h2 className="text-2xl font-bold mb-4 text-center text-white">FORM RECIPE</h2>
       <h2 className="text-xl font-bold mb-4 text-center text-white">Resep Masakan Indonesia</h2>
       <Form onSubmit={handleSubmit}>
@@ -379,7 +438,7 @@ const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
             variant="primary"
             className="btn-icon bg-white rounded-full px-2 text-center text-orange-500 hover:text-secondary-700"
           >
-           Add
+            Add
           </Button>
         </div>
 
@@ -459,7 +518,66 @@ const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
             </div>
           )}
         </div>
-
+        {/* video */}
+        <div>
+          <label className="block text-white font-bold mb-2">Video</label>
+          <div className="flex items-center space-x-4 mb-4">
+            <div>
+              <input
+                type="radio"
+                id="videoFromStorage"
+                name="videoSource"
+                checked={!isVideoUrl}
+                onChange={() => {
+                  setIsVideoUrl(false);
+                  setRecipe((prevState) => ({
+                    ...prevState,
+                    recipeVideo: '',
+                  }));
+                }}
+                aria-label="Pilih Video dari Penyimpanan"
+              />
+              <label htmlFor="videoFromStorage" className="mr-2">
+                Pilih Video dari Penyimpanan
+              </label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                id="videoFromUrl"
+                name="videoSource"
+                checked={isVideoUrl}
+                onChange={() => setIsVideoUrl(true)}
+                aria-label="Masukkan URL Video"
+              />
+              <label htmlFor="videoFromUrl">Masukkan URL Video</label>
+            </div>
+          </div>
+          {!isVideoUrl ? (
+            <div>
+              <input
+                type="file"
+                accept="video/*"
+                id="video"
+                onChange={handleVideoChange}
+                className="custom-file-input"
+              />
+            </div>
+          ) : (
+            <div>
+              <input
+                type="text"
+                id="videoUrl"
+                value={recipe.recipevideo}
+                onChange={handleVideoUrlChange}
+                placeholder="URL Video"
+                aria-label="URL Video"
+                className="custom-input"
+              />
+            </div>
+          )}
+        </div>
+        {/* tombol submit */}
         <div className="text-center mt-4 px-2 py-2 ">
           <Button
             type="submit"
@@ -476,17 +594,17 @@ const uploadImageToStorage = async (recipeImage, uniqueImageName) => {
                 <div className="spinner-border text-light mr-2" role="status">
                   <span className="sr-only">Loading...</span>
                 </div>
-                {isLoading ? 'Loading...' : 'Submitting...'}
+                {isLoading ? 'Loading...' : 'Uploading...Please Wait!!'}
               </div>
             ) : (
               'Upload Resep'
             )}
           </Button>
         </div>
-             <Link to="/profile" className="text-white mb-2 hover:underline">&lt; Back to Profile</Link>
-              <p className="mt-2 text-secondary-500">
-                Note : Setelah Berhasil Membuat Resep Silahkan Muat Ulang Halaman
-              </p>
+        <Link to="/profile" className="text-white mb-2 hover:underline">&lt; Back to Profile</Link>
+        <p className="mt-2 text-secondary-500">
+          Note : Setelah Berhasil Membuat Resep Silahkan Muat Ulang Halaman
+        </p>
       </Form>
       {showNotification && (
         <div className="fixed bottom-5 left-5 bg-gray-100 p-4 rounded shadow-md">

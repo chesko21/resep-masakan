@@ -43,20 +43,6 @@
       ]
     },
     {
-      "collectionGroup": "recipes",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "startAfter",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "orderBy",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
       "collectionGroup": "users",
       "queryScope": "COLLECTION",
       "fields": [
@@ -98,52 +84,6 @@
         },
         {
           "fieldPath": "comment",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "users",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "createdAt",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "displayName",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "email",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "imageURL",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "photoURL",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "userId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "date",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "activity.date",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "activity.recipeId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "activity.recipeName",
           "order": "ASCENDING"
         }
       ]

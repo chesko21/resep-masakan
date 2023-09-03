@@ -16,6 +16,7 @@ const MessagesListFloatButton = ({ user, messages }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isSending, setIsSending] = useState(false); // State to track if a message is being sent
 
   useEffect(() => {
     const countUnreadMessages = () => {
@@ -38,7 +39,8 @@ const MessagesListFloatButton = ({ user, messages }) => {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (newMessage.trim() !== "") {
+    if (newMessage.trim() !== "" && !isSending) {
+      setIsSending(true); // Set the sending state to true
       try {
         const messageData = {
           senderId: auth.currentUser.uid,
@@ -58,6 +60,8 @@ const MessagesListFloatButton = ({ user, messages }) => {
         setUnreadMessagesCount(updatedUnreadCount);
       } catch (error) {
         console.error("Error sending message:", error);
+      } finally {
+        setIsSending(false); // Reset the sending state when the message is sent or an error occurs
       }
     }
   };
@@ -75,22 +79,20 @@ const MessagesListFloatButton = ({ user, messages }) => {
   const closeChatBox = () => {
     setIsChatOpen(false);
   };
-  
-  
 
-const handleDocumentClick = (event) => {
-  if (
-    isChatOpen &&
-    floatButtonRef.current &&
-    !floatButtonRef.current.contains(event.target)
-  ) {
-    const chatBox = document.querySelector(".chat-box");
-    if (chatBox && chatBox.contains(event.target)) {
-      return;
+  const handleDocumentClick = (event) => {
+    if (
+      isChatOpen &&
+      floatButtonRef.current &&
+      !floatButtonRef.current.contains(event.target)
+    ) {
+      const chatBox = document.querySelector(".chat-box");
+      if (chatBox && chatBox.contains(event.target)) {
+        return;
+      }
+      closeChatBox();
     }
-    closeChatBox();
-  }
-};
+  };
 
   useEffect(() => {
     document.addEventListener("click", handleDocumentClick);
@@ -99,16 +101,21 @@ const handleDocumentClick = (event) => {
     };
   }, [handleDocumentClick]);
 
-  
+  const handleInputKeyPress = (event) => {
+    // Handle sending a message when Enter key is pressed
+    if (event.key === "Enter" && !isSending) {
+      event.preventDefault(); // Prevent the Enter key from adding a newline
+      handleSendMessage();
+    }
+  };
 
   return (
     <>
       {user && (
         <div
           ref={floatButtonRef}
-          className={`fixed bottom-8 right-8 bg-secondary-500 hover:bg-white p-2 rounded-full cursor-pointer chat-button ${
-            isMobile ? "md:right-10 md:bottom-8" : ""
-          }`}
+          className={`fixed bottom-8 right-8 bg-secondary-500 hover:bg-white p-2 rounded-full cursor-pointer chat-button ${isMobile ? "md:right-10 md:bottom-8" : ""
+            }`}
           onClick={toggleChat}
         >
           <FontAwesomeIcon icon={faCommentAlt} size="lg" color="accent-500" />
@@ -122,9 +129,8 @@ const handleDocumentClick = (event) => {
       {user && isChatOpen && (
         <Draggable handle=".drag-handle" nodeRef={floatButtonRef}>
           <div
-            className={`fixed bottom-4 right-6 sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-xl text-primary logo chat-box ${
-              isChatOpen ? "block" : "hidden"
-            }`}
+            className={`fixed bottom-4 right-6 sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-xl text-primary logo chat-box ${isChatOpen ? "block" : "hidden"
+              }`}
           >
             <div className="rounded shadow-md">
               <div className="flex justify-between bg-primary-600 p-2 md:p-2 rounded-t-lg drag-handle">
@@ -144,23 +150,24 @@ const handleDocumentClick = (event) => {
                   setIsChatOpen={setIsChatOpen}
                 />
               </div>
-              <div className="bg-primary-500 p-2">
-                <Input
-                  className="rounded-md w-full"
-                  placeholder="Type a message..."
-                  multiline={false}
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  rightButtons={
-                    <button
-                      type="submit"
-                      className="bg-primary-500 hover:bg-secondary-500 text-white font-semibold py-2 px-4 rounded-md"
-                      onClick={handleSendMessage}
-                    >
-                      <FontAwesomeIcon icon={faPaperPlane} />
-                    </button>
-                  }
-                />
+              <div className="bg-primary-600 p-2">
+                <div className="flex">
+                  <input
+                    className="rounded-md w-full p-2"
+                    placeholder="Type a message..."
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyPress={handleInputKeyPress}
+                  />
+                  <button
+                    type="submit"
+                    className="bg-accent-500 hover:bg-secondary-500 text-white font-semibold py-2 px-4 ml-2 rounded-md"
+                    onClick={handleSendMessage}
+                    disabled={isSending}
+                  >
+                    <FontAwesomeIcon icon={faPaperPlane} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

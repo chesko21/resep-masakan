@@ -17,6 +17,18 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   const [comment, setComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
+  const [playVideo, setPlayVideo] = useState(false);
+  const [useIframe, setUseIframe] = useState(true);
+
+  const extractVideoId = (url) => {
+    if (!url) {
+      return null;
+    }
+
+    const videoIdRegex = /(?:\?v=|\/embed\/|\/watch\?v=|youtu.be\/|\/v\/|\/e\/|watch\?v%3D|%2Fv%2F|embed\/|v=|youtu.be\/|youtube.com%2Fwatch\?v=|youtube.com%2Fv%2F|youtube.com%2Fe%2F|\?feature=player_embedded&v=|%2Fembed%\S+|embed%\S*|youtu.be%\S*|youtube.com%\S*|%2F%2F+|%2F+)([^#\&\?\n]*[^,\.\?\#\n])/;
+    const match = url.match(videoIdRegex);
+    return match && match[1] ? match[1] : null;
+  };
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -30,7 +42,6 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
             createdAt: recipeDoc.data().createdAt.toDate(),
           };
 
-          // Fetch the creator's photo for the recipe if it's not already passed as a prop
           const recipeAuthorId = recipeData.authorId;
           if (recipeAuthorId !== authorId) {
             const userDoc = await db.collection('users').doc(recipeAuthorId).get();
@@ -75,61 +86,61 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
     fetchComments();
   }, [id]);
 
- const handleCommentSubmit = async (comment) => {
-   try {
-     const newComment = {
-       recipeId: id,
-       content: comment,
-       rating: hasRated ? userRating : currentRating, // Use userRating if rated, else currentRating
-       likes: [],
-       user: {
-         displayName: user.displayName || "Anonymous",
-         photoURL: user.photoURL,
-       },
-     };
-     const docRef = await commentsCollection.add(newComment);
-     const newCommentWithId = { id: docRef.id, ...newComment };
+  const handleCommentSubmit = async (comment) => {
+    try {
+      const newComment = {
+        recipeId: id,
+        content: comment,
+        rating: hasRated ? userRating : currentRating,
+        likes: [],
+        user: {
+          displayName: user.displayName || "Anonymous",
+          photoURL: user.photoURL,
+        },
+      };
+      const docRef = await commentsCollection.add(newComment);
+      const newCommentWithId = { id: docRef.id, ...newComment };
 
-     setComments([...comments, newCommentWithId]);
+      setComments([...comments, newCommentWithId]);
 
-     if (hasRated) {
-       const userAuth = auth.currentUser;
-       if (userAuth) {
-         const authorId = userAuth.uid;
-         const ratingDocRef = db
-           .collection("recipes")
-           .doc(id)
-           .collection("ratings")
-           .doc(authorId);
-         await ratingDocRef.set({ rating: currentRating });
+      if (hasRated) {
+        const userAuth = auth.currentUser;
+        if (userAuth) {
+          const authorId = userAuth.uid;
+          const ratingDocRef = db
+            .collection("recipes")
+            .doc(id)
+            .collection("ratings")
+            .doc(authorId);
+          await ratingDocRef.set({ rating: currentRating });
 
-         const recipeDocRef = db.collection("recipes").doc(id);
-         const recipeDoc = await recipeDocRef.get();
-         if (recipeDoc.exists) {
-           const recipeData = recipeDoc.data();
-           const comments = recipeData.comments || [];
-           const userComment = comments.find(
-             (comment) => comment.authorId === authorId
-           );
-           if (userComment) {
-             userComment.rating = currentRating;
-             const totalRating =
-               comments.reduce((sum, comment) => sum + comment.rating, 0) +
-               currentRating;
-             const average = totalRating / (comments.length + 1);
-             setAverageRating(average.toFixed(1));
-             await recipeDocRef.update({
-               rating: average.toFixed(1),
-               comments,
-             });
-           }
-         }
-       }
-     }
-   } catch (error) {
-     console.error("Error submitting comment:", error);
-   }
- };
+          const recipeDocRef = db.collection("recipes").doc(id);
+          const recipeDoc = await recipeDocRef.get();
+          if (recipeDoc.exists) {
+            const recipeData = recipeDoc.data();
+            const comments = recipeData.comments || [];
+            const userComment = comments.find(
+              (comment) => comment.authorId === authorId
+            );
+            if (userComment) {
+              userComment.rating = currentRating;
+              const totalRating =
+                comments.reduce((sum, comment) => sum + comment.rating, 0) +
+                currentRating;
+              const average = totalRating / (comments.length + 1);
+              setAverageRating(average.toFixed(1));
+              await recipeDocRef.update({
+                rating: average.toFixed(1),
+                comments,
+              });
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
 
   const handleRatingChange = (rating) => {
     setCurrentRating(rating);
@@ -137,6 +148,9 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
     setUserRating(rating);
   };
 
+  const handlePlay = () => {
+    setPlayVideo(true);
+  };
 
   const handleReplyComment = async (parentId, replyContent) => {
     try {
@@ -170,13 +184,13 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
     )}`;
     window.open(shareUrl, '_blank');
   };
-  
+
   const shareOnInstagram = (recipe) => {
     alert(
       'Belum Berfungsi hehehe, Silahkan copy url di browser '
     );
   };
-  
+
   const shareOnWhatsApp = (recipe) => {
     const shareText = `Check out this delicious recipe: ${recipe.title}\n\n${recipe.description}\n\n${window.location.href}`;
     const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
@@ -189,6 +203,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
       </div>
     );
   }
+  const videoId = extractVideoId(recipe.recipeVideo);
 
   return (
     <div className="p-6 lg:px-12 xl:px-24 bg-purple-200">
@@ -255,6 +270,32 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
           ))}
         </ol>
       </div>
+      <div className="video-frame h-auto w-full">
+        <div className={`video-curtain ${playVideo ? 'played' : ''}`} onClick={handlePlay}>
+          {playVideo ? (
+            recipe.isYouTubeVideo ? (
+              <iframe
+                width="100%"
+                height="315"
+                src={`https://www.youtube.com/embed/${videoId}`}
+                title="YouTube video player"
+                frameBorder="0"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <video controls className="mx-auto my-2" style={{ width: '100%' }}>
+                <source src={recipe.recipeVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )
+          ) : (
+            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md shadow-md" onClick={handlePlay}>
+              Play Video
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="flex flex-col items-center justify-center my-4">
         <p className="text-center">Tekan Bintang Untuk Memberikan Rating</p>
         <div className="px-2 py-2 items-center text-center mt-4">

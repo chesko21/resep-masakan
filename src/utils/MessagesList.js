@@ -17,7 +17,6 @@ const ForwardedMessageBox = (props) => {
 
   const truncatedSenderName = senderName.slice(0, 20);
   const chatBoxRef = useRef(null);
-  const truncatedText = text.slice(0, 100);
   const isCurrentUser = senderId === auth.currentUser.uid;
   const messageStyle = {
     backgroundColor: isCurrentUser ? "blue" : "orange",
@@ -30,16 +29,24 @@ const ForwardedMessageBox = (props) => {
     }
   }, [messages]);
 
-  return (
+  const removeHtmlTags = (html) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
+
+  const plainText = removeHtmlTags(text);
+
+   return (
     <Link to={`/author/${senderId}`}>
       <div key={messages.id}>
         <MessageBox
-          className={`p-1 text-start ${
+          className={`p-1 text-start font-body bg-blue-400 ${
             isCurrentUser ? "text-right" : "text-left"
           }`}
           position={position}
           type="text"
-          text={truncatedText}
+          text={plainText}
           date={timestamp ? timestamp.toDate() : null}
           title={truncatedSenderName}
           avatar={senderPhoto}
@@ -58,7 +65,7 @@ const ForwardedMessageBox = (props) => {
           customStyle={messageStyle}
         />
 
-        <div className="text-start bg-secondary-500" ref={chatBoxRef}></div>
+        <div className="text-start" ref={chatBoxRef}></div>
       </div>
     </Link>
   );
@@ -69,7 +76,7 @@ const MessagesList = ({ messages }) => {
     <div>
       {messages.map((message) => (
         <ForwardedMessageBox
-          className="bg-secondary-500 text-start"
+          className="text-start "
           key={message.id}
           position={
             message.senderId === auth.currentUser.uid ? "right" : "left"

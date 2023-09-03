@@ -1,0 +1,25 @@
+[debug] [2023-09-01T20:04:09.795Z] ----------------------------------------------------------------------
+[debug] [2023-09-01T20:04:09.801Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\cheskoo\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2023-09-01T20:04:09.802Z] CLI Version:   12.4.7
+[debug] [2023-09-01T20:04:09.802Z] Platform:      win32
+[debug] [2023-09-01T20:04:09.803Z] Node Version:  v18.17.0
+[debug] [2023-09-01T20:04:09.805Z] Time:          Sat Sep 02 2023 03:04:09 GMT+0700 (Western Indonesia Time)
+[debug] [2023-09-01T20:04:09.805Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-09-01T20:04:10.005Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-09-01T20:04:10.007Z] > authorizing via signed-in user (afiqmaarif2211@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\cheskoo\Desktop\web-resep-masakan
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+

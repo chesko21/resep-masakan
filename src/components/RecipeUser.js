@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../services/firebase';
+import { db, auth } from '../services/firebase';
 import { Link } from 'react-router-dom';
 import { FiTrash2, FiEdit } from 'react-icons/fi';
 import DefaultImage from '../assets/profile.svg';
+import FavoriteButton from "../button/FavoriteButton";
 
 const RecipeUser = ({ authorId }) => {
   const [userRecipes, setUserRecipes] = useState([]);
@@ -79,12 +80,12 @@ const RecipeUser = ({ authorId }) => {
   };
 
   return (
-    <div className="mx-auto bg-primary-200 min-h-screen p-4">
+    <div className="mx-auto bg-primary-200 min-h-screen p-6">
       <h2 className="text-3xl font-bold mb-6 text-center text-secondary">
         Resep Collection
       </h2>
       {userRecipes.length === 0 ? (
-        <p className="text-secondary text-center">
+        <p className="text-secondary font-logo text-center">
           Tidak ada resep yang dibuat.
         </p>
       ) : (
@@ -120,15 +121,14 @@ const RecipeUser = ({ authorId }) => {
                     <img
                       src={recipe.recipeImage}
                       alt={recipe.title}
-                      className="w-full h-32 object-cover mb-2 rounded-lg"
+                      className="w-full h-auto object-cover mb-2 border rounded-lg"
                     />
                   )}
                 </Link>
                 <div className="text-center rounded-lg p-2">
                   <p
-                    className={`${
-                      showFullDescription[recipe.id] ? "h-auto" : "h-12"
-                    } overflow-hidden text-white`}
+                    className={`${showFullDescription[recipe.id] ? "h-auto" : "h-12"
+                      } overflow-hidden text-white`}
                     onClick={handleToggleDescription(recipe.id)}
                     style={{ cursor: "pointer" }}
                   >
@@ -163,6 +163,12 @@ const RecipeUser = ({ authorId }) => {
                     <FiEdit className="mr-1 text-sm" />
                     Edit
                   </Link>
+                </div>
+                <div>
+                  <FavoriteButton
+                    userId={auth.currentUser.uid}
+                    recipeId={recipe.id}
+                  />
                 </div>
               </div>
             </div>

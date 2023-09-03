@@ -35,7 +35,7 @@ const CommentItem = (props) => {
     setLikesCount(
       Array.isArray(props.comment.likes) ? props.comment.likes.length : 0
     );
-  }, [props.comment.likes, user]);
+  }, [props.comment.likes, user, likesCount,]);
 
   const handleLikeReply = async () => {
     if (!user) {

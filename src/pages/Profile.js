@@ -12,6 +12,7 @@ import { BeatLoader } from "react-spinners";
 import ActivityFloatButton from "../button/ActivityFloatButton";
 import RecipeUser from "../components/RecipeUser";
 import { useParams } from "react-router-dom";
+import Favorites from "./Favorites";
 
 const Profile = ({ recipe }) => {
   const [user, setUser] = useState(null);
@@ -22,7 +23,7 @@ const Profile = ({ recipe }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [newDisplayName, setNewDisplayName] = useState("");
   const [authReady, setAuthReady] = useState(false);
-  const DEFAULT_PROFILE_IMAGE = defaultProfileImage;
+
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (userAuth) => {
@@ -60,7 +61,7 @@ const Profile = ({ recipe }) => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [loading]);
 
   useEffect(() => {
     const fetchDefaultImageURL = async () => {
@@ -73,10 +74,10 @@ const Profile = ({ recipe }) => {
           if (photoURL) {
             setDefaultImageURL(photoURL);
           } else {
-            setDefaultImageURL(defaultProfileImage);
+            setDefaultImageURL(defaultImageURL);
           }
         } else {
-          setDefaultImageURL(defaultProfileImage);
+          setDefaultImageURL(defaultImageURL);
         }
       } catch (error) {
         console.error("Error retrieving default profile image URL:", error);
@@ -86,7 +87,7 @@ const Profile = ({ recipe }) => {
     if (user && !defaultImageURL) {
       fetchDefaultImageURL();
     }
-  }, [user, defaultImageURL, authorId]);
+  }, [user, defaultImageURL, authorId, newPhoto]);
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -205,8 +206,8 @@ const Profile = ({ recipe }) => {
 
   if (!authReady) {
     return (
-      <div className="flex flex-col justify-center  min-h-screen items-center px-4 py-4
-       bg-gradient-to-br from-purple-600 to-pink-400 border-top">
+      <div className="flex flex-col justify-center font-logo min-h-screen items-center px-4 py-4
+       bg-gradient-to-br from-accent-500 to-secondary-300 border-top">
         <BeatLoader /> LOADING...
       </div>
     );
@@ -214,7 +215,7 @@ const Profile = ({ recipe }) => {
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center px-4 py-4 bg-purple-700 border-top">
+      <div className="flex flex-col font-logo items-center px-4 py-4 bg-purple-600 border-top">
         You are not logged in.
       </div>
     );
@@ -222,8 +223,10 @@ const Profile = ({ recipe }) => {
 
   return (
     <>
-      <div className="flex flex-col items-center px-4 py-4 
-      bg-gradient-to-br from-purple-600 to-pink-500 font-logo">
+      <div
+        className="flex flex-col items-center px-4 py-4 
+        bg-gradient-to-br from-accent-500 to-secondary-300"
+      >
         <div className="w-32 h-32 relative rounded-full">
           {user.photoURL ? (
             <img
@@ -264,7 +267,7 @@ const Profile = ({ recipe }) => {
             <FiEdit className="mr-1" />
           </div>
         </div>
-        <p className="text-amber-500 mb-4">{user.email}</p>
+        <p className="text-primary-500 m-4 font-logo">{user.email}</p>
         {isPopupOpen && (
           <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-purple-200 bg-opacity-50 z-10">
             <div className="bg-white p-4 rounded-lg shadow-lg">
@@ -298,6 +301,7 @@ const Profile = ({ recipe }) => {
       <div>
         <RecipeUser authorId={auth.currentUser.uid} />
       </div>
+      <Favorites userId={auth.currentUser.uid} />
       <div>
         <ActivityFloatButton authorId={auth.currentUser.uid} />
       </div>

@@ -49,16 +49,14 @@ const ButtonLike = ({ commentId, user }) => {
 
   return (
     <button
-      className={`flex items-center ${
-        userLiked ? "text-blue-500" : "text-gray-500"
-      } hover:text-blue-500 transition-colors`}
+      className={`flex items-center ${userLiked ? "text-blue-500" : "text-gray-500"
+        } hover:text-blue-500 transition-colors`}
       onClick={handleLikeClick}
       disabled={!auth.currentUser}
     >
       <FaThumbsUp
-        className={`w-4 h-4 mr-1 ${
-          userLiked ? "text-blue-500" : "text-gray-500"
-        }`}
+        className={`w-4 h-4 mr-1 ${userLiked ? "text-blue-500" : "text-gray-500"
+          }`}
       />
       <span>{likeCount}</span>
     </button>

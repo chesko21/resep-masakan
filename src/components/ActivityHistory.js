@@ -46,7 +46,6 @@ const ActivityHistory = ({ authorId }) => {
     fetchActivities();
   }, [authorId]);
 
-  // This useEffect handles activity updates whenever authorId changes or activities change.
   useEffect(() => {
     const unsubscribe = db
       .collection("users")
@@ -63,10 +62,10 @@ const ActivityHistory = ({ authorId }) => {
         setUser(userData);
       });
 
-    return () => unsubscribe(); 
+    return () => unsubscribe();
   }, [authorId, activities]);
 
-  
+
   return (
     <>
       {isLoading ? (
@@ -76,7 +75,7 @@ const ActivityHistory = ({ authorId }) => {
       ) : (
         <div className="mx-auto w-64 p-2">
           {user && (
-            <h2 className="text-sm font-semibold mb-2">
+            <h2 className="text-sm font-semibold mb-2 font-logo">
               {" "}
               {user.displayName} Activity
             </h2>
@@ -85,11 +84,10 @@ const ActivityHistory = ({ authorId }) => {
             {activities.map((activity, index) => (
               <li
                 key={index}
-                className={`p-2 border border-gray-300 rounded-lg ${
-                  index === 0 ? "bg-yellow-100" : "bg-white"
-                }`}
+                className={`p-2 border border-gray-300 rounded-lg ${index === 0 ? "bg-yellow-100" : "bg-white"
+                  }`}
               >
-                <p className="font-10 mb-2 text-center">New Recipe Add: </p>
+                <p className="font-10 mb-2 text-center font-logo">New Recipe Add: </p>
                 <p className="text-orange-500 font-semibold mb-2">
                   {activity.recipeName}
                 </p>

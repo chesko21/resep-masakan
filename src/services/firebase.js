@@ -3,6 +3,7 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 import defaultProfileImage from "../assets/profile.svg";
+import { getDatabase } from "firebase/database";
 
 const MAX_ACTIVITIES = 5;
 const UNKNOWN_USER_NAME = "Unknown";
@@ -28,18 +29,15 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
+const database = getDatabase();
 const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-const firestore = firebase.firestore();
 
 const recipesCollection = db.collection("recipes");
-
 const usersCollection = db.collection("users");
-
 const messagesCollection = db.collection("messages");
-
 const commentsCollection = db.collection("comments");
 
-export const handleUploadPhoto = async (userAuth, file, setLoading) => {
+const handleUploadPhoto = async (userAuth, file, setLoading) => {
   if (!userAuth || !file) return null;
 
   try {
@@ -60,10 +58,7 @@ export const handleUploadPhoto = async (userAuth, file, setLoading) => {
   }
 };
 
-export const createUserProfileDocument = async (
-  userAuth,
-  additionalData = {}
-) => {
+const createUserProfileDocument = async (userAuth, additionalData = {}) => {
   if (!userAuth) return;
 
   const { displayName, email, photoURL, uid } = userAuth;
@@ -217,11 +212,25 @@ const handleDeleteRecipe = async (recipeId, recipeName, authorId) => {
   }
 };
 
+const uploadVideoToStorage = async (videoFile, uniqueVideoName) => {
+  try {
+    const storageRef = storage.ref().child(`videos/${uniqueVideoName}`);
+    const snapshot = await storageRef.put(videoFile);
+    const videoUrl = await snapshot.ref.getDownloadURL();
+    return videoUrl;
+  } catch (error) {
+    console.error("Error uploading video:", error);
+    throw error;
+  }
+};
+
+
 export {
   firebase,
   auth,
   db,
   storage,
+  database,
   googleAuthProvider,
   recipesCollection,
   usersCollection,
@@ -229,7 +238,9 @@ export {
   commentsCollection,
   handleAddRecipe,
   handleDeleteRecipe,
-  firestore ,
+  handleUploadPhoto,
+  createUserProfileDocument,
+  uploadVideoToStorage,
 };
 
 export default firebase;

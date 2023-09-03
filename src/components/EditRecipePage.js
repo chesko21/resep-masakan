@@ -78,29 +78,29 @@ const EditRecipePage = ({ user }) => {
     }));
   };
 
-const handleImageChange = async (e) => {
-  const file = e.target.files[0];
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
 
-  if (recipe.recipeImageName) {
-    const storageRef = storage.ref().child(`images/${recipe.recipeImageName}`);
-    try {
-      await storageRef.delete();
-      console.log("Previous image deleted from storage.");
-    } catch (error) {
-      console.error("Error deleting previous image:", error);
+    if (recipe.recipeImageName) {
+      const storageRef = storage.ref().child(`images/${recipe.recipeImageName}`);
+      try {
+        await storageRef.delete();
+        console.log("Previous image deleted from storage.");
+      } catch (error) {
+        console.error("Error deleting previous image:", error);
+      }
     }
-  }
 
-  const randomImageId = uuidv4();
-  const fileExtension = file.name.split(".").pop();
-  const randomImageName = `${randomImageId}.${fileExtension}`;
+    const randomImageId = uuidv4();
+    const fileExtension = file.name.split(".").pop();
+    const randomImageName = `${randomImageId}.${fileExtension}`;
 
-  setRecipe((prevState) => ({
-    ...prevState,
-    recipeImage: file,
-    recipeImageName: randomImageName,
-  }));
-};
+    setRecipe((prevState) => ({
+      ...prevState,
+      recipeImage: file,
+      recipeImageName: randomImageName,
+    }));
+  };
 
 
   const handleInstructionChange = (e, index) => {

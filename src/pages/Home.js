@@ -10,6 +10,8 @@ import {
 import MessagesListFloatButton from "../button/MessagesListFloatButton";
 import BeatLoader from "react-spinners/BeatLoader";
 import TrandingPage from "../components/TrandingPage";
+import OnlineStatus from "../utils/OnlineStatus";
+
 
 const Home = ({ profilePhoto, authorId, isChatOpen, userAuth }) => {
   const [recipes, setRecipes] = useState([]);
@@ -106,7 +108,7 @@ const Home = ({ profilePhoto, authorId, isChatOpen, userAuth }) => {
     };
 
     fetchRecipes();
-  }, [setRecipes]);
+  }, [setRecipes,recipes]);
 
   useEffect(() => {
     if (isChatOpen && chatBoxRef.current) {
@@ -126,9 +128,9 @@ const Home = ({ profilePhoto, authorId, isChatOpen, userAuth }) => {
 
   return (
     <div className="min-h-screen flex flex-col justify-between text-center
-     bg-gradient-to-bl from-accent-500 via-wavy-purple to-secondary-500 font-logo">
+     bg-gradient-to-bl from-accent-500 via-wavy-purple to-secondary-500 text-sm">
       <div>
-        <div className="m-4 text-yellow-500">
+        <div className="m-4 text-white">
           <span className="border-b-2 border-t-2 border-white">
             {currentTime.split(":")[0]}
           </span>
@@ -141,26 +143,30 @@ const Home = ({ profilePhoto, authorId, isChatOpen, userAuth }) => {
             {currentTime.split(":")[2]}
           </span>
         </div>
-        <div className="text-2xl m-4 text-white animate__animated animate__fadeIn">
+        <div className="text-2xl font-logo m-4 text-secondary-600 animate__animated animate__fadeIn">
           Selamat Datang di Resep Masakan Indonesia!
         </div>
-        <p className="m-4 text-center">
+        <p className="m-4 text-center text-1x1">
           Temukan berbagai resep masakan yang lezat dan nikmati pengalaman
           memasak yang menyenangkan.
         </p>
-        <p className="m-4 text-center">
+        <p className="m-4 text-center font-logo">
           Daftar Sekarang Juga , Anda Bisa Membuat Resep Favorite Anda Sendiri.
         </p>
-        <div className="mb-4">
+        <div>
+        <OnlineStatus user={user} />
+        </div>
+        <div id="recipelist-section" className="mb-4">
           <RecipeList userAuth={userAuth} />
         </div>
-        <div>
+        <div id="tranding-section">
           <TrandingPage />
         </div>
-        <div>
-        <RecommendationRecipes setUserRecipes={setRecipes} />
-      </div>
+        <div id="recomen-section">
+          <RecommendationRecipes setUserRecipes={setRecipes} />
         </div>
+
+      </div>
       <MessagesListFloatButton user={user} messages={messages} />
     </div>
   );

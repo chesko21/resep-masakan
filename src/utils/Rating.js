@@ -12,32 +12,32 @@ const Rating = ({ recipeId, initialRating, onChange }) => {
     setRating(parseFloat(initialRating));
   }, [initialRating]);
 
-useEffect(() => {
-  const fetchUserRating = async () => {
-    try {
-      const userAuth = auth.currentUser;
-      if (userAuth) {
-        const userId = userAuth.uid;
-        const ratingDocRef = db
-          .collection("recipes")
-          .doc(recipeId)
-          .collection("ratings")
-          .doc(userId);
-        const ratingDoc = await ratingDocRef.get();
+  useEffect(() => {
+    const fetchUserRating = async () => {
+      try {
+        const userAuth = auth.currentUser;
+        if (userAuth) {
+          const userId = userAuth.uid;
+          const ratingDocRef = db
+            .collection("recipes")
+            .doc(recipeId)
+            .collection("ratings")
+            .doc(userId);
+          const ratingDoc = await ratingDocRef.get();
 
-        if (ratingDoc.exists) {
-          const userRating = ratingDoc.data().rating;
-          setCurrentRating(userRating);
-          setIsRated(true); // <-- Ubah dari setIsStarOn menjadi setIsRated
+          if (ratingDoc.exists) {
+            const userRating = ratingDoc.data().rating;
+            setCurrentRating(userRating);
+            setIsRated(true); // <-- Ubah dari setIsStarOn menjadi setIsRated
+          }
         }
+      } catch (error) {
+        console.error("Error fetching user rating:", error);
       }
-    } catch (error) {
-      console.error("Error fetching user rating:", error);
-    }
-  };
+    };
 
-  fetchUserRating();
-}, [recipeId]);
+    fetchUserRating();
+  }, [recipeId]);
 
 
   const handleRatingChange = async (value) => {
@@ -46,7 +46,7 @@ useEffect(() => {
     if (!isRated) {
       setRating(ratingValue);
       setCurrentRating(ratingValue);
-      setIsRated(true); 
+      setIsRated(true);
       onChange(ratingValue);
 
       try {
@@ -94,9 +94,8 @@ useEffect(() => {
           return (
             <span
               key={index}
-              className={`text-3xl cursor-pointer ${
-                isStarLit ? "text-yellow-500" : starColor
-              }`}
+              className={`text-3xl cursor-pointer ${isStarLit ? "text-yellow-500" : starColor
+                }`}
               onMouseEnter={() => setHoverRating(starValue)} // Mengatur hoverRating saat mengarahkan kursor
               onMouseLeave={() => setHoverRating(0)} // Mengatur hoverRating saat meninggalkan bintang
               onClick={() => handleRatingChange(starValue)}

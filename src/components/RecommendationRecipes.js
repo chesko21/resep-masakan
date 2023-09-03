@@ -29,8 +29,6 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
               dateCreated: dateCreated,
             };
           });
-
-          // Fetch the creator's photo for each recipe
           const creatorIds = [
             ...new Set(recipesData.map((recipe) => recipe.authorId)),
           ];
@@ -76,8 +74,6 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date(),
         }));
-
-        // Fetch the creator's photo for each recipe
         const creatorIds = [
           ...new Set(recommendationsData.map((recipe) => recipe.authorId)),
         ];
@@ -111,61 +107,61 @@ const RecommendationRecipes = ({ setUserRecipes }) => {
     fetchRecommendations();
   }, []);
 
-const settings = {
-  dots: true,
-  infinite: true,
-  speed: 1000,
-  slidesToShow: Math.min(4, recommendations.length),
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 5000,
-  responsive: [
-    {
-      breakpoint: 1440,
-      settings: {
-        slidesToShow: 4,
-        centerMode: true,
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: Math.min(3, recommendations.length),
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    responsive: [
+      {
+        breakpoint: 1440,
+        settings: {
+          slidesToShow: 4,
+          centerMode: true,
+        },
       },
-    },
-    {
-      breakpoint: 1280,
-      settings: {
-        slidesToShow: 3,
-        centerMode: true,
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: 3,
+          centerMode: true,
+        },
       },
-    },
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        centerMode: true,
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          centerMode: true,
+        },
       },
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 1,
-        centerMode: true,
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+          centerMode: true,
+        },
       },
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        centerMode: false,
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          centerMode: false,
+        },
       },
-    },
-  ],
-  spacing: 20,
-};
+    ],
+    spacing: 20,
+  };
 
   return (
-    <div className="">
+    <div className="mt-4">
       <h2 className="recommendation-title text-3xl font-semibold mb-4 text-primary text-center">
         Saran Resep untuk Anda
       </h2>
       {isLoading ? (
-        <div className="flex flex-col justify-center  min-h-screen items-center px-4 py-4">
+        <div className="flex flex-col justify-center min-h-screen items-center px-4 py-4">
           <BeatLoader /> LOADING...
         </div>
       ) : (
@@ -175,14 +171,14 @@ const settings = {
               key={recipe.id}
               className="transition-transform transform hover:scale-105 m-2 item-center items-center justify-center"
             >
-              <div className="relative w-64 mx-auto bg-accent-500 rounded item-center text-center">
+              <div className="relative w-64 mx-auto bg-purple-700 opacity:50 rounded item-center text-center hover:bg-primary-500">
                 <Link
-                  className="block font-bold text-secondary-400 hover:text-blue-500 transition-colors p-2"
+                  className="block text-secondary-400 hover:text-blue-500 transition-colors p-2"
                   to={`/recipes/${recipe.id}`}
                 >
                   {recipe.title}
                 </Link>
-                <div className="rounded shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div className="rounded p-2 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                   {recipe.recipeImage && (
                     <div className="relative">
                       <img
@@ -194,7 +190,7 @@ const settings = {
                         © {currentYear} Resep Masakan
                       </p>
                       <Link
-                        className="absolute bottom-0 left-0 w-full h-full p-4 bg-black bg-opacity-50 text-white transition-opacity opacity-0 hover:opacity-100"
+                        className="absolute text-yellow-500 bottom-0 left-0 w-full h-full p-4 bg-black bg-opacity-50 transition-opacity opacity-0 hover:opacity-100"
                         to={`/recipes/${recipe.id}`}
                       >
                         <p className="text-sm">{recipe.description}</p>
@@ -210,7 +206,7 @@ const settings = {
                           alt="Creator"
                           className="rounded-full h-8 w-8 object-cover border mr-2"
                         />
-                        <p className="text-white font-semibold underline hover:text-secondary-700">
+                        <p className="text-white underline hover:text-secondary-700">
                           {" "}
                           {recipe.author}
                         </p>
@@ -219,7 +215,7 @@ const settings = {
                     <span className="text-sm p-2 text-secondary-500 bg-white rounded-full font-bold">
                       {recipe.rating}
                     </span>
-                    <p className="mt-2 text-sm text-white">
+                    <p className="mt-2 ">
                       Kategori: {recipe.category}
                     </p>
 
