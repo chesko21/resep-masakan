@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
+import { Form, Button, FormControl } from 'react-bootstrap';
 import { Trash } from 'react-bootstrap-icons';
 import { v4 as uuidv4 } from 'uuid';
 import { createUserProfileDocument } from '../services/firebase';
@@ -8,7 +8,7 @@ import { db, firebase } from '../services/firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUpload } from "react-icons/fa";
 
-const AddRecipeForm = ({ userAuth }) => {
+const AddRecipeForm = ({ userAuth}) => {
   const [recipe, setRecipe] = useState({
     title: '',
     description: '',
@@ -66,7 +66,7 @@ const AddRecipeForm = ({ userAuth }) => {
         authorId: authorId,
       }));
     }
-  }, [userAuth]);
+  }, [userAuth,error,showModal,showAlert ]);
 
   const showNotificationMessage = () => {
     setShowNotification(true);

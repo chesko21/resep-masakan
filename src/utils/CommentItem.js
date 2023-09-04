@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ButtonLike from "../button/ButtonLike";
-import { auth, commentsCollection, db } from "../services/firebase";
+import { auth, commentsCollection } from "../services/firebase";
 import defaultProfileImage from "../assets/profile.svg";
 
 const CommentItem = (props) => {
@@ -63,30 +63,6 @@ const CommentItem = (props) => {
     }
   };
 
-  const handleLikeClick = async () => {
-    if (!user) {
-      alert("You need to be logged in to like.");
-      return;
-    }
-
-    const likesRef = db
-      .collection("comments")
-      .doc(props.comment.id)
-      .collection("likes")
-      .doc(user.uid);
-
-    const existingLike = await likesRef.get();
-
-    if (existingLike.exists) {
-      await existingLike.ref.delete();
-      setIsLiked(false);
-      setLikesCount((prevCount) => prevCount - 1);
-    } else {
-      await likesRef.set({ likedAt: new Date() });
-      setIsLiked(true);
-      setLikesCount((prevCount) => prevCount + 1);
-    }
-  };
 
   return (
     <div className="comment-item ml-4">
@@ -132,9 +108,7 @@ const CommentItem = (props) => {
           {props.comment.replies && props.comment.replies.length > 0 && (
             <div className="pl-8 mt-4">
               {props.comment.replies.map((reply) => {
-                const replyLikes = Array.isArray(reply.likes)
-                  ? reply.likes
-                  : [];
+
                 return (
                   <div key={reply.id} className="flex items-start">
                     {reply.user && reply.user.imageURL ? (

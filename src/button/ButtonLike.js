@@ -10,12 +10,10 @@ const ButtonLike = ({ commentId, user }) => {
     const commentRef = db.collection("comments").doc(commentId);
     const likesRef = commentRef.collection("likes");
 
-    // Fetch like count
     likesRef.get().then((snapshot) => {
       setLikeCount(snapshot.size);
     });
 
-    // Check if the user has liked
     if (auth.currentUser) {
       likesRef
         .doc(auth.currentUser.uid)

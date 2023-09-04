@@ -13,7 +13,7 @@ import TrandingPage from "../components/TrandingPage";
 import OnlineStatus from "../utils/OnlineStatus";
 
 
-const Home = ({ profilePhoto, authorId, isChatOpen, userAuth }) => {
+const Home = ({ isChatOpen, userAuth }) => {
   const [recipes, setRecipes] = useState([]);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

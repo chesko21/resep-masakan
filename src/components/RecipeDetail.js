@@ -15,21 +15,10 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
   const [comments, setComments] = useState([]);
   const [currentRating, setCurrentRating] = useState(0);
   const [hasRated, setHasRated] = useState(false);
-  const [comment, setComment] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
   const [playVideo, setPlayVideo] = useState(false);
 
-
-  const extractVideoId = (url) => {
-    if (!url) {
-      return null;
-    }
-
-    const videoIdRegex = /(?:\?v=|\/embed\/|\/watch\?v=|youtu.be\/|\/v\/|\/e\/|watch\?v%3D|%2Fv%2F|embed\/|v=|youtu.be\/|youtube.com%2Fwatch\?v=|youtube.com%2Fv%2F|youtube.com%2Fe%2F|\?feature=player_embedded&v=|%2Fembed%\S+|embed%\S*|youtu.be%\S*|youtube.com%\S*|%2F%2F+|%2F+)([^#\&\?\n]*[^,\.\?\#\n])/;
-    const match = url.match(videoIdRegex);
-    return match && match[1] ? match[1] : null;
-  };
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -87,6 +76,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
     fetchComments();
   }, [id]);
 
+  /* eslint-disable no-unused-vars */
   const handleCommentSubmit = async (comment) => {
     try {
       const newComment = {
@@ -141,7 +131,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
-  };
+  }; 
 
   const handleRatingChange = (rating) => {
     setCurrentRating(rating);
@@ -154,6 +144,7 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
     setPlayVideo(!playVideo);
   };
 
+  /* eslint-disable no-unused-vars */
   const handleReplyComment = async (parentId, replyContent) => {
     try {
       if (parentId) {
@@ -169,17 +160,17 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
           rating: 0,
           likes: [],
         };
-
+  
         const docRef = await commentsCollection.add(newComment);
         const newCommentWithId = { id: docRef.id, ...newComment };
-
+  
         setComments([...comments, newCommentWithId]);
       }
     } catch (error) {
       console.error('Error replying to comment:', error);
     }
   };
-
+  
   const shareOnFacebook = (recipe) => {
     const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
       `${window.location.origin}/recipes/${recipe.id}`
@@ -205,7 +196,6 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
       </div>
     );
   }
-  const videoId = extractVideoId(recipe.recipeVideo);
 
   return (
     <div className="p-6 lg:px-12 xl:px-24 bg-purple-200">
@@ -345,7 +335,6 @@ const RecipeDetail = ({ authorId, photoURL, user, setAverageRating }) => {
         <CommentList
           comments={comments}
           id={id}
-          comment={comment}
           setComments={setComments}
           user={user}
         />

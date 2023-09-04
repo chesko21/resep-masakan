@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Draggable from "react-draggable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,7 +8,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import MessagesList from "../utils/MessagesList";
 import { messagesCollection, auth } from "../services/firebase";
-import { Input } from "react-chat-elements";
 
 const MessagesListFloatButton = ({ user, messages }) => {
   const floatButtonRef = useRef(null);
@@ -40,7 +39,7 @@ const MessagesListFloatButton = ({ user, messages }) => {
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== "" && !isSending) {
-      setIsSending(true); // Set the sending state to true
+      setIsSending(true); 
       try {
         const messageData = {
           senderId: auth.currentUser.uid,
@@ -61,7 +60,7 @@ const MessagesListFloatButton = ({ user, messages }) => {
       } catch (error) {
         console.error("Error sending message:", error);
       } finally {
-        setIsSending(false); // Reset the sending state when the message is sent or an error occurs
+        setIsSending(false); 
       }
     }
   };
@@ -80,7 +79,7 @@ const MessagesListFloatButton = ({ user, messages }) => {
     setIsChatOpen(false);
   };
 
-  const handleDocumentClick = (event) => {
+  const handleDocumentClick = useCallback((event) => {
     if (
       isChatOpen &&
       floatButtonRef.current &&
@@ -92,19 +91,20 @@ const MessagesListFloatButton = ({ user, messages }) => {
       }
       closeChatBox();
     }
-  };
-
+  }, [isChatOpen]);
+  
   useEffect(() => {
     document.addEventListener("click", handleDocumentClick);
+  
     return () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, [handleDocumentClick]);
 
   const handleInputKeyPress = (event) => {
-    // Handle sending a message when Enter key is pressed
+  
     if (event.key === "Enter" && !isSending) {
-      event.preventDefault(); // Prevent the Enter key from adding a newline
+      event.preventDefault(); 
       handleSendMessage();
     }
   };

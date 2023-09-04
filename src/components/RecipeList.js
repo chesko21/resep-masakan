@@ -16,7 +16,6 @@ const RecipeList = () => {
   const [selectedTitle, setSelectedTitle] = useState("");
   const [slideIndex, setSlideIndex] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
@@ -98,8 +97,7 @@ const RecipeList = () => {
 
     const fetchRecommendations = async () => {
       try {
-        setIsLoading(true);
-
+        
         let query = db.collection("recipes");
 
         if (sortBy) {
@@ -116,7 +114,7 @@ const RecipeList = () => {
         const snapshot = await query.limit(12).get();
 
         if (snapshot.docs.length === 0) {
-          setIsLoading(true);
+          
           return;
         }
 
@@ -130,7 +128,7 @@ const RecipeList = () => {
       } catch (error) {
         console.error("Error fetching recommendation recipes:", error);
       } finally {
-        setIsLoading(false);
+      
       }
     };
 
@@ -143,6 +141,9 @@ const RecipeList = () => {
     selectedCreator,
     selectedTitle,
     recommendations,
+    setPageNumber,
+    searchTerm,
+    setSortBy,
   ]);
 
   const handleSearch = (searchTerm) => {

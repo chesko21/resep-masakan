@@ -40,13 +40,14 @@ const Profile = ({ recipe }) => {
             
           } else {
             const defaultUserData = {
-              displayName: userAuth.displayName || newDisplayName,
+              displayName: userAuth.displayName || 'UNKNOWN',
               email: userAuth.email,
               photoURL: userAuth.photoURL || defaultProfileImage,
             };
             await userRef.set(defaultUserData);
             setUser(defaultUserData);
             setDefaultImageURL(defaultProfileImage);
+           
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
