@@ -101,6 +101,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-react": "^7.22.5",
     "electron": "^26.0.0",
-    "electron-builder": "^24.6.3"
+    "electron-builder": "^24.6.3",
+    "eslint-config-google": "^0.14.0"
   }
 }

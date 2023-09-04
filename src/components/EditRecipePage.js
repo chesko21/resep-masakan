@@ -4,10 +4,12 @@ import { db, storage } from "../services/firebase";
 import { Form, Button, FormControl, InputGroup } from "react-bootstrap";
 import { Trash } from "react-bootstrap-icons";
 import { v4 as uuidv4 } from "uuid";
+import { FaUpload } from "react-icons/fa";
 
 const EditRecipePage = ({ user }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const categories = [
     "Sarapan",
     "Makan Siang",
@@ -31,6 +33,10 @@ const EditRecipePage = ({ user }) => {
     category: "",
   });
   const [isImageUrlEdit, setIsImageUrlEdit] = useState(false);
+  const [isVideoUrlEdit, setIsVideoUrlEdit] = useState(false);
+  const [videoFile, setVideoFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -41,6 +47,8 @@ const EditRecipePage = ({ user }) => {
         if (snapshot.exists) {
           const recipeData = snapshot.data();
           setRecipe(recipeData);
+
+          setIsVideoUrlEdit(!recipeData.recipeVideo);
         } else {
           console.log("Recipe does not exist.");
         }
@@ -51,6 +59,7 @@ const EditRecipePage = ({ user }) => {
 
     fetchRecipe();
   }, [id]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,7 +86,6 @@ const EditRecipePage = ({ user }) => {
       recipeImage: value,
     }));
   };
-
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
 
@@ -95,13 +103,40 @@ const EditRecipePage = ({ user }) => {
     const fileExtension = file.name.split(".").pop();
     const randomImageName = `${randomImageId}.${fileExtension}`;
 
-    setRecipe((prevState) => ({
-      ...prevState,
-      recipeImage: file,
-      recipeImageName: randomImageName,
-    }));
+    const imageStorageRef = storage.ref().child(`images/${randomImageName}`);
+
+    try {
+
+      const imageSnapshot = await imageStorageRef.put(file);
+      const imageUrl = await imageSnapshot.ref.getDownloadURL();
+
+      const updatedRecipe = {
+        ...recipe,
+        recipeImage: imageUrl,
+        recipeImageName: randomImageName,
+      };
+
+      const recipeRef = db.collection("recipes").doc(id);
+      await recipeRef.update(updatedRecipe);
+
+      console.log("Recipe image updated successfully!");
+    } catch (error) {
+      console.error("Error updating recipe image:", error);
+    }
   };
 
+  const handleVideoFileChange = (e) => {
+    const file = e.target.files[0];
+    setVideoFile(file);
+  };
+
+  const handleVideoUrlChange = (e) => {
+    const { value } = e.target;
+    setRecipe((prevState) => ({
+      ...prevState,
+      recipeVideo: value,
+    }));
+  };
 
   const handleInstructionChange = (e, index) => {
     const { value } = e.target;
@@ -148,36 +183,47 @@ const EditRecipePage = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (isImageUrlEdit) {
-        const recipeRef = db.collection("recipes").doc(id);
-        await recipeRef.update(recipe);
-        console.log("Recipe updated successfully!");
-        navigate(`/recipes/${id}`);
-      } else {
-        if (!recipe.recipeImage) {
-          console.error("Recipe image is required.");
-          return;
+      if (!isVideoUrlEdit && videoFile) {
+
+        if (recipe.recipeVideoName) {
+          const videoStorageRef = storage
+            .ref()
+            .child(`videos/${recipe.recipeVideoName}`);
+          try {
+            await videoStorageRef.delete();
+            console.log("Previous video deleted from storage.");
+          } catch (error) {
+            console.error("Error deleting previous video:", error);
+          }
         }
+        const randomVideoId = uuidv4();
+        const fileExtension = videoFile.name.split(".").pop();
+        const randomVideoName = `${randomVideoId}.${fileExtension}`;
 
-        const storageRef = storage
+        const videoStorageRef = storage
           .ref()
-          .child(`images/${recipe.recipeImageName}`);
-        const snapshot = await storageRef.put(recipe.recipeImage);
-        const updatedRecipeImageUrl = await snapshot.ref.getDownloadURL();
+          .child(`videos/${randomVideoName}`);
+        const videoSnapshot = await videoStorageRef.put(videoFile);
+        const updatedRecipeVideoUrl = await videoSnapshot.ref.getDownloadURL();
 
-        const updatedRecipe = { ...recipe, recipeImage: updatedRecipeImageUrl };
+        const updatedRecipe = { ...recipe, recipeVideo: updatedRecipeVideoUrl, recipeVideoName: randomVideoName };
 
         const recipeRef = db.collection("recipes").doc(id);
         await recipeRef.update(updatedRecipe);
-        console.log(
-          "Recipe updated successfully!"
-        );
-        navigate(`/recipes/${id}`);
+        console.log("Recipe updated successfully!");
+      } else {
+
+        const recipeRef = db.collection("recipes").doc(id);
+        await recipeRef.update(recipe);
+        console.log("Recipe updated successfully!");
       }
+
+      navigate(`/recipes/${id}`);
     } catch (error) {
       console.error("Error updating recipe:", error);
     }
   };
+
   return (
     <div className="container mx-auto px-8 py-4 bg-purple-700">
       <Link to="/profile" className="text-orange-300 hover:underline">
@@ -343,20 +389,78 @@ const EditRecipePage = ({ user }) => {
             </div>
           )}
         </div>
-
-        <div className="text-center mt-4">
-          <Button
+        <div className="flex items-center space-x-4 mb-4">
+          <div>
+            <input
+              type="radio"
+              id="videoFromStorageEdit"
+              name="videoSourceEdit"
+              checked={!isVideoUrlEdit}
+              onChange={() => setIsVideoUrlEdit(false)}
+              aria-label="Pilih Video dari Penyimpanan"
+            />
+            <label htmlFor="videoFromStorageEdit" className="mr-2">
+              Pilih Video dari Penyimpanan
+            </label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="videoFromUrlEdit"
+              name="videoSourceEdit"
+              checked={isVideoUrlEdit}
+              onChange={() => setIsVideoUrlEdit(true)}
+              aria-label="Masukkan URL Video"
+            />
+            <label htmlFor="videoFromUrlEdit">Masukkan URL Video</label>
+          </div>
+        </div>
+        <div>
+          <label className="block text-white font-bold mb-2">Video</label>
+          {isVideoUrlEdit ? (
+            <div>
+              <input
+                type="text"
+                id="videoUrlEdit"
+                value={recipe.recipeVideo}
+                onChange={handleVideoUrlChange}
+                placeholder="URL Video"
+                aria-label="URL Video"
+                className="custom-input"
+              />
+            </div>
+          ) : (
+            <div>
+              <input
+                type="file"
+                accept="video/*"
+                id="videoEdit"
+                onChange={handleVideoFileChange}
+                className="custom-file-input"
+              />
+            </div>
+          )}
+        </div>
+        {/* Submit Button */}
+        <div className="flex justify-center mt-4">
+          <button
             type="submit"
-            variant="primary"
-            style={{
-              display: "inline-block",
-              width: "auto",
-              backgroundColor: "orange",
-              borderRadius: "10px",
-            }}
+            className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-full flex items-center"
+            disabled={isLoading || isSubmitting}
           >
-            Simpan Perubahan
-          </Button>
+            {isLoading || isSubmitting ? (
+              <>
+                <div className="spinner-border text-light mr-2" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+                <span>Uploading... Please Wait!!</span>
+              </>
+            ) : (
+              <>
+                <FaUpload className="mr-2" /> Upload Resep
+              </>
+            )}
+          </button>
         </div>
       </Form>
     </div>

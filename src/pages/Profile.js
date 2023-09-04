@@ -37,9 +37,10 @@ const Profile = ({ recipe }) => {
             const userData = snapshot.data();
             setUser(userData);
             setDefaultImageURL(userData.photoURL || defaultProfileImage);
+            
           } else {
             const defaultUserData = {
-              displayName: userAuth.displayName || "Unknown",
+              displayName: userAuth.displayName || newDisplayName,
               email: userAuth.email,
               photoURL: userAuth.photoURL || defaultProfileImage,
             };

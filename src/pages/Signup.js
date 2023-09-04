@@ -45,6 +45,7 @@ const Signup = () => {
       setIsLoading(true);
       const googleUser = await auth.signInWithPopup(googleAuthProvider);
       const googleEmail = googleUser.user.email;
+      
 
       setEmail(googleEmail);
 
@@ -57,7 +58,7 @@ const Signup = () => {
       const imageURL = defaultProfileImage;
 
       await createUserProfileDocument(user, {
-        displayName,
+        displayName: displayName,
         photoURL: imageURL,
       });
 
@@ -70,7 +71,7 @@ const Signup = () => {
       }, 3000);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
-        setError("Email Sudah Terdaftar, Silahkan Login.");
+        setError("Silahkan Login.");
       } else {
         setError(error.message);
       }
@@ -79,50 +80,49 @@ const Signup = () => {
     }
   };
 
-  const handleSignup = async (event) => {
-    event.preventDefault();
+const handleSignup = async (event) => {
+  event.preventDefault();
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
+  if (password !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  if (!displayName || !email || !password || !confirmPassword) {
+    setError("Please fill in all the fields");
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+
+    const { user } = await auth.createUserWithEmailAndPassword(email, password);
+    const imageURL = defaultProfileImage;
+
+    await createUserProfileDocument(user, {
+      displayName: displayName, 
+      photoURL: imageURL,
+    });
+
+    await auth.signInWithEmailAndPassword(email, password);
+    await user.sendEmailVerification();
+    setShowModal(true);
+    setTimeout(() => {
+      setShowModal(false);
+      navigate("/");
+    }, 3000);
+  } catch (error) {
+    if (error.code === "auth/email-already-in-use") {
+      setError("Email Sudah Terdaftar, Silahkan Login.");
+    } else {
+      setError(error.message);
     }
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-    if (!displayName || !email || !password || !confirmPassword) {
-      setError("Please fill in all the fields");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const { user } = await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-      const imageURL = defaultProfileImage;
-
-      await createUserProfileDocument(user, {
-        displayName,
-        photoURL: imageURL,
-      });
-
-      await user.sendEmailVerification();
-
-      setShowModal(true);
-      setTimeout(() => {
-        setShowModal(false);
-        navigate("/");
-      }, 3000);
-    } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        setError("SignUp Success!!");
-      } else {
-        setError(error.message);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  
   return (
     <div className="flex flex-col items-center bg-wavy-purple min-h-screen ">
       <h2 className="text-3xl font-bold mb-6 animate__animated animate__fadeIn">
