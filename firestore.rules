@@ -1,9 +1,13 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read and write access to authenticated users
+    // Aturan umum untuk semua dokumen
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      // Izinkan baca untuk semua pengguna, bahkan yang belum login
+      allow read: if true;
+
+      // Izinkan tulis, hapus, dan perbarui hanya untuk pengguna yang sudah login
+      allow write: if request.auth != null;
     }
   }
 }
